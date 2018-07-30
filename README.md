@@ -3,7 +3,7 @@
 ## Build instructions
 ```
 cd build
-docker build -t avinetworks/avitools:latest .
+docker build -t avinetworks/avitools:18.1.2 .
 ```
 
 ## How you can use migrationtools docker image
