@@ -1,8 +1,8 @@
-FROM ubuntu:18.04
+FROM avinetworks/avitools-base:bionic
 
 ARG tf_version="0.11.7"
-ARG avi_sdk_version="18.1.2"
-ARG avi_version="18.1.2"
+ARG avi_sdk_version="18.1.3"
+ARG avi_version="18.1.3"
 
 RUN echo $HOME
 
@@ -15,8 +15,6 @@ RUN pip install pyvmomi pytest==3.2.5 pyyaml==3.12 requests==2.18.4 pyparsing==2
 
 RUN pip install avisdk==${avi_sdk_version} avimigrationtools==${avi_sdk_version}
 RUN ansible-galaxy -c install avinetworks.avisdk avinetworks.avicontroller avinetworks.avise avinetworks.aviconfig avinetworks.avicontroller-openshift-k8s avinetworks.avise-csp avinetworks.avicontroller-csp locationlabs.openstack-lbaasv2-avi avinetworks.avicontroller-azure avinetworks.avicontroller-vmware
-RUN cd /tmp && wget https://raw.githubusercontent.com/smarunich/avitoolbox/master/files/VMware-ovftool-4.3.0-7948156-lin.x86_64.bundle
-RUN /bin/bash /tmp/VMware-ovftool-4.3.0-7948156-lin.x86_64.bundle --eulas-agreed --required --console
 RUN curl https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip -o terraform_${tf_version}_linux_amd64.zip
 RUN unzip terraform_${tf_version}_linux_amd64.zip -d /usr/local/bin
 RUN mkdir -p $HOME/src/github.com/avinetworks/

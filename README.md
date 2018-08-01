@@ -6,6 +6,7 @@ Description: Container is designated to host all the required migration and veri
 ## Docker image can be consumed using run.sh script under git:avinetworks/avitools/scripts/run.sh
 ```bash
 $ curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/scripts/run.sh
+$ chmod a+x run.sh
 $ ./run.sh --help
 ./run.sh: illegal option -- -
 -v string    specify AVI_VERSION, default value: 18.1.3
