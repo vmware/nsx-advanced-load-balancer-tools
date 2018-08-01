@@ -1,8 +1,8 @@
 FROM avinetworks/avitools-base:bionic
 
 ARG tf_version="0.11.7"
-ARG avi_sdk_version="18.1.3"
-ARG avi_version="18.1.3"
+ARG avi_sdk_version="18.1.2"
+ARG avi_version="18.1.2"
 
 RUN echo $HOME
 
@@ -29,14 +29,14 @@ RUN echo "export GOBIN=$HOME/bin" >> /etc/bash.bashrc
 RUN export PATH=$PATH:/usr/lib/go-1.9/bin:$HOME/bin
 RUN echo "export PATH=$PATH:/usr/lib/go-1.9/bin:$HOME/bin" >> /etc/bash.bashrc
 
-#RUN mkdir -p $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks
-#RUN cd $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks && git clone https://github.com/avinetworks/terraform-provider-avi.git
-#RUN /usr/lib/go-1.9/bin/go get github.com/avinetworks/sdk/go/session
-#RUN export PATH=$PATH:/usr/lib/go-1.9/bin && cd $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks/terraform-provider-avi  && export GOPATH=$HOME && export GOBIN=$HOME/bin && make build
-#RUN mkdir -p $HOME/.terraform.d/plugins/ && ln -s $HOME/bin/terraform-provider-avi ~/.terraform.d/plugins/
-#RUN mkdir -p /opt/terraform
-#RUN cp -r /usr/lib/go-1.9/bin/* /usr/local/bin/
-#RUN cp $HOME/bin/terraform-provider-avi /usr/local/bin/
+RUN mkdir -p $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks
+RUN cd $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks && git clone https://github.com/avinetworks/terraform-provider-avi.git
+RUN /usr/lib/go-1.9/bin/go get github.com/avinetworks/sdk/go/session
+RUN export PATH=$PATH:/usr/lib/go-1.9/bin && cd $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks/terraform-provider-avi  && export GOPATH=$HOME && export GOBIN=$HOME/bin && make build
+RUN mkdir -p $HOME/.terraform.d/plugins/ && ln -s $HOME/bin/terraform-provider-avi ~/.terraform.d/plugins/
+RUN mkdir -p /opt/terraform
+RUN cp -r /usr/lib/go-1.9/bin/* /usr/local/bin/
+RUN cp $HOME/bin/terraform-provider-avi /usr/local/bin/
 RUN touch list
 RUN echo "#!/bin/bash" >> avitools-list
 RUN echo "echo "f5_converter.py"" >> avitools-list
@@ -48,7 +48,7 @@ RUN echo "echo "ace_converter.py"" >> avitools-list
 RUN echo "echo "virtualservice_examples_api.py"" >> avitools-list
 RUN echo "echo "config_patch.py"" >> avitools-list
 RUN echo "echo "vs_filter.py"" >> avitools-list
-#RUN echo "echo "terraform-provider-avi"" >> avitools-list
+RUN echo "echo "terraform-provider-avi"" >> avitools-list
 RUN chmod +x avitools-list
 RUN cp avitools-list /bin/
 RUN cp avitools-list /usr/local/bin/
