@@ -1,8 +1,8 @@
 FROM avinetworks/avitools-base:bionic
 
 ARG tf_version="0.11.7"
-ARG avi_sdk_version="18.1.3"
-ARG avi_version="18.1.3"
+ARG avi_sdk_version
+ARG avi_version
 
 RUN echo $HOME
 
