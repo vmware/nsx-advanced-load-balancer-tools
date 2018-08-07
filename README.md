@@ -7,8 +7,7 @@ Description: Container is designated to host all the required migration and veri
 ```bash
 $ curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/scripts/run.sh
 $ chmod a+x run.sh
-$ ./run.sh --help
-./run.sh: illegal option -- -
+./run.sh
 -v string    specify AVI_VERSION, default value: 18.1.3
 -c string    specify CMD to execute, in this mode container will be created and destroyed on command run, default value: avitools-list
 -d string    specify working directory, where configuration files will exist, default value: /Users/avi
@@ -19,19 +18,19 @@ $ ./run.sh --help
 
 ## To show the commands supported by avitools
 ```
-$ ./run.sh -c avitools-list or ./run.sh or ./run.sh -v 18.1.2 -c avitools-list
+$ ./run.sh -c avitools-list or ./run.sh or ./run.sh -v 18.1.3 -c avitools-list
 ```
-## To show the commands supported by avitools 18.1.2 version of container
+## To show the commands supported by avitools 18.1.3 version of container
 ```
-$ ./run.sh -v 18.1.2 -c avitools-list
+$ ./run.sh -v 18.1.3 -c avitools-list
 ```
 ## How to run commands using run.sh
 ```
 ex. sh run.sh -v <AVI_VERSION> -d <DIR> -c <COMMAND>
 $ ./run.sh -c "f5_converter.py -h"
 $ ./run.sh -c "f5_converter.py -f <filename>"
-$ ./run.sh -v 18.1.2 -d /home/aviuser -c "f5_converter.py -h"
-$ ./run.sh -v 18.1.2 -d /home/aviuser -c "f5_converter.py -f <filename>"
+$ ./run.sh -v 18.1.3 -d /home/aviuser -c "f5_converter.py -h"
+$ ./run.sh -v 18.1.3 -d /home/aviuser -c "f5_converter.py -f <filename>"
 ```
 
 ## To run ansible playbook
@@ -40,7 +39,7 @@ $ ./run.sh "ansible-playbook <playbook-name> -v"
 ```
 ## To run container in background
 ```
-$ ./run.sh -v 18.1.2 -c bash -d /Users/smarunich/workspace -b
+$ ./run.sh -v 18.1.3 -c bash -d /Users/smarunich/workspace -b
 $ docker exec -it avitools bash
 ```
 
@@ -48,7 +47,7 @@ $ docker exec -it avitools bash
 ### Build instructions
 ```
 cd build
-docker build -t avinetworks/avitools:18.1.2 .
+docker build -t avinetworks/avitools:18.1.3 .
 ```
 ### How you can use migrationtools docker image
 First you need to build a docker image
