@@ -39,7 +39,7 @@ $ ./run.sh "ansible-playbook <playbook-name> -v"
 ```
 ## To run container in background
 ```
-$ ./run.sh -v 18.1.3 -c bash -d /Users/smarunich/workspace -b
+$ ./run.sh -v 18.1.3 -c bash -d /home/aviuser/workspace -b
 $ docker exec -it avitools bash
 ```
 
