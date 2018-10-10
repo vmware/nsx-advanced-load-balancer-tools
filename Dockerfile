@@ -7,7 +7,7 @@ ARG avi_version
 RUN echo $HOME
 
 RUN apt-get update
-RUN apt-get install -y git python python-dev python-pip python-virtualenv python-cffi libssl-dev libffi-dev make wget vim unzip golang-1.9-go sshpass curl slowhttptest netcat dnsutils httpie apache2-utils tree jq nmap
+RUN apt-get install -y git python python-dev python-pip python-virtualenv python-cffi libssl-dev libffi-dev make wget vim unzip golang-1.9-go sshpass curl slowhttptest netcat dnsutils httpie apache2-utils tree jq nmap inetutils-ping iproute2
 RUN git config --global http.sslverify false
 
 RUN pip install -U ansible==2.5.2
@@ -21,7 +21,6 @@ RUN mkdir -p $HOME/src/github.com/avinetworks/
 RUN cd $HOME/src/github.com/avinetworks/ && git clone https://github.com/avinetworks/sdk.git && cd sdk && git checkout $avi_version
 
 RUN echo "export ANSIBLE_LIBRARY=$HOME/.ansible/roles/avinetworks.avisdk/library" >> /etc/bash.bashrc
-RUN echo "export PYTHONPATH=$HOME/src/github.com/avinetworks/sdk/python/" >> /etc/bash.bashrc
 RUN export GOROOT=/usr/lib/go-1.9
 RUN echo "export GOROOT=/usr/lib/go-1.9" >> /etc/bash.bashrc
 RUN echo "export GOPATH=$HOME" >> /etc/bash.bashrc
