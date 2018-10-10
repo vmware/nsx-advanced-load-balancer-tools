@@ -7,12 +7,13 @@ Description: Container is designated to host all the required migration and veri
 ```bash
 $ curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/scripts/run.sh
 $ chmod a+x run.sh
-./run.sh
--v string    specify AVI_VERSION, default value: 18.1.3
+./run.sh -h
+-v string    specify AVI_VERSION, default value: 18.1.4
 -c string    specify CMD to execute, in this mode container will be created and destroyed on command run, default value: avitools-list
--d string    specify working directory, where configuration files will exist, default value: /Users/avi
+-d string    specify working directory, where configuration files will exist, default value: /Users/smarunich/GitHub/avitools/scripts/avi
 -u           update docker image, i.e. try to pull docker image again
 -b           run in background, other words create avitools container and retain it, container can be accessible after script execution, for example as "docker exec -it avitools bash", default value: avitools-list
+-n           use host networking instead of docker daemon default network, i.e. docker run --net=host
 ```
 ## Using -v flag you can specify the container version, otherwise default value will be assumed.
 
@@ -41,6 +42,11 @@ $ ./run.sh "ansible-playbook <playbook-name> -v"
 ```
 $ ./run.sh -v 18.1.3 -c bash -d /home/aviuser/workspace -b
 $ docker exec -it avitools bash
+```
+## Docker - "-n" use host networking, supported in both modes (background and foreground/cmd mode).
+```
+$ ./run.sh -v 18.1.4 -n -c bash -d /home/aviuser/workspace -b
+$ ./run.sh -v 18.1.4 -n -d /home/aviuser -c "f5_converter.py -h"
 ```
 
 ## Optional
