@@ -36,7 +36,7 @@ $ ./run.sh -v 18.1.3 -d /home/aviuser -c "f5_converter.py -f <filename>"
 
 ## To run ansible playbook
 ```
-$ ./run.sh "ansible-playbook <playbook-name> -v"
+$ ./run.sh -c "ansible-playbook <playbook-name> -v"
 ```
 ## To run container in background
 ```
