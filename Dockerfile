@@ -7,17 +7,29 @@ ARG avi_version
 RUN echo $HOME
 
 RUN apt-get update
-RUN apt-get install -y git python python-dev python-pip python-virtualenv python-cffi libssl-dev libffi-dev make wget vim unzip golang-1.9-go sshpass curl slowhttptest netcat dnsutils httpie apache2-utils tree jq nmap inetutils-ping iproute2
+RUN apt-get install -y git python python-dev python-pip python-virtualenv \
+python-cffi libssl-dev libffi-dev make wget vim unzip golang-1.9-go sshpass curl slowhttptest netcat dnsutils httpie apache2-utils tree jq nmap inetutils-ping iproute2 apt-transport-https
 RUN git config --global http.sslverify false
 
-RUN pip install -U ansible==2.5.2
+RUN pip install -U ansible==2.6.0
 RUN pip install pyvmomi pytest==3.2.5 pyyaml==3.12 requests==2.18.4 requests-toolbelt==0.8.0 pyparsing==2.2.0 paramiko==2.4.1 pycrypto==2.6.1 ecdsa==0.13 pyOpenssl==17.5.0 nose-html-reporting==0.2.3 nose-testconfig==0.10 ConfigParser==3.5.0 xlsxwriter jinja2==2.10 pandas==0.21.0 openpyxl==2.4.9 appdirs==1.4.3 pexpect==4.3.0 xlrd==1.1.0 unittest2==1.1.0 networkx==2.0 vcrpy==1.11.1 pytest-cov==2.5.1 pytest-xdist==1.22.0 flask==0.12.2 bigsuds f5-sdk netaddr jsondiff
 
 RUN pip install avisdk==${avi_sdk_version} avimigrationtools==${avi_sdk_version}
-RUN ansible-galaxy -c install avinetworks.aviconfig avinetworks.avicontroller avinetworks.avicontroller-azure avinetworks.avicontroller-csp avinetworks.avicontroller-vmware avinetworks.avisdk avinetworks.avise  avinetworks.avise-csp avinetworks.docker avinetworks.network_interface
+RUN ansible-galaxy -c install avinetworks.aviconfig avinetworks.avicontroller avinetworks.avicontroller-azure avinetworks.avicontroller-csp avinetworks.avicontroller-vmware avinetworks.avisdk avinetworks.avise  avinetworks.avise-csp avinetworks.docker avinetworks.network_interface avinetworks.avimigrationtools
 RUN curl https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip -o terraform_${tf_version}_linux_amd64.zip
 RUN unzip terraform_${tf_version}_linux_amd64.zip -d /usr/local/bin
 RUN mkdir -p $HOME/src/github.com/avinetworks/
+
+RUN wget https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-server-v3.11.0-0cbc58b-linux-64bit.tar.gz
+RUN tar xsvf openshift-origin-server-v3.11.0-0cbc58b-linux-64bit.tar.gz
+RUN cp ./openshift-origin-server-v3.11.0-0cbc58b-linux-64bit/oc /usr/local/bin
+RUN chmod +x /usr/local/bin/oc
+
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+RUN touch /etc/apt/sources.list.d/kubernetes.list
+RUN echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
+RUN apt-get update
+RUN apt-get install -y kubectl
 RUN cd $HOME/src/github.com/avinetworks/ && git clone https://github.com/avinetworks/sdk.git && cd sdk && git checkout $avi_version
 
 RUN echo "export ANSIBLE_LIBRARY=$HOME/.ansible/roles/avinetworks.avisdk/library" >> /etc/bash.bashrc
