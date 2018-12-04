@@ -15,7 +15,7 @@ RUN pip install -U ansible==2.6.0
 RUN pip install pyvmomi pytest==3.2.5 pyyaml==3.12 requests==2.18.4 requests-toolbelt==0.8.0 pyparsing==2.2.0 paramiko==2.4.1 pycrypto==2.6.1 ecdsa==0.13 pyOpenssl==17.5.0 nose-html-reporting==0.2.3 nose-testconfig==0.10 ConfigParser==3.5.0 xlsxwriter jinja2==2.10 pandas==0.21.0 openpyxl==2.4.9 appdirs==1.4.3 pexpect==4.3.0 xlrd==1.1.0 unittest2==1.1.0 networkx==2.0 vcrpy==1.11.1 pytest-cov==2.5.1 pytest-xdist==1.22.0 flask==0.12.2 bigsuds f5-sdk netaddr jsondiff
 
 RUN pip install avisdk==${avi_sdk_version} avimigrationtools==${avi_sdk_version}
-RUN ansible-galaxy -c install avinetworks.aviconfig avinetworks.avicontroller avinetworks.avicontroller-azure avinetworks.avicontroller_csp avinetworks.avicontroller-vmware avinetworks.avisdk avinetworks.avise  avinetworks.avise_csp avinetworks.docker avinetworks.network_interface avinetworks.avimigrationtools
+RUN ansible-galaxy -c install avinetworks.aviconfig avinetworks.avicontroller avinetworks.avicontroller-azure avinetworks.avicontroller_csp avinetworks.avicontroller_vmware avinetworks.avisdk avinetworks.avise  avinetworks.avise_csp avinetworks.docker avinetworks.network_interface avinetworks.avimigrationtools
 RUN curl https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip -o terraform_${tf_version}_linux_amd64.zip
 RUN unzip terraform_${tf_version}_linux_amd64.zip -d /usr/local/bin
 RUN mkdir -p $HOME/src/github.com/avinetworks/
