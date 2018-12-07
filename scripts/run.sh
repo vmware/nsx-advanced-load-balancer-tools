@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 {
-    AVI_VERSION=18.1.4
+    AVI_VERSION=18.1.5
     CMD=avitools-list
     DIR=$(pwd)/avi
     # Use Docker Daemon Default network
