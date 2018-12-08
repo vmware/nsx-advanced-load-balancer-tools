@@ -8,7 +8,7 @@ RUN echo $HOME
 
 RUN apt-get update
 RUN apt-get install -y git python python-dev python-pip python-virtualenv \
-python-cffi libssl-dev libffi-dev make wget vim unzip golang-1.9-go sshpass curl slowhttptest netcat dnsutils httpie apache2-utils tree jq nmap inetutils-ping iproute2 apt-transport-https tree lua5.3
+python-cffi libssl-dev libffi-dev make wget vim unzip golang-1.9-go sshpass curl slowhttptest netcat dnsutils httpie apache2-utils tree jq nmap inetutils-ping iproute2 apt-transport-https lua5.3
 RUN git config --global http.sslverify false
 
 RUN pip install -U ansible==2.6.0
