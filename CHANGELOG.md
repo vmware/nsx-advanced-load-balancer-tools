@@ -1,11 +1,10 @@
 # Changelog
-## 17.2.15 (11/02/2019)
+## 17.2.15 / 18.2.2b2 (11/02/2019)
 - avisdk & ansible roles version refresh
 - Added openstacksdk
 - Added awscli
 - Added azure-cli
 
-# Changelog
 ## 17.2.14 / 18.2.1 (22/12/2018)
 #### Enhancements:
 - avisdk version refresh
