@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y \
 
 RUN git config --global http.sslverify false
 
-RUN pip install -U ansible==2.6.0 && pip install appdirs==1.4.3 \
+RUN pip install -U ansible==2.6.13 && pip install appdirs==1.4.3 \
     aws-google-auth \
     awscli \
     azure-cli \
