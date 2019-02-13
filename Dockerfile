@@ -86,7 +86,8 @@ RUN ansible-galaxy -c install avinetworks.aviconfig \
     avinetworks.avise_csp \
     avinetworks.docker \
     avinetworks.network_interface \
-    avinetworks.avimigrationtools
+    avinetworks.avimigrationtools \
+    avinetworks.avise_vmware
 
 RUN pip install git+https://github.com/openshift/openshift-restclient-python.git
 
