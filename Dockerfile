@@ -4,6 +4,8 @@ ARG tf_version="0.11.10"
 ARG avi_sdk_version
 ARG avi_version
 
+ENV ANSIBLE_FORCE_COLOR True
+
 RUN echo $HOME
 
 RUN apt-get update && apt-get install -y \
