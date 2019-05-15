@@ -6,6 +6,9 @@ ARG avi_version
 
 ENV ANSIBLE_FORCE_COLOR True
 
+RUN echo '"\e[A":history-search-backward' >> /root/.inputrc
+RUN echo '"\e[B":history-search-forward' >> /root/.inputrc
+
 RUN echo $HOME
 
 RUN apt-get update && apt-get install -y \
