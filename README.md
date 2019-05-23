@@ -1,6 +1,9 @@
 # Overview
 ## avinetworks/avitools docker image
-Description: Container is designated to host all the required migration and verification tools needed in the field for successful customer migration. Please refer for the Dockerfile for the list of included tools.
+Container is designated to host all the required migration and verification tools needed in the field for successful customer migration. Please refer for the Dockerfile for the list of included tools.
+
+# docker pull avinetworks/avitools:$VERSION
+There is no latest tag, please use the version specific pull, for example: avinetworks/avitools:18.2.3
 
 # Usage
 ## Docker image can be consumed using run.sh script under git:avinetworks/avitools/scripts/run.sh
