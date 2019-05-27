@@ -1,15 +1,19 @@
-FROM avinetworks/avitools-base:bionic
+FROM avinetworks/avitools-base:bionic-20190515
 
-ARG tf_version="0.11.10"
+ARG tf_version="0.11.14"
 ARG avi_sdk_version
 ARG avi_version
 
-ENV ANSIBLE_FORCE_COLOR True
-
-RUN echo '"\e[A":history-search-backward' >> /root/.inputrc
-RUN echo '"\e[B":history-search-forward' >> /root/.inputrc
-
-RUN echo $HOME
+RUN echo "export ANSIBLE_LIBRARY=$HOME/.ansible/roles/avinetworks.avisdk/library" >> /etc/bash.bashrc && \
+    export GOROOT=/usr/lib/go && \
+    echo "export GOROOT=/usr/lib/go" >> /etc/bash.bashrc && \
+    echo "export GOPATH=$HOME" >> /etc/bash.bashrc && \
+    echo "export GOBIN=$HOME/bin" >> /etc/bash.bashrc && \
+    echo "export ANSIBLE_FORCE_COLOR=True" >> /etc/bash.bashrc && \
+    export PATH=$PATH:/usr/lib/go/bin:$HOME/bin && \
+    echo "export PATH=$PATH:/usr/lib/go/bin:$HOME/bin:/opt/avi/scripts" >> /etc/bash.bashrc && \
+    echo '"\e[A":history-search-backward' >> /root/.inputrc && \
+    echo '"\e[B":history-search-forward' >> /root/.inputrc
 
 RUN apt-get update && apt-get install -y \
     apache2-utils \
@@ -17,7 +21,6 @@ RUN apt-get update && apt-get install -y \
     curl \
     dnsutils \
     git \
-    golang-1.9-go \
     httpie \
     inetutils-ping \
     iproute2 \
@@ -37,11 +40,8 @@ RUN apt-get update && apt-get install -y \
     sshpass \
     tree \
     unzip \
-    vim
-
-RUN git config --global http.sslverify false
-
-RUN pip install -U ansible==2.6.13 && pip install appdirs==1.4.3 \
+    vim && \
+    pip install -U ansible==2.6.17 && pip install appdirs==1.4.3 \
     aws-google-auth \
     awscli \
     azure-cli \
@@ -76,12 +76,10 @@ RUN pip install -U ansible==2.6.13 && pip install appdirs==1.4.3 \
     unittest2==1.1.0 \
     vcrpy==1.11.1 \
     xlrd==1.1.0 \
-    xlsxwriter
-
-RUN pip install avisdk==${avi_sdk_version} avimigrationtools==${avi_sdk_version}
-RUN pip install /tmp/avi_shell.tar.gz
-
-RUN ansible-galaxy -c install avinetworks.aviconfig \
+    xlsxwriter \
+    avisdk==${avi_sdk_version} \
+    avimigrationtools==${avi_sdk_version} && \
+    ansible-galaxy -c install avinetworks.aviconfig \
     avinetworks.avicontroller \
     avinetworks.avicontroller-azure \
     avinetworks.avicontroller_csp \
@@ -94,47 +92,49 @@ RUN ansible-galaxy -c install avinetworks.aviconfig \
     avinetworks.avimigrationtools \
     avinetworks.avise_vmware
 
-RUN pip install git+https://github.com/openshift/openshift-restclient-python.git
-
-RUN curl -L https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz -o openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz && \
+RUN pip install git+https://github.com/openshift/openshift-restclient-python.git && \
+    curl -L https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz -o openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz && \
     tar xzvf openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz && \
     chmod +x ./openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit/oc && \
     mv openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit/oc /usr/local/bin/oc && \
     rm -rf openshift-origin-client-tools*
 
+RUN curl -O https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz && \
+    tar zxvf go1.12.5.linux-amd64.tar.gz && \
+    mv go /usr/lib && \
+    rm go1.12.5.linux-amd64.tar.gz
+
 RUN curl https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip -o terraform_${tf_version}_linux_amd64.zip &&  \
     unzip terraform_${tf_version}_linux_amd64.zip -d /usr/local/bin && \
     rm -rf terraform_${tf_version}_linux_amd64.zip
 
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-RUN touch /etc/apt/sources.list.d/kubernetes.list && \
-    echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
-RUN apt-get update && apt-get install -y kubectl
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    touch /etc/apt/sources.list.d/kubernetes.list && \
+    echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
+    apt-get update && apt-get install -y kubectl
 
-RUN echo "export ANSIBLE_LIBRARY=$HOME/.ansible/roles/avinetworks.avisdk/library" >> /etc/bash.bashrc && \
-    export GOROOT=/usr/lib/go-1.9 && \
-    echo "export GOROOT=/usr/lib/go-1.9" >> /etc/bash.bashrc && \
-    echo "export GOPATH=$HOME" >> /etc/bash.bashrc && \
-    echo "export GOBIN=$HOME/bin" >> /etc/bash.bashrc && \
-    export PATH=$PATH:/usr/lib/go-1.9/bin:$HOME/bin && \
-    echo "export PATH=$PATH:/usr/lib/go-1.9/bin:$HOME/bin" >> /etc/bash.bashrc
-
-RUN mkdir -p $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks && \
+RUN git config --global http.sslverify false && \
+    mkdir -p $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks && \
     cd $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks && \
-    git clone https://github.com/avinetworks/terraform-provider-avi.git
-RUN /usr/lib/go-1.9/bin/go get github.com/avinetworks/sdk/go/session
-RUN export PATH=$PATH:/usr/lib/go-1.9/bin && \
+    git clone https://github.com/avinetworks/terraform-provider-avi.git &&  /usr/lib/go/bin/go get github.com/avinetworks/sdk/go/session
+RUN export PATH=$PATH:/usr/lib/go/bin && \
     cd $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks/terraform-provider-avi  && \
     export GOPATH=$HOME && \
     export GOBIN=$HOME/bin && \
     make build
-RUN mkdir -p $HOME/.terraform.d/plugins/ && ln -s $HOME/bin/terraform-provider-avi ~/.terraform.d/plugins/
-RUN mkdir -p /opt/terraform
-RUN cp -r /usr/lib/go-1.9/bin/* /usr/local/bin/
-RUN cp $HOME/bin/terraform-provider-avi /usr/local/bin/
+RUN mkdir -p $HOME/.terraform.d/plugins/ && ln -s $HOME/bin/terraform-provider-avi ~/.terraform.d/plugins/ && \
+    mkdir -p /opt/terraform && \
+    cp -r /usr/lib/go/bin/* /usr/local/bin/ && \
+    cp $HOME/bin/terraform-provider-avi /usr/local/bin/
+
+RUN cd $HOME && \
+    git clone https://github.com/avinetworks/avitools && \
+    mkdir -p /opt/avi/scripts && \
+    cp -r avitools/scripts/* /opt/avi/scripts && \
+    rm -rf $HOME/avitools
 
 RUN touch list && \
-    echo "#!/bin/bash" >> avitools-list && \
+    echo '#!/bin/bash' > avitools-list && \
     echo "echo "f5_converter.py"" >> avitools-list && \
     echo "echo "netscaler_converter.py"" >> avitools-list && \
     echo "echo "gss_convertor.py"" >> avitools-list && \
@@ -144,11 +144,13 @@ RUN touch list && \
     echo "echo "virtualservice_examples_api.py"" >> avitools-list && \
     echo "echo "config_patch.py"" >> avitools-list && \
     echo "echo "vs_filter.py"" >> avitools-list && \
-    echo "echo "terraform-provider-avi"" >> avitools-list && \
-    chmod +x avitools-list && \
-    cp avitools-list /bin/ && \
+    echo "echo "terraform-provider-avi"" >> avitools-list
+
+RUN for script in $(ls /opt/avi/scripts); do echo $script >> avitools-list; done;
+
+RUN chmod +x avitools-list && \
     cp avitools-list /usr/local/bin/ && \
-    echo "alias avitools-list=/bin/avitools-list" >> ~/.bashrc
+    echo "alias avitools-list=/usr/local/bin/avitools-list" >> ~/.bashrc
 
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* $HOME/.cache $HOME/go/src $HOME/src

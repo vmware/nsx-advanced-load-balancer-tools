@@ -2,8 +2,8 @@
 
 ## 18.2.4b1  (27/05/2019)
 - go upgraded to 1.12.5 
-- Terraform upgraded to 0.12.0
-- Ansible upgraded to 2.8.0
+- Terraform upgraded to 0.11.14
+- Ansible upgraded to 2.6.17
 - Added /opt/avi/scripts folder, updates to avitools-list
 
 ## 18.2.3 / 17.2.16 (02/05/2019)
