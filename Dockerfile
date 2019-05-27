@@ -129,8 +129,8 @@ RUN mkdir -p $HOME/.terraform.d/plugins/ && ln -s $HOME/bin/terraform-provider-a
 
 RUN cd $HOME && \
     git clone https://github.com/avinetworks/avitools && \
-    mkdir -p /opt/avi/scripts && \
-    cp -r avitools/scripts/* /opt/avi/scripts && \
+    mkdir -p /opt/scripts && \
+    cp -r avitools/scripts/* /opt/scripts && \
     rm -rf $HOME/avitools
 
 RUN touch list && \
@@ -146,7 +146,7 @@ RUN touch list && \
     echo "echo "vs_filter.py"" >> avitools-list && \
     echo "echo "terraform-provider-avi"" >> avitools-list
 
-RUN for script in $(ls /opt/avi/scripts); do echo $script >> avitools-list; done;
+RUN for script in $(ls /opt/scripts); do echo $script >> avitools-list; done;
 
 RUN chmod +x avitools-list && \
     cp avitools-list /usr/local/bin/ && \
