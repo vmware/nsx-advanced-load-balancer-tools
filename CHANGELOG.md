@@ -1,4 +1,14 @@
 # Changelog
+
+## 18.2.4b1 
+- go upgraded to 1.12.5 
+- Terraform upgraded to 0.12.0
+- Ansible upgraded to 2.8.0
+- Added /opt/avi/scripts folder, updates to avitools-list
+
+## 18.2.3 / 17.2.16
+- avisdk version refresh
+
 ## 17.2.15 / 18.2.2b2 (11/02/2019)
 - avisdk & ansible roles version refresh
 - Added openstacksdk
