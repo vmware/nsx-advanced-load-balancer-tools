@@ -6,9 +6,9 @@ Container is designated to host all the required migration and verification tool
 There is no latest tag, please use the version specific pull, for example: avinetworks/avitools:18.2.3
 
 # Usage
-## Docker image can be consumed using run.sh script under git:avinetworks/avitools/scripts/run.sh
+## Docker image can be consumed using run.sh script under git:avinetworks/avitools/run.sh
 ```bash
-$ curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/scripts/run.sh
+$ curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/run.sh
 $ chmod a+x run.sh
 ./run.sh -h
 -v string    specify AVI_VERSION, default value: 18.2.3
