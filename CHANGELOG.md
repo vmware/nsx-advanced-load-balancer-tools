@@ -1,6 +1,6 @@
 # Changelog
 
-## 18.2.4b1  (27/05/2019)
+## 18.2.3.post1 / 18.2.4b1  (27/05/2019)
 - go upgraded to 1.12.5 
 - Terraform upgraded to 0.11.14
 - Ansible upgraded to 2.6.17
