@@ -44,7 +44,6 @@ RUN apt-get update && apt-get install -y \
     pip install -U ansible==2.6.17 && pip install appdirs==1.4.3 \
     aws-google-auth \
     awscli \
-    azure-cli \
     bigsuds \
     ConfigParser==3.5.0 \
     ecdsa==0.13 \
@@ -92,12 +91,9 @@ RUN apt-get update && apt-get install -y \
     avinetworks.avimigrationtools \
     avinetworks.avise_vmware
 
-RUN pip install git+https://github.com/openshift/openshift-restclient-python.git && \
-    curl -L https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz -o openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz && \
-    tar xzvf openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz && \
-    chmod +x ./openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit/oc && \
-    mv openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit/oc /usr/local/bin/oc && \
-    rm -rf openshift-origin-client-tools*
+RUN pip install git+https://github.com/openshift/openshift-restclient-python.git 
+
+RUN curl -L https://aka.ms/InstallAzureCli | bash
 
 RUN curl -O https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz && \
     tar zxvf go1.12.5.linux-amd64.tar.gz && \
