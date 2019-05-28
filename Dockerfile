@@ -78,6 +78,7 @@ RUN apt-get update && apt-get install -y \
     vcrpy==1.11.1 \
     xlrd==1.1.0 \
     xlsxwriter \
+    urllib3==1.23 \
     avisdk==${avi_sdk_version} \
     avimigrationtools==${avi_sdk_version} && \
     ansible-galaxy -c install avinetworks.aviconfig \
