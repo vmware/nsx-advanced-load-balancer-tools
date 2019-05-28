@@ -18,6 +18,8 @@ RUN echo "export ANSIBLE_LIBRARY=$HOME/.ansible/roles/avinetworks.avisdk/library
 RUN apt-get update && apt-get install -y \
     apache2-utils \
     apt-transport-https \
+    lsb-release \
+    gnupg \
     curl \
     dnsutils \
     git \
@@ -91,9 +93,13 @@ RUN apt-get update && apt-get install -y \
     avinetworks.avimigrationtools \
     avinetworks.avise_vmware
 
-RUN pip install git+https://github.com/openshift/openshift-restclient-python.git 
+RUN pip install git+https://github.com/openshift/openshift-restclient-python.git
 
-RUN curl -L https://aka.ms/InstallAzureCli | bash
+RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc |   gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg && \
+    AZ_REPO=$(lsb_release -cs) && \
+    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list && \
+    apt-get update && \
+    apt-get install -y azure-cli
 
 RUN curl -O https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz && \
     tar zxvf go1.12.5.linux-amd64.tar.gz && \
