@@ -104,6 +104,7 @@ RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc |   gpg --dearmor
 
 RUN curl -O https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz && \
     tar zxvf go1.12.5.linux-amd64.tar.gz && \
+    rm -rf go/src && \
     mv go /usr/lib && \
     rm go1.12.5.linux-amd64.tar.gz
 
