@@ -1,7 +1,7 @@
 # Changelog
 
 ## 18.2.4  (04/06/2019)
-- Terraform upgraded to 0.12.0
+- Terraform upgraded to 0.12.1
 - Ansible upgraded to 2.8.0
 
 ## 18.2.3.post1 / 18.2.4b1  (27/05/2019)
