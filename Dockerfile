@@ -1,6 +1,6 @@
 FROM avinetworks/avitools-base:bionic-20190515
 
-ARG tf_version="0.12.0"
+ARG tf_version="0.12.1"
 ARG avi_sdk_version
 ARG avi_version
 
