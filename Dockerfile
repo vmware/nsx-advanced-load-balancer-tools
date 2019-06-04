@@ -1,6 +1,6 @@
 FROM avinetworks/avitools-base:bionic-20190515
 
-ARG tf_version="0.11.14"
+ARG tf_version="0.12.0"
 ARG avi_sdk_version
 ARG avi_version
 
@@ -43,7 +43,7 @@ RUN apt-get update && apt-get install -y \
     tree \
     unzip \
     vim && \
-    pip install -U ansible==2.6.17 && pip install appdirs==1.4.3 \
+    pip install -U ansible==2.8.0 && pip install appdirs==1.4.3 \
     aws-google-auth \
     awscli \
     bigsuds \
