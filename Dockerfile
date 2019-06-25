@@ -1,6 +1,6 @@
 FROM avinetworks/avitools-base:bionic-20190515
 
-ARG tf_version="0.12.1"
+ARG tf_version="0.12.3"
 ARG avi_sdk_version
 ARG avi_version
 
@@ -27,6 +27,7 @@ RUN apt-get update && apt-get install -y \
     inetutils-ping \
     iproute2 \
     jq \
+    yq \
     libffi-dev \
     libssl-dev \
     lua5.3 \
