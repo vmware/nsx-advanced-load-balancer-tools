@@ -1,6 +1,6 @@
 FROM avinetworks/avitools-base:bionic-20190515
 
-ARG tf_version="0.12.3"
+ARG tf_version="0.12.5"
 ARG avi_sdk_version
 ARG avi_version
 
@@ -117,20 +117,6 @@ RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add 
     echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
     apt-get update && apt-get install -y kubectl
 
-RUN git config --global http.sslverify false && \
-    mkdir -p $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks && \
-    cd $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks && \
-    git clone https://github.com/avinetworks/terraform-provider-avi.git &&  /usr/lib/go/bin/go get github.com/avinetworks/sdk/go/session
-RUN export PATH=$PATH:/usr/lib/go/bin && \
-    cd $HOME/src/github.com/hashicorp/terraform-provider-avi/vendor/github.com/avinetworks/terraform-provider-avi  && \
-    export GOPATH=$HOME && \
-    export GOBIN=$HOME/bin && \
-    make build
-RUN mkdir -p $HOME/.terraform.d/plugins/ && ln -s $HOME/bin/terraform-provider-avi ~/.terraform.d/plugins/ && \
-    mkdir -p /opt/terraform && \
-    cp -r /usr/lib/go/bin/* /usr/local/bin/ && \
-    cp $HOME/bin/terraform-provider-avi /usr/local/bin/
-
 RUN cd $HOME && \
     git clone https://github.com/avinetworks/avitools && \
     mkdir -p /opt/scripts && \
@@ -147,8 +133,7 @@ RUN touch list && \
     echo "echo "ace_converter.py"" >> avitools-list && \
     echo "echo "virtualservice_examples_api.py"" >> avitools-list && \
     echo "echo "config_patch.py"" >> avitools-list && \
-    echo "echo "vs_filter.py"" >> avitools-list && \
-    echo "echo "terraform-provider-avi"" >> avitools-list
+    echo "echo "vs_filter.py"" >> avitools-list
 
 RUN for script in $(ls /opt/scripts); do echo $script >> avitools-list; done;
 
