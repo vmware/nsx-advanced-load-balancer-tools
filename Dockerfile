@@ -26,8 +26,6 @@ RUN apt-get update && apt-get install -y \
     httpie \
     inetutils-ping \
     iproute2 \
-    jq \
-    yq \
     libffi-dev \
     libssl-dev \
     lua5.3 \
@@ -43,8 +41,10 @@ RUN apt-get update && apt-get install -y \
     sshpass \
     tree \
     unzip \
+    jq \
     vim && \
-    pip install -U ansible==2.8.0 && pip install appdirs==1.4.3 \
+    pip install -U ansible==2.8.3 \
+    appdirs==1.4.3 \
     aws-google-auth \
     awscli \
     bigsuds \
@@ -60,7 +60,6 @@ RUN apt-get update && apt-get install -y \
     nose-html-reporting==0.2.3 \
     nose-testconfig==0.10 \
     openpyxl==2.4.9 \
-    openshift \
     openstacksdk \
     pandas==0.21.0 \
     paramiko==2.4.1 \
@@ -80,6 +79,7 @@ RUN apt-get update && apt-get install -y \
     xlrd==1.1.0 \
     xlsxwriter \
     urllib3==1.23 \
+    yq \
     avisdk==${avi_sdk_version} \
     avimigrationtools==${avi_sdk_version} && \
     ansible-galaxy -c install avinetworks.aviconfig \
@@ -95,18 +95,11 @@ RUN apt-get update && apt-get install -y \
     avinetworks.avimigrationtools \
     avinetworks.avise_vmware
 
-RUN pip install git+https://github.com/openshift/openshift-restclient-python.git
-
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc |   gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg && \
     AZ_REPO=$(lsb_release -cs) && \
     echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list && \
     apt-get update && \
     apt-get install -y azure-cli
-
-RUN curl -O https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz && \
-    tar zxvf go1.12.5.linux-amd64.tar.gz && \
-    mv go /usr/lib && \
-    rm go1.12.5.linux-amd64.tar.gz
 
 RUN curl https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip -o terraform_${tf_version}_linux_amd64.zip &&  \
     unzip terraform_${tf_version}_linux_amd64.zip -d /usr/local/bin && \
