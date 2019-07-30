@@ -71,7 +71,7 @@ RUN apt-get update && apt-get install -y \
     pytest-xdist==1.22.0 \
     pytest==3.2.5 \
     pyvmomi \
-    pyyaml==3.12 \
+    pyyaml \
     requests-toolbelt==0.8.0 \
     requests==2.18.4 \
     unittest2==1.1.0 \
