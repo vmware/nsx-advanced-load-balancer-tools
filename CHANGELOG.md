@@ -1,7 +1,9 @@
 # Changelog
 
-## 18.2.5  (03/06/2019)
+## 18.2.5  (30/07/2019)
 - avisdk version refresh
+- openshift, golang src removed
+- terraform avi from src removed
 
 ## 18.2.4  (04/06/2019)
 - Terraform upgraded to 0.12.1
