@@ -1,5 +1,8 @@
 # Changelog
 
+## 18.2.5  (03/06/2019)
+- avisdk version refresh
+
 ## 18.2.4  (04/06/2019)
 - Terraform upgraded to 0.12.1
 - Ansible upgraded to 2.8.0
