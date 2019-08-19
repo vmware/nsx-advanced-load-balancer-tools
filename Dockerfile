@@ -1,6 +1,6 @@
 FROM avinetworks/avitools-base:bionic-20190515
 
-ARG tf_version="0.12.5"
+ARG tf_version="0.12.6"
 ARG avi_sdk_version
 ARG avi_version
 
@@ -43,7 +43,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     jq \
     vim && \
-    pip install -U ansible==2.8.3 \
+    pip install -U ansible==2.8.4 \
     appdirs==1.4.3 \
     aws-google-auth \
     awscli \
@@ -79,6 +79,7 @@ RUN apt-get update && apt-get install -y \
     xlrd==1.1.0 \
     xlsxwriter \
     urllib3==1.23 \
+    hvac \
     yq \
     avisdk==${avi_sdk_version} \
     avimigrationtools==${avi_sdk_version} && \
