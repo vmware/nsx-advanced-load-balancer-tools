@@ -1,17 +1,17 @@
 FROM avinetworks/avitools-base:bionic-20190515
 
-ARG tf_version="0.12.6"
+ARG tf_version="0.12.10"
 ARG avi_sdk_version
 ARG avi_version
 
-RUN echo "export ANSIBLE_LIBRARY=$HOME/.ansible/roles/avinetworks.avisdk/library" >> /etc/bash.bashrc && \
-    export GOROOT=/usr/lib/go && \
+RUN echo "export GOROOT=/usr/lib/go" >> /etc/bash.bashrc && \
+    echo "export TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache"  >> /etc/bash.bashrc && \
     echo "export GOROOT=/usr/lib/go" >> /etc/bash.bashrc && \
     echo "export GOPATH=$HOME" >> /etc/bash.bashrc && \
     echo "export GOBIN=$HOME/bin" >> /etc/bash.bashrc && \
     echo "export ANSIBLE_FORCE_COLOR=True" >> /etc/bash.bashrc && \
-    export PATH=$PATH:/usr/lib/go/bin:$HOME/bin && \
-    echo "export PATH=$PATH:/usr/lib/go/bin:$HOME/bin:/opt/avi/scripts" >> /etc/bash.bashrc && \
+    export PATH=$PATH:/usr/lib/go/bin:$HOME/bin:/avi/scripts && \
+    echo "export PATH=$PATH:/usr/lib/go/bin:$HOME/bin:/avi/scripts" >> /etc/bash.bashrc && \
     echo '"\e[A":history-search-backward' >> /root/.inputrc && \
     echo '"\e[B":history-search-forward' >> /root/.inputrc
 
@@ -43,7 +43,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     jq \
     vim && \
-    pip install -U ansible==2.8.4 \
+    pip install -U ansible==2.8.5 \
     appdirs==1.4.3 \
     aws-google-auth \
     awscli \
@@ -117,10 +117,17 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.c
     add - && apt-get update -y && apt-get install google-cloud-sdk -y
 
 RUN cd $HOME && \
+    git clone https://github.com/avinetworks/devops && \
+    git clone https://github.com/avinetworks/terraform-provider-avi && \
     git clone https://github.com/avinetworks/avitools && \
-    mkdir -p /opt/scripts && \
-    cp -r avitools/scripts/* /opt/scripts && \
-    rm -rf $HOME/avitools
+    mkdir -p /avi/scripts && \
+    cp -r avitools/scripts/* /avi/scripts && \
+    rm -rf $HOME/avitools && \
+    mkdir $HOME/.terraform.d/ && \
+    mkdir $HOME/.terraform.d/plugin-cache && \
+    cd ~/terraform-provider-avi/examples/aws/avi_app && \
+    export TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache && \
+    terraform init
 
 RUN touch list && \
     echo '#!/bin/bash' > avitools-list && \
@@ -134,7 +141,7 @@ RUN touch list && \
     echo "echo "config_patch.py"" >> avitools-list && \
     echo "echo "vs_filter.py"" >> avitools-list
 
-RUN for script in $(ls /opt/scripts); do echo $script >> avitools-list; done;
+RUN for script in $(ls /avi/scripts); do echo "echo $script" >> avitools-list; done;
 
 RUN chmod +x avitools-list && \
     cp avitools-list /usr/local/bin/ && \
