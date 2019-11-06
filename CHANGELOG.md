@@ -1,5 +1,11 @@
 # Changelog
 
+## 18.2.6  (06/11/2019)
+- avisdk version refresh
+- python3 libraries
+- terraform version upgrade to 0.12.13
+- ansible version upgrade to 2.8.6
+
 ## 18.2.5  (30/07/2019)
 - avisdk version refresh
 - openshift, golang src removed
@@ -10,7 +16,7 @@
 - Ansible upgraded to 2.8.0
 
 ## 18.2.3.post1 / 18.2.4b1  (27/05/2019)
-- go upgraded to 1.12.5 
+- go upgraded to 1.12.5
 - Terraform upgraded to 0.11.14
 - Ansible upgraded to 2.6.17
 - Added /opt/avi/scripts folder, updates to avitools-list
