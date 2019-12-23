@@ -102,7 +102,7 @@ RUN apt-get update && apt-get install -y \
     yq \
     avisdk==${avi_sdk_version} \
     avimigrationtools==${avi_sdk_version} && \
-    ansible-galaxy -c install avinetworks.aviconfig \
+    ansible-galaxy install -c avinetworks.aviconfig \
     avinetworks.avicontroller \
     avinetworks.avicontroller-azure \
     avinetworks.avicontroller_csp \
