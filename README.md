@@ -3,7 +3,7 @@
 The container is designated to host all the required migration and verification tools needed in the field. Please refer for the Dockerfile for the list of included tools.
 
 # docker pull avinetworks/avitools:$VERSION
-There is no latest tag, please use the version specific pull, for example: avinetworks/avitools:18.2.6
+There is no latest tag, please use the version specific pull, for example: avinetworks/avitools:18.2.7
 
 # Usage
 ## Docker image can be consumed using run.sh script under git:avinetworks/avitools/run.sh
@@ -11,7 +11,7 @@ There is no latest tag, please use the version specific pull, for example: avine
 $ curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/run.sh
 $ chmod a+x run.sh
 ./run.sh -h
--v string    specify AVI_VERSION, default value: 18.2.6
+-v string    specify AVI_VERSION, default value: 18.2.7
 -c string    specify CMD to execute, in this mode container will be created and destroyed on command run, default value: avitools-list
 -d string    specify working directory, where configuration files will exist, default value: /Users/smarunich/GitHub/avitools/scripts/avi
 -u           update docker image, i.e. try to pull docker image again
@@ -22,19 +22,19 @@ $ chmod a+x run.sh
 
 ## To show the commands supported by avitools
 ```
-$ ./run.sh -c avitools-list or ./run.sh or ./run.sh -v 18.2.6 -c avitools-list
+$ ./run.sh -c avitools-list or ./run.sh or ./run.sh -v 18.2.7 -c avitools-list
 ```
-## To show the commands supported by avitools 18.2.6 version of container
+## To show the commands supported by avitools 18.2.7 version of container
 ```
-$ ./run.sh -v 18.2.6 -c avitools-list
+$ ./run.sh -v 18.2.7 -c avitools-list
 ```
 ## How to run commands using run.sh
 ```
 ex. sh run.sh -v <AVI_VERSION> -d <DIR> -c <COMMAND>
 $ ./run.sh -c "f5_converter.py -h"
 $ ./run.sh -c "f5_converter.py -f <filename>"
-$ ./run.sh -v 18.2.6 -d /home/aviuser -c "f5_converter.py -h"
-$ ./run.sh -v 18.2.6 -d /home/aviuser -c "f5_converter.py -f <filename>"
+$ ./run.sh -v 18.2.7 -d /home/aviuser -c "f5_converter.py -h"
+$ ./run.sh -v 18.2.7 -d /home/aviuser -c "f5_converter.py -f <filename>"
 ```
 
 ## To run ansible playbook
@@ -43,20 +43,20 @@ $ ./run.sh -c "ansible-playbook <playbook-name> -v"
 ```
 ## To run container in background
 ```
-$ ./run.sh -v 18.2.6 -c bash -d /home/aviuser/workspace -b
+$ ./run.sh -v 18.2.7 -c bash -d /home/aviuser/workspace -b
 $ docker exec -it avitools bash
 ```
 ## Docker - "-n" use host networking, supported in both modes (background and foreground/cmd mode).
 ```
-$ ./run.sh -v 18.2.6 -n -c bash -d /home/aviuser/workspace -b
-$ ./run.sh -v 18.2.6 -n -d /home/aviuser -c "f5_converter.py -h"
+$ ./run.sh -v 18.2.7 -n -c bash -d /home/aviuser/workspace -b
+$ ./run.sh -v 18.2.7 -n -d /home/aviuser -c "f5_converter.py -h"
 ```
 
 ## Optional
 ### Build instructions
 ```
 cd build
-docker build -t avinetworks/avitools:18.2.6 .
+docker build -t avinetworks/avitools:18.2.7 .
 ```
 ### How you can use migrationtools docker image
 First you need to build a docker image

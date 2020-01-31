@@ -101,7 +101,6 @@ RUN apt-get update && apt-get install -y \
     hvac \
     yq \
     avisdk==${avi_sdk_version} \
-    avimigrationtools==${avi_sdk_version} && \
     ansible-galaxy install -c avinetworks.aviconfig \
     avinetworks.avicontroller \
     avinetworks.avicontroller-azure \
