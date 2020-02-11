@@ -1,6 +1,6 @@
 FROM avinetworks/avitools-base:bionic-20190515
 
-ARG tf_version="0.12.13"
+ARG tf_version="0.12.20"
 ARG avi_sdk_version
 ARG avi_version
 
@@ -44,7 +44,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     jq \
     vim && \
-    pip install -U ansible==2.9.2 \
+    pip install -U ansible==2.9.4 \
     appdirs==1.4.3 \
     aws-google-auth \
     awscli \
