@@ -1,5 +1,15 @@
 # Changelog
 
+## 18.2.8  (TBD)
+- avisdk version refresh
+- terraform version upgrade to 0.12.20
+- ansible version upgrade to 2.9.4
+
+## 18.2.6  (23/12/2019)
+- avisdk version refresh
+- python3 libraries
+- ansible version upgrade to 2.9.2
+
 ## 18.2.6  (06/11/2019)
 - avisdk version refresh
 - python3 libraries
