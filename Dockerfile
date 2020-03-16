@@ -100,7 +100,7 @@ RUN apt-get update && apt-get install -y \
     urllib3 \
     hvac \
     yq \
-    avisdk==${avi_sdk_version} \
+    avisdk==${avi_sdk_version} && \
     ansible-galaxy install -c avinetworks.aviconfig \
     avinetworks.avicontroller \
     avinetworks.avicontroller-azure \
@@ -133,6 +133,9 @@ RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.c
     cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl \
     https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  \
     add - && apt-get update -y && apt-get install google-cloud-sdk -y
+
+RUN curl -L https://github.com/vmware/govmomi/releases/download/v0.22.1/govc_linux_amd64.gz \ | gunzip > /usr/local/bin/govc && \
+    chmod +x /usr/local/bin/govc
 
 RUN cd $HOME && \
     git clone https://github.com/avinetworks/devops && \
