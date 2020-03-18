@@ -1,6 +1,6 @@
-FROM avinetworks/avitools-base:bionic-20190515
+FROM ubuntu:bionic-20200219
 
-ARG tf_version="0.12.20"
+ARG tf_version="0.12.23"
 ARG avi_sdk_version
 ARG avi_version
 
@@ -44,7 +44,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     jq \
     vim && \
-    pip install -U ansible==2.9.4 \
+    pip install -U ansible==2.9.6 \
     appdirs==1.4.3 \
     aws-google-auth \
     awscli \
@@ -113,6 +113,10 @@ RUN apt-get update && apt-get install -y \
     avinetworks.network_interface \
     avinetworks.avimigrationtools \
     avinetworks.avise_vmware
+
+RUN cd /tmp && curl -O https://raw.githubusercontent.com/avinetworks/ansible-role-avicontroller-vmware/master/files/VMware-ovftool-4.3.0-7948156-lin.x86_64.bundle
+RUN /bin/bash /tmp/VMware-ovftool-4.3.0-7948156-lin.x86_64.bundle --eulas-agreed --required --console
+RUN rm -f /tmp/VMware-ovftool-4.3.0-7948156-lin.x86_64.bundle
 
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc |   gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg && \
     AZ_REPO=$(lsb_release -cs) && \
