@@ -45,6 +45,7 @@ RUN apt-get update && apt-get install -y \
     jq \
     vim && \
     pip install -U ansible==2.9.6 \
+    ansible-lint \
     appdirs==1.4.3 \
     aws-google-auth \
     awscli \
