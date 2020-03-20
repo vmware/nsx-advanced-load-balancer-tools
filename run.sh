@@ -50,7 +50,7 @@
     fi
     echo "Using Avitools docker image: $AVITOOLS_DOCKER_IMAGE with args: ${@}"
     if [ $RUN_IN_BACKGROUND ]; then
-        docker run -td --restart=always --hostname $CONTAINER_HOSTNAME --name $CONTAINER_HOSTNAME -w /opt/avi -v $DIR:/opt/avi $NET "$AVITOOLS_DOCKER_IMAGE" $CMD
+        docker run -td --privileged=true --restart=always --hostname $CONTAINER_HOSTNAME --name $CONTAINER_HOSTNAME -w /opt/avi -v $DIR:/opt/avi $NET "$AVITOOLS_DOCKER_IMAGE" $CMD
         exit 0
     else
         docker run --rm -w /opt/avi -v $DIR:/opt/avi $NET "$AVITOOLS_DOCKER_IMAGE" $CMD
