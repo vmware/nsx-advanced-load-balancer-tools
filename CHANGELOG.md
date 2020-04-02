@@ -2,9 +2,10 @@
 
 ## 18.2.8  (TBD)
 - avisdk version refresh
-- terraform version upgrade to 0.12.23
+- terraform version upgrade to 0.12.20
 - ansible version upgrade to 2.9.6
 - upgrade to ubuntu:bionic-20200219
+- upgrade ovftool to 4.4
 
 ## 18.2.6  (23/12/2019)
 - avisdk version refresh

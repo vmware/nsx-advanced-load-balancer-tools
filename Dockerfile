@@ -1,6 +1,6 @@
 FROM ubuntu:bionic-20200219
 
-ARG tf_version="0.12.23"
+ARG tf_version="0.12.20"
 ARG avi_sdk_version
 ARG avi_version
 
@@ -115,9 +115,9 @@ RUN apt-get update && apt-get install -y \
     avinetworks.avimigrationtools \
     avinetworks.avise_vmware
 
-RUN cd /tmp && curl -O https://raw.githubusercontent.com/avinetworks/ansible-role-avicontroller-vmware/master/files/VMware-ovftool-4.3.0-7948156-lin.x86_64.bundle
-RUN /bin/bash /tmp/VMware-ovftool-4.3.0-7948156-lin.x86_64.bundle --eulas-agreed --required --console
-RUN rm -f /tmp/VMware-ovftool-4.3.0-7948156-lin.x86_64.bundle
+RUN cd /tmp && curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/files/VMware-ovftool-4.4.0-15722219-lin.x86_64.bundle
+RUN /bin/bash /tmp/VMware-ovftool-4.4.0-15722219-lin.x86_64.bundle --eulas-agreed --required --console
+RUN rm -f /tmp/VMware-ovftool-4.4.0-15722219-lin.x86_64.bundle
 
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc |   gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg && \
     AZ_REPO=$(lsb_release -cs) && \
@@ -144,6 +144,7 @@ RUN curl -L https://github.com/vmware/govmomi/releases/download/v0.22.1/govc_lin
 
 RUN cd $HOME && \
     git clone https://github.com/avinetworks/devops && \
+    git clone https://github.com/as679/power-beaver && \
     git clone https://github.com/avinetworks/terraform-provider-avi && \
     git clone https://github.com/avinetworks/avitools && \
     mkdir -p /avi/scripts && \
