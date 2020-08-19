@@ -3,7 +3,7 @@ import requests
 import re
 import json
 import argparse
-import StringIO
+from io import StringIO
 import requests.packages.urllib3
 from collections import OrderedDict
 import datetime
@@ -55,7 +55,7 @@ class Avi_Connect(object):
             with open(path, 'w') as fh:
                 json.dump(data, fh, indent=2)
         except Exception as e:
-            print e.message
+            print(e.message)
 
     def _request(self, method, url, params=None, data=None):
         _method = getattr(self.session, method)
@@ -63,7 +63,7 @@ class Avi_Connect(object):
         try:
             r.raise_for_status()
         except Exception as e:
-            print e.message
+            print(e.message)
             return None
         try:
             data = r.json()

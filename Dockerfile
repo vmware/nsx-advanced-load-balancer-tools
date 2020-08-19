@@ -1,6 +1,6 @@
 FROM ubuntu:bionic-20200219
 
-ARG tf_version="0.12.20"
+ARG tf_version="0.12.29"
 ARG avi_sdk_version
 ARG avi_version
 
@@ -33,60 +33,32 @@ RUN apt-get update && apt-get install -y \
     netcat \
     nmap \
     python \
+    python3 \
     python-cffi \
     python-dev \
     python-pip \
-    python3-pip \
     python-virtualenv \
+    python3-cffi \
+    python3-pip \
+    python3-dev \
+    python3-virtualenv \
     slowhttptest \
     sshpass \
     tree \
     unzip \
     jq \
     vim && \
-    pip install -U ansible==2.9.6 \
+    pip3 install -U ansible==2.9.12 \
     ansible-lint \
-    appdirs==1.4.3 \
-    aws-google-auth \
     awscli \
     bigsuds \
-    ConfigParser==3.5.0 \
-    ecdsa==0.13 \
     f5-sdk \
-    flask==0.12.2 \
-    jinja2==2.10 \
+    flask \
+    jinja2 \
     jsondiff \
     kubernetes \
-    netaddr \
-    networkx==2.0 \
-    nose-html-reporting==0.2.3 \
-    nose-testconfig==0.10 \
-    openpyxl==2.4.9 \
     openstacksdk \
-    pandas==0.21.0 \
-    paramiko==2.4.1 \
-    pexpect==4.3.0 \
-    pycrypto==2.6.1 \
-    pyOpenssl==17.5.0 \
-    pyparsing==2.2.0 \
-    pytest-cov==2.5.1 \
-    pytest-xdist==1.22.0 \
-    pytest==3.2.5 \
-    pyvmomi \
-    pyyaml \
-    requests-toolbelt==0.8.0 \
-    requests==2.18.4 \
-    unittest2==1.1.0 \
-    vcrpy==1.11.1 \
-    xlrd==1.1.0 \
-    xlsxwriter \
-    urllib3==1.23 \
-    hvac \
-    yq \
-    avisdk==${avi_sdk_version} \
-    avimigrationtools==${avi_sdk_version} && \
-    pip3 install -U flask \
-    jinja2 \
+    netaddr \
     pandas \
     paramiko \
     pexpect \
@@ -101,7 +73,8 @@ RUN apt-get update && apt-get install -y \
     urllib3 \
     hvac \
     yq \
-    avisdk==${avi_sdk_version} && \
+    avisdk==${avi_sdk_version} \
+    avimigrationtools==${avi_sdk_version} && \
     ansible-galaxy install -c avinetworks.aviconfig \
     avinetworks.avicontroller \
     avinetworks.avicontroller-azure \
@@ -113,7 +86,8 @@ RUN apt-get update && apt-get install -y \
     avinetworks.docker \
     avinetworks.network_interface \
     avinetworks.avimigrationtools \
-    avinetworks.avise_vmware
+    avinetworks.avise_vmware && \
+    ansible-galaxy collection install community.network 
 
 RUN cd /tmp && curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/files/VMware-ovftool-4.4.0-15722219-lin.x86_64.bundle
 RUN /bin/bash /tmp/VMware-ovftool-4.4.0-15722219-lin.x86_64.bundle --eulas-agreed --required --console

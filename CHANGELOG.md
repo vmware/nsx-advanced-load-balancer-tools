@@ -1,6 +1,16 @@
 # Changelog
 
-## 18.2.8  (TBD)
+## 20.1.1
+- avisdk and avimigrationtools switch to python3
+- terraform version upgrade to 0.12.29
+- ansible version upgrade to 2.9.12
+- added ansible-galaxy collection community.network
+- cleanup of python2 libraries
+  
+## 18.2.9
+- avisdk version refresh
+  
+## 18.2.8  (09/04/2020)
 - avisdk version refresh
 - terraform version upgrade to 0.12.20
 - ansible version upgrade to 2.9.6
