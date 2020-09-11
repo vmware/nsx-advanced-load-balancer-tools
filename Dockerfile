@@ -48,6 +48,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     jq \
     vim && \
+    pip install -U avisdk==${avi_sdk_version} \
+    avimigrationtools==${avi_sdk_version} && \
     pip3 install -U ansible==2.9.12 \
     ansible-lint \
     awscli \
