@@ -19,8 +19,12 @@ RUN apt-get update && \
     apt install -y software-properties-common && \
     add-apt-repository -y ppa:deadsnakes/ppa && \
     apt update && \
-    apt install -y python3.7 python2.7 curl \
-    python3.7-distutils && \
+    apt install -y python3.7 \
+    python3.7-dev \
+    python3.7-distutils \
+    python2.7 \
+    python2.7-dev \
+    curl && \
     cd /tmp && curl -O https://bootstrap.pypa.io/get-pip.py && \
     python2.7 /tmp/get-pip.py && \
     python3.7 /tmp/get-pip.py && \
@@ -49,6 +53,7 @@ RUN apt-get update && \
     tree \
     unzip \
     jq \
+    gcc \
     vim && \
     pip2 install -U appdirs \
     aws-google-auth \
@@ -70,7 +75,6 @@ RUN apt-get update && \
     pandas \
     paramiko \
     pexpect \
-    pycrypto \
     pyOpenssl \
     pyparsing \
     pytest-cov \
