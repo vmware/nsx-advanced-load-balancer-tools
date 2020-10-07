@@ -1,6 +1,6 @@
-FROM ubuntu:bionic-20200219
+FROM ubuntu:focal-20200925
 
-ARG tf_version="0.12.29"
+ARG tf_version="0.13.4"
 ARG avi_sdk_version
 ARG avi_version
 
@@ -15,12 +15,24 @@ RUN echo "export GOROOT=/usr/lib/go" >> /etc/bash.bashrc && \
     echo '"\e[A":history-search-backward' >> /root/.inputrc && \
     echo '"\e[B":history-search-forward' >> /root/.inputrc
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && \
+    apt install -y software-properties-common && \
+    add-apt-repository -y ppa:deadsnakes/ppa && \
+    apt update && \
+    apt install -y python3.7 python2.7 curl \
+    python3.7-distutils && \
+    cd /tmp && curl -O https://bootstrap.pypa.io/get-pip.py && \
+    python2.7 /tmp/get-pip.py && \
+    python3.7 /tmp/get-pip.py && \
+    ln -s /usr/bin/python2.7 /usr/bin/python && \
+    rm -rf /usr/local/bin/pip
+
+RUN apt-get update && \ 
+    apt-get install -y \
     apache2-utils \
     apt-transport-https \
     lsb-release \
     gnupg \
-    curl \
     dnsutils \
     git \
     httpie \
@@ -32,25 +44,52 @@ RUN apt-get update && apt-get install -y \
     make \
     netcat \
     nmap \
-    python \
-    python3 \
-    python-cffi \
-    python-dev \
-    python-pip \
-    python-virtualenv \
-    python3-cffi \
-    python3-pip \
-    python3-dev \
-    python3-virtualenv \
     slowhttptest \
     sshpass \
     tree \
     unzip \
     jq \
     vim && \
-    pip install -U avisdk==${avi_sdk_version} \
+    pip2 install -U appdirs \
+    aws-google-auth \
+    awscli \
+    bigsuds \
+    ConfigParser \
+    ecdsa \
+    f5-sdk \
+    flask \
+    jinja2 \
+    jsondiff \
+    kubernetes \
+    netaddr \
+    networkx \
+    nose-html-reporting \
+    nose-testconfig \
+    openpyxl \
+    openstacksdk \
+    pandas \
+    paramiko \
+    pexpect \
+    pycrypto \
+    pyOpenssl \
+    pyparsing \
+    pytest-cov \
+    pytest-xdist \
+    pytest \
+    pyvmomi \
+    pyyaml \
+    requests-toolbelt \
+    requests \
+    unittest2 \
+    vcrpy \
+    xlrd \
+    xlsxwriter \
+    urllib3 \
+    hvac \
+    yq \
+    avisdk==${avi_sdk_version} \
     avimigrationtools==${avi_sdk_version} && \
-    pip3 install -U ansible==2.9.12 \
+    pip3 install -U ansible==2.9.14 \
     ansible-lint \
     awscli \
     bigsuds \
@@ -91,9 +130,9 @@ RUN apt-get update && apt-get install -y \
     avinetworks.avise_vmware && \
     ansible-galaxy collection install community.network 
 
-RUN cd /tmp && curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/files/VMware-ovftool-4.4.0-15722219-lin.x86_64.bundle
-RUN /bin/bash /tmp/VMware-ovftool-4.4.0-15722219-lin.x86_64.bundle --eulas-agreed --required --console
-RUN rm -f /tmp/VMware-ovftool-4.4.0-15722219-lin.x86_64.bundle
+RUN cd /tmp && curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/files/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle
+RUN /bin/bash /tmp/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle --eulas-agreed --required --console
+RUN rm -f /tmp/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle
 
 RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc |   gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg && \
     AZ_REPO=$(lsb_release -cs) && \
