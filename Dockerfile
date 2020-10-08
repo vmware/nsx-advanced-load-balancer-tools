@@ -1,6 +1,6 @@
 FROM ubuntu:focal-20200925
 
-ARG tf_version="0.13.4"
+ARG tf_version="0.12.29"
 ARG avi_sdk_version
 ARG avi_version
 
