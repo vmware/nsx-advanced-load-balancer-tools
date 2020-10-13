@@ -1,5 +1,11 @@
 # Changelog
 
+## 20.1.2
+- ovftool upgrade to 4.4p1
+- python2 and python3 version updates
+- avisdk, avimigrationtools updates
+- base container switch to 20.04 LTS
+
 ## 20.1.1
 - avisdk and avimigrationtools switch to python3
 - terraform version upgrade to 0.12.29
