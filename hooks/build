@@ -5,8 +5,8 @@ if [ $IMAGE_NAME ]; then
     AVI_VERSION="$(echo $IMAGE_NAME | cut -d ":"  -f2)"
     AVI_SDK_VERSION="$(echo $IMAGE_NAME | cut -d ":"  -f2)"
 else
-    AVI_VERSION=20.1.2
-    AVI_SDK_VERSION=20.1.2
+    AVI_VERSION=20.1.3
+    AVI_SDK_VERSION=20.1.3
 fi
 
 docker build \
