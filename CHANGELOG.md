@@ -1,5 +1,10 @@
 # Changelog
 
+## 20.1.3
+- python3 version update
+- ansible version updates
+- avisdk,avimigrationtools updates
+
 ## 20.1.2
 - ovftool upgrade to 4.4p1
 - python2 and python3 version updates
