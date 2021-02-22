@@ -26,7 +26,8 @@ RUN apt-get update && \
     python2.7-dev \
     curl && \
     cd /tmp && curl -O https://bootstrap.pypa.io/get-pip.py && \
-    python2.7 /tmp/get-pip.py && \
+    curl -o get-pip-27.py https://bootstrap.pypa.io/2.7/get-pip.py && \
+    python2.7 /tmp/get-pip-27.py && \
     python3.8 /tmp/get-pip.py && \
     ln -s /usr/bin/python2.7 /usr/bin/python && \
     rm -rf /usr/local/bin/pip
