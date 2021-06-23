@@ -1,6 +1,6 @@
 FROM ubuntu:focal-20200925
 
-ARG tf_version="0.12.29"
+ARG tf_version="0.14.5"
 ARG avi_sdk_version
 ARG avi_version
 
@@ -26,7 +26,7 @@ RUN apt-get update && \
     python2.7-dev \
     curl && \
     cd /tmp && curl -O https://bootstrap.pypa.io/get-pip.py && \
-    curl -o get-pip-27.py https://bootstrap.pypa.io/2.7/get-pip.py && \
+    curl -o get-pip-27.py https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
     python2.7 /tmp/get-pip-27.py && \
     python3.8 /tmp/get-pip.py && \
     ln -s /usr/bin/python2.7 /usr/bin/python && \
@@ -167,16 +167,10 @@ RUN curl -L https://github.com/vmware/govmomi/releases/download/v0.22.1/govc_lin
 RUN cd $HOME && \
     git clone https://github.com/avinetworks/devops && \
     git clone https://github.com/as679/power-beaver && \
-    git clone https://github.com/avinetworks/terraform-provider-avi && \
     git clone https://github.com/avinetworks/avitools && \
     mkdir -p /avi/scripts && \
     cp -r avitools/scripts/* /avi/scripts && \
-    rm -rf $HOME/avitools && \
-    mkdir $HOME/.terraform.d/ && \
-    mkdir $HOME/.terraform.d/plugin-cache && \
-    cd ~/terraform-provider-avi/examples/aws/avi_app && \
-    export TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache && \
-    terraform init
+    rm -rf $HOME/avitools
 
 RUN touch list && \
     echo '#!/bin/bash' > avitools-list && \
