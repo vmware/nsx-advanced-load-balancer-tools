@@ -167,10 +167,17 @@ RUN curl -L https://github.com/vmware/govmomi/releases/download/v0.22.1/govc_lin
 RUN cd $HOME && \
     git clone https://github.com/avinetworks/devops && \
     git clone https://github.com/as679/power-beaver && \
+    git clone https://github.com/vmware/terraform-provider-avi && \
     git clone https://github.com/avinetworks/avitools && \
     mkdir -p /avi/scripts && \
     cp -r avitools/scripts/* /avi/scripts && \
-    rm -rf $HOME/avitools
+    rm -rf $HOME/avitools && \
+    mkdir $HOME/.terraform.d/ && \
+    mkdir $HOME/.terraform.d/plugin-cache && \
+    cd ~/terraform-provider-avi/examples/aws/avi_app && \
+    export TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache && \
+    sed -i 's/version = ".*\..*\..*"/version =  "'${avi_version}'"/g' versions.tf && \
+    terraform init
 
 RUN touch list && \
     echo '#!/bin/bash' > avitools-list && \
