@@ -121,19 +121,18 @@ RUN apt-get update && \
     yq \
     avisdk==${avi_sdk_version} \
     avimigrationtools==${avi_sdk_version} && \
-    ansible-galaxy install -c avinetworks.aviconfig \
-    avinetworks.avicontroller \
+    ansible-galaxy install -c avinetworks.avicontroller \
     avinetworks.avicontroller-azure \
     avinetworks.avicontroller_csp \
     avinetworks.avicontroller_vmware \
-    avinetworks.avisdk \
     avinetworks.avise  \
     avinetworks.avise_csp \
     avinetworks.docker \
     avinetworks.network_interface \
     avinetworks.avimigrationtools \
     avinetworks.avise_vmware && \
-    ansible-galaxy collection install community.network 
+    ansible-galaxy collection install community.network \
+    vmware.alb
 
 RUN cd /tmp && curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/files/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle
 RUN /bin/bash /tmp/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle --eulas-agreed --required --console
