@@ -94,6 +94,7 @@ RUN apt-get update && \
     yq \
     avisdk==${avi_sdk_version} \
     avimigrationtools==${avi_sdk_version} && \
+    pip3 install setuptools==57.5.0 && \
     pip3 install -U ansible==2.9.13 \
     ansible-lint \
     awscli \
