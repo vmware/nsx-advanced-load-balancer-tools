@@ -174,7 +174,7 @@ RUN cd $HOME && \
     rm -rf $HOME/avitools && \
     mkdir $HOME/.terraform.d/ && \
     mkdir $HOME/.terraform.d/plugin-cache && \
-    cd ~/terraform-provider-avi/examples/aws/avi_app && \
+    cd ~/terraform-provider-avi/examples/aws/cluster_stages/1_aws_resources && \
     export TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache && \
     sed -i 's/version = ".*\..*\..*"/version =  "'${avi_version}'"/g' versions.tf && \
     terraform init
