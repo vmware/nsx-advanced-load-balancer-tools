@@ -20,7 +20,7 @@
     if [ $1 ]; then
         AVI_VERSION=$1
     else
-        AVI_VERSION=20.1.3
+        AVI_VERSION=20.1.4
     fi
 
     if [ $2 ]; then
