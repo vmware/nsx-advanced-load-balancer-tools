@@ -2,7 +2,7 @@ name: Publish avitools
 # Controls when the action will run. 
 on:
   release:
-    types: [created]
+    types: [created, edited]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
