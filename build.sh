@@ -18,13 +18,13 @@
 ###
 {
     if [ $1 ]; then
-        AVI_VERSION=20.1.4
+        AVI_VERSION=21.1.4
     else
-        AVI_VERSION=20.1.4
+        AVI_VERSION=21.1.4
     fi
 
     if [ $2 ]; then
-        AVI_SDK_VERSION=20.1.4
+        AVI_SDK_VERSION=21.1.4
     else
         AVI_SDK_VERSION=$AVI_VERSION
     fi
