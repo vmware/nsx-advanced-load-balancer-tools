@@ -1,8 +1,8 @@
 FROM ubuntu:focal-20200925
 
 ARG tf_version="0.14.5"
-ARG avi_sdk_version="20.1.4"
-ARG avi_version="20.1.4"
+ARG avi_sdk_version
+ARG avi_version
 
 RUN echo "export GOROOT=/usr/lib/go" >> /etc/bash.bashrc && \
     echo "export TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache"  >> /etc/bash.bashrc && \

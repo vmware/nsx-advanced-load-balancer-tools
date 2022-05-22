@@ -33,13 +33,14 @@ jobs:
       - name: Echo
         run: echo ${{ steps.get_version.outputs.VERSION }}
       
-    #- name: Build and push Docker image
-    #    uses: docker/build-push-action@v2
-    #    with:
-    #      context: .
-    #      push: true
-    #      tags: ${{ steps.meta.outputs.tags }}
-     #     labels: ${{ steps.meta.outputs.labels }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          build_args: avi_sdk_version=${{ steps.get_version.outputs.VERSION }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
           
       
       
