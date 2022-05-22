@@ -38,7 +38,7 @@ jobs:
         with:
           context: .
           push: true
-          build_args: avi_sdk_version=${{ steps.get_version.outputs.VERSION }}
+          build-args: avi_sdk_version=${{ steps.get_version.outputs.VERSION }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           
