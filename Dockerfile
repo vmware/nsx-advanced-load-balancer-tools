@@ -95,8 +95,9 @@ RUN apt-get update && \
     avisdk==${avi_sdk_version} \
     avimigrationtools==${avi_sdk_version} && \
     pip3 install setuptools==57.5.0 && \
-    pip3 install -U ansible==2.9.13 \
-    ansible-lint \
+    pip3 uninstall ansible-core -y \
+    pip3 install ansible==2.9.13 && \
+    pip3 install ansible-lint \
     awscli \
     bigsuds \
     f5-sdk \
