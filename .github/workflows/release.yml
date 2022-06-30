@@ -27,7 +27,7 @@ jobs:
         with:
           images: avinetworks/avitools
       - name: Echo
-          run: echo ${{ steps.meta.outputs }}
+        run: echo ${{ steps.meta.outputs }}
 
       - name: Get the version
         id: get_version
@@ -48,3 +48,4 @@ jobs:
           
       
       
+
