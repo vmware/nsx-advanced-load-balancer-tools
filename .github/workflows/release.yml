@@ -53,7 +53,7 @@ jobs:
         run: |
           sudo sed -i 's/127.0.0.53/8.8.8.8/g' /etc/resolv.conf
           cat /etc/resolv.conf
-          sudo echo '2310Ira1234!@' | sudo docker login harbor-repo.vmware.com --username ssalvi --password-stdin
+          sudo echo 'admin' | sudo docker login harbor-repo.vmware.com --username ssalvi --password-stdin
 #          docker build . --tag harbor-repo.vmware.com/nsx_alb_tools/${{ github.repository }}${{ steps.meta.outputs.tags }}
 #          docker run harbor-repo.vmware.com/nsx_alb_tools/${{ github.repository }}${{ steps.meta.outputs.tags }}
 #          docker push harbor-repo.vmware.com/nsx_alb_tools/${{ github.repository }}${{ steps.meta.outputs.tags }}
