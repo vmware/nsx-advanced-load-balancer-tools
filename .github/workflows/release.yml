@@ -17,7 +17,7 @@ jobs:
       - name: docker login
         env:
           DOCKER_USER: ssalvi
-          DOCKER_PASSWORD: 2310Ira1234!@
+          DOCKER_PASSWORD: erfff
         run: |
           docker login harbor-repo.vmware.com -u $DOCKER_USER -p $DOCKER_PASSWORD
 
