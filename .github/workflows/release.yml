@@ -21,17 +21,11 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Login to GitHub Container Registry
-        run: |
-          echo $CR_PAT | docker login harbor-repo.vmware.com -u ssalvi@vmware.com --password-stdin
-        env:
-          CR_PAT: ${{ secrets.CR_PAT }}
-
-#      - name: Login to GitHub Container Registry
-#        uses: docker/login-action@v2
-#        with:
-#          registry: harbor-repo.vmware.com
-#          username: ${{ github.repository_owner }}
-#          password: ${{ secrets.GITHUB_TOKEN }}
+        uses: docker/login-action@v2
+        with:
+          registry: harbor-repo.vmware.com
+          username: ssalvi
+          password: c3NhbHZpOjIzMTBJcmExMjM0IUA=
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
