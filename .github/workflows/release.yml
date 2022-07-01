@@ -51,7 +51,7 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          export ADMIN='2310Ira1234!@'
+          export ADMIN='admin'
           echo $ADMIN | docker login harbor-repo.vmware.com --username ssalvi --password-stdin
 #          docker build . --tag harbor-repo.vmware.com/nsx_alb_tools/${{ github.repository }}${{ steps.meta.outputs.tags }}
 #          docker run harbor-repo.vmware.com/nsx_alb_tools/${{ github.repository }}${{ steps.meta.outputs.tags }}
