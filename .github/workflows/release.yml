@@ -24,8 +24,8 @@ jobs:
         uses: docker/login-action@v2
         with:
           registry: harbor-repo.vmware.com
-          username: ssalvi
-          password: c3NhbHZpOjIzMTBJcmExMjM0IUA=
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
         id: meta
