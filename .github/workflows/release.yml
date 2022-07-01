@@ -16,8 +16,8 @@ jobs:
       - uses: actions/checkout@v2
       - name: docker login
         env:
-          DOCKER_USER: ${{secrets.DOCKER_USERNAME}}
-          DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+          DOCKER_USER: ssalvi
+          DOCKER_PASSWORD: 2310Ira1234!@
         run: |
           docker login harbor-repo.vmware.com -u $DOCKER_USER -p $DOCKER_PASSWORD
 
