@@ -32,8 +32,6 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: avinetworks/avitools
-      - name: Echo
-        run: echo ${{ steps.meta.outputs.tags }}
 
       - name: Get the version
         id: get_version
