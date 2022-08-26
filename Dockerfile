@@ -24,6 +24,7 @@ RUN apt-get update && \
     python3.8-distutils \
     python2.7 \
     python2.7-dev \
+    jq \
     curl && \
     cd /tmp && curl -O https://bootstrap.pypa.io/get-pip.py && \
     curl -o get-pip-27.py https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
@@ -135,6 +136,13 @@ RUN apt-get update && \
     avinetworks.avise_vmware && \
     ansible-galaxy collection install community.network \
     vmware.alb
+
+RUN echo "Check specified terraform version is release."
+RUN if curl -sL --fail https://registry.terraform.io/v1/providers/vmware/avi/versions | jq -r '.versions[].version' | grep ${avi_version}; then \
+        echo "Terraform version is available." ; \
+    else \
+        echo "Terraform version is not available with the specified version ${avi_version}." && exit 1; \
+    fi
 
 RUN cd /tmp && curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/files/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle
 RUN /bin/bash /tmp/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle --eulas-agreed --required --console
