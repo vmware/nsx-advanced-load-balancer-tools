@@ -144,6 +144,8 @@ RUN if curl -sL --fail https://registry.terraform.io/v1/providers/vmware/avi/ver
         echo "Terraform version is not available with the specified version ${avi_version}." && exit 1; \
     fi
 
+RUN install_nsx_dependencies.py
+
 RUN cd /tmp && curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/files/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle
 RUN /bin/bash /tmp/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle --eulas-agreed --required --console
 RUN rm -f /tmp/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle
@@ -198,7 +200,8 @@ RUN touch list && \
     echo "echo "ace_converter.py"" >> avitools-list && \
     echo "echo "virtualservice_examples_api.py"" >> avitools-list && \
     echo "echo "config_patch.py"" >> avitools-list && \
-    echo "echo "vs_filter.py"" >> avitools-list
+    echo "echo "vs_filter.py"" >> avitools-list && \
+    echo "echo "nsxt_converter.py"" >> avitools-list
 
 RUN for script in $(ls /avi/scripts); do echo "echo $script" >> avitools-list; done;
 
