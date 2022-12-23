@@ -1,9 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 import requests
 import re
 import json
 import argparse
-from io import StringIO
 import requests.packages.urllib3
 from collections import OrderedDict
 import datetime
@@ -31,7 +30,8 @@ class Avi_Connect(object):
     def login(self):
         login_data = {'username': self.username, 'password': self.password}
         r = self._post('/login', data=login_data)
-        if r and 'AVI_API_VERSION' in r.headers.keys():
+        if r and r.status_code == 200: # Updated to support 21.1.x
+        #if r and 'AVI_API_VERSION' in r.headers.keys():
             self.session.headers.update({'X-Avi-Version': self.avi_api_version})
             self.session.headers.update({'X-Avi-Tenant':
             self.tenant})
@@ -90,6 +90,8 @@ class Avi_Report():
         SERVICEENGINEGROUP_JSON_FIELDS = ['name', 'tenant_ref', 'se_name_prefix']
         # Pool
         POOL_JSON_FIELDS = ['name', 'tenant_ref', 'vrf_ref', 'lb_algorithm', 'server_count', 'default_server_port', 'health_monitor_refs', 'application_persistence_profile_ref']
+        # HealthMonitor Profile
+        HEALTHMONITOR_JSON_FIELDS = ['name', 'tenant_ref', 'type', 'http_monitor']
         # Application Profile
         APPLICATIONPROFILE_JSON_FIELDS = ['name', 'tenant_ref', 'type']
         # Network Profile
@@ -98,19 +100,20 @@ class Avi_Report():
         NETWORKSECURITYPOLICY_JSON_FIELDS = ['name', 'tenant_ref', 'rules']
         # HTTP Policy Set
         HTTPPOLICYSET_JSON_FIELDS = ['name', 'tenant_ref', 'http_security_policy', 'http_request_policy', 'http_response_policy']
-        # Data Script 
+        # Data Script
         VSDATASCRIPTSET_JSON_FIELDS = ['name', 'tenant', 'pool_refs', 'string_group_refs', 'ipgroup_refs']
-        # IP Address Group 
+        # IP Address Group
         IPADDRGROUP_JSON_FIELDS = ['name', 'tenant_ref', 'prefixes']
-        # String Group 
+        # String Group
         STRINGGROUP_JSON_FIELDS = ['name', 'tenant_ref', 'kv', 'type']
 
 
         self.virtualservice_table = self.obj_table('VirtualService', VIRTUALSERVICE_JSON_FIELDS)
         self.tenant_table = self.obj_table('Tenant', TENANT_JSON_FIELDS)
-        self.cloud_table = self.obj_table('Cloud', TENANT_JSON_FIELDS)
+        self.cloud_table = self.obj_table('Cloud', CLOUD_JSON_FIELDS)
         self.serviceenginegroup_table = self.obj_table('ServiceEngineGroup', SERVICEENGINEGROUP_JSON_FIELDS)
         self.pool_table = self.obj_table('Pool', POOL_JSON_FIELDS)
+        self.healthmonitor_table = self.obj_table('HealthMonitor', HEALTHMONITOR_JSON_FIELDS)
         self.applicationprofile_table = self.obj_table('ApplicationProfile', APPLICATIONPROFILE_JSON_FIELDS)
         self.networkprofile_table = self.obj_table('NetworkProfile', NETWORKPROFILE_JSON_FIELDS)
         self.networksecuritypolicy_table = self.obj_table('NetworkSecurityPolicy', NETWORKSECURITYPOLICY_JSON_FIELDS)
@@ -125,6 +128,7 @@ class Avi_Report():
         report.update({'Cloud': self.cloud_table})
         report.update({'ServiceEngineGroup': self.serviceenginegroup_table})
         report.update({'Pool': self.pool_table})
+        report.update({'HealthMonitor': self.healthmonitor_table})
         report.update({'ApplicationProfile': self.applicationprofile_table})
         report.update({'NetworkProfile': self.networkprofile_table})
         report.update({'NetworkSecurityPolicy': self.networksecuritypolicy_table})
@@ -167,7 +171,7 @@ class Avi_Report():
             row_format.set_align('center')
             worksheet.set_row(0, cell_format=row_format)
             worksheet.set_column('B:Z', 18)
-        writer.save()
+        writer.close()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
