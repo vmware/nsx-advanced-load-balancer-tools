@@ -94,7 +94,7 @@ RUN apt-get update && \
     hvac \
     yq \
     avisdk==${avi_sdk_version} \
-    avimigrationtools==${avi_sdk_version} && \
+    avimigrationtools==22.1.4.post1 && \
     pip3 install setuptools==57.5.0 && \
     pip3 uninstall ansible-core -y \
     pip3 install ansible==2.9.13 && \
@@ -123,19 +123,12 @@ RUN apt-get update && \
     hvac \
     yq \
     avisdk==${avi_sdk_version} \
-    avimigrationtools==${avi_sdk_version} && \
-    ansible-galaxy install -c avinetworks.avicontroller \
-    avinetworks.avicontroller-azure \
-    avinetworks.avicontroller_csp \
-    avinetworks.avicontroller_vmware \
-    avinetworks.avise  \
-    avinetworks.avise_csp \
+    avimigrationtools==22.1.4.post1 && \
+    ansible-galaxy install -c avinetworks.avicontroller-azure \
     avinetworks.docker \
     avinetworks.network_interface \
-    avinetworks.avimigrationtools \
-    avinetworks.avise_vmware && \
-    ansible-galaxy collection install community.network \
-    vmware.alb
+    avinetworks.avimigrationtools && \
+    ansible-galaxy collection install vmware.alb
 
 RUN echo "Check specified terraform version is release."
 RUN if curl -sL --fail https://registry.terraform.io/v1/providers/vmware/avi/versions | jq -r '.versions[].version' | grep ${avi_version}; then \
