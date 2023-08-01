@@ -39,7 +39,7 @@ RUN git checkout ${branch}
 # This will install tar bundle for avisdk and migrationtools.
 WORKDIR /alb-sdk/python/
 RUN bash create_sdk_pip_packages.sh sdk
-# We need to add support for python3 in setup.py file
+# Install migrationtools bundle
 RUN bash create_sdk_pip_packages.sh migrationtools
 
 # Install required packages
@@ -117,6 +117,36 @@ RUN cd $HOME && \
     mkdir -p /avi/scripts && \
     cp -r avitools/scripts/* /avi/scripts && \
     rm -rf $HOME/avitools
+
+# Install go for AVI terraform provider
+RUN curl -L https://go.dev/dl/go${golang_version}.linux-amd64.tar.gz -o go${golang_version}.linux-amd64.tar.gz && \
+    rm -rf /usr/local/go && tar -C /usr/local -xzf go${golang_version}.linux-amd64.tar.gz && \
+    go version && \
+    rm go${golang_version}.linux-amd64.tar.gz
+
+# Clone terraform provider repository and build provider locally.
+RUN cd $HOME && \
+    git clone https://github.com/vmware/terraform-provider-avi && \
+    cd ~/terraform-provider-avi && \
+    git checkout ${branch} && \
+    sed -i "s/22.1.3/${avi_version}/g" GNUmakefile && \
+    make fmt . && \
+    go mod tidy && \
+    make build13 && \
+    mkdir -p $HOME/.terraform.d/ && \
+    mkdir -p $HOME/.terraform.d/plugin-cache && \
+    cd ~/terraform-provider-avi/examples/aws/cluster_stages/1_aws_resources && \
+    terraform init
+
+# Clone ansible repo and install ansible collections.
+RUN cd $HOME && \
+    git clone https://github.com/vmware/ansible-collection-alb && \
+    cd ~/ansible-collection-alb && \
+    git checkout ${branch} && \
+    sed -i "s/23.1.1/${avi_version}/g" galaxy.yml && \
+    ansible-galaxy collection build && \
+    ansible-galaxy collection install vmware-alb-${avi_version}.tar.gz && \
+    pip3 install -r ~/.ansible/collections/ansible_collections/vmware/alb/requirements.txt
 
 # Verify all converters files.
 RUN touch list && \
