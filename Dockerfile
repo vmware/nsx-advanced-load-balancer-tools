@@ -170,3 +170,25 @@ RUN chmod +x avitools-list && \
 # Clean out the cache
 RUN tdnf clean all && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* $HOME/.cache $HOME/go/src $HOME/src ${GOPATH}/pkg
+
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -s https://deb.nodesource.com/setup_18.x | bash && \
+    apt-get install -y nodejs
+
+WORKDIR /app
+
+# Copy the Angular project files to the container
+COPY /nsx-alb-tools-angular-app/dist ./dist
+
+# Copy the server files to the container
+WORKDIR /app/server
+COPY /nsx-alb-tools-angular-app/server/package.json /nsx-alb-tools-angular-app/server/package-lock.json ./
+COPY /nsx-alb-tools-angular-app/server/server.js ./
+RUN npm ci
+
+# Expose the necessary port (e.g., 3000 for backend)
+EXPOSE 3000
+
+# Set the command to run when the container starts
+CMD [ "node", "server.js"]
