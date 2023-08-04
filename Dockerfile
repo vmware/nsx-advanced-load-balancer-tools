@@ -1,5 +1,7 @@
 FROM ubuntu:focal-20200925
 
+ENV DEBIAN_FRONTEND=noninteractive
+
 ARG tf_version="0.14.5"
 ARG avi_sdk_version
 ARG avi_version
@@ -219,5 +221,24 @@ RUN chmod +x avitools-list && \
 RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* $HOME/.cache $HOME/go/src $HOME/src
 
-ENV cmd cmd_to_run
-CMD eval $cmd
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -s https://deb.nodesource.com/setup_18.x | bash && \
+    apt-get install -y nodejs
+
+WORKDIR /app
+
+# Copy the Angular project files to the container
+COPY /nsx-alb-tools-angular-app/dist ./dist
+
+# Copy the server files to the container
+WORKDIR /app/server
+COPY /nsx-alb-tools-angular-app/server/package.json /nsx-alb-tools-angular-app/server/package-lock.json ./
+COPY /nsx-alb-tools-angular-app/server/server.js ./
+RUN npm ci
+
+# Expose the necessary port (e.g., 3000 for backend)
+EXPOSE 3000
+
+# Set the command to run when the container starts
+CMD [ "node", "server.js"]
