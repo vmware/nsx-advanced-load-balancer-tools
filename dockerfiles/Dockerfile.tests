@@ -132,8 +132,6 @@ RUN cd $HOME && \
     make fmt . && \
     go mod tidy && \
     make build13 && \
-    mkdir -p $HOME/.terraform.d/ && \
-    mkdir -p $HOME/.terraform.d/plugin-cache && \
     cd ~/terraform-provider-avi/examples/aws/cluster_stages/1_aws_resources && \
     terraform init
 
@@ -170,5 +168,5 @@ RUN chmod +x avitools-list && \
 
 # Clean out the cache
 RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* $HOME/.cache $HOME/go/src $HOME/src
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* $HOME/.cache $HOME/go/src $HOME/src ${GOPATH}/pkg
 
