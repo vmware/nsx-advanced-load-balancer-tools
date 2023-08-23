@@ -5,8 +5,32 @@
 </div>
 
 <div>
-  <button (click)="handleClick()">Click Me</button>
-  <p>{{ responseMessage }}</p>
+  <div class="buttons-section">
+    <button
+      class="seperator"
+      (click)="handleGetData()"
+    >
+      Get Data
+    </button>
+
+    <button
+      class="seperator"
+      (click)="handleStorerData()"
+    >
+      Store Data
+    </button>
+
+    <button
+      (click)="handleClearData()"
+    >
+      Clear Data
+    </button>
+  </div>
+  <p> {{ responseMessage | json }} </p>
+</div>
+
+<div class="loading-overlay" *ngIf="loading$ | async">
+  <div class="spinner"></div>
 </div>
 
 <router-outlet></router-outlet>

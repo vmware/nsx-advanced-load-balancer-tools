@@ -1,5 +1,5 @@
 {
-  "name": "nsx-alb-tools-seerver",
+  "name": "nsx-alb-tools-server",
   "version": "1.0.0",
   "description": "A simple Node.js server",
   "main": "server.js",
@@ -10,6 +10,10 @@
   "author": "SURAJ KUMAR",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.18.2"
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
+    "mongodb": "^5.8.0",
+    "mongoose": "^7.4.4"
   }
 }
