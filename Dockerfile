@@ -3,15 +3,16 @@ FROM ubuntu:focal-20200925
 ARG tf_version="0.14.5"
 ARG avi_sdk_version
 ARG avi_version
+ARG golang_version
+ARG ako_branch
 
-RUN echo "export GOROOT=/usr/lib/go" >> /etc/bash.bashrc && \
+RUN echo "export GOROOT=/usr/local/go" >> /etc/bash.bashrc && \
     echo "export TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache"  >> /etc/bash.bashrc && \
-    echo "export GOROOT=/usr/lib/go" >> /etc/bash.bashrc && \
     echo "export GOPATH=$HOME" >> /etc/bash.bashrc && \
     echo "export GOBIN=$HOME/bin" >> /etc/bash.bashrc && \
     echo "export ANSIBLE_FORCE_COLOR=True" >> /etc/bash.bashrc && \
-    export PATH=$PATH:/usr/lib/go/bin:$HOME/bin:/avi/scripts && \
-    echo "export PATH=$PATH:/usr/lib/go/bin:$HOME/bin:/avi/scripts" >> /etc/bash.bashrc && \
+    export PATH=$PATH:/usr/lib/go/bin:$HOME/bin:/avi/scripts:/usr/local/go/bin && \
+    echo "export PATH=$PATH:/usr/lib/go/bin:$HOME/bin:/avi/scripts:/usr/local/go/bin" >> /etc/bash.bashrc && \
     echo '"\e[A":history-search-backward' >> /root/.inputrc && \
     echo '"\e[B":history-search-forward' >> /root/.inputrc
 
@@ -182,6 +183,19 @@ RUN cd $HOME && \
     export TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache && \
     sed -i 's/version = ".*\..*\..*"/version =  "'${avi_version}'"/g' versions.tf && \
     terraform init
+
+RUN apt update && apt install nodejs -y && \
+    curl -L https://go.dev/dl/go${golang_version}.linux-amd64.tar.gz -o go${golang_version}.linux-amd64.tar.gz && \
+    rm -rf /usr/local/go && tar -C /usr/local -xzf go${golang_version}.linux-amd64.tar.gz && \
+    rm go${golang_version}.linux-amd64.tar.gz
+ENV PATH="${PATH}:/usr/local/go/bin"
+
+RUN mkdir -p $HOME/src/github.com/vmware && \
+    cd $HOME/src/github.com/vmware && \
+    git clone -b ${ako_branch} --single-branch https://github.com/vmware/load-balancer-and-ingress-services-for-kubernetes && \
+    cd load-balancer-and-ingress-services-for-kubernetes && \
+    make build-local && make build-local-infra && cp -r bin/* $HOME/ && \
+    chmod +x $HOME/ako $HOME/ako-infra
 
 RUN touch list && \
     echo '#!/bin/bash' > avitools-list && \
