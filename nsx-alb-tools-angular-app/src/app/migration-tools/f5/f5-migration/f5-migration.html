@@ -1,0 +1,33 @@
+<h1>
+    {{ dictionary.migrationPageF5MigrationTitle }}
+</h1>
+
+<clr-tabs>
+    <clr-tab>
+        <button clrTabLink routerLink="./report"> {{ dictionary.migrationPageReportTitle }} </button>
+        <clr-tab-content *clrIfActive>
+            <router-outlet></router-outlet>
+        </clr-tab-content>
+    </clr-tab>
+
+    <clr-tab>
+        <button clrTabLink routerLink="./configuration">{{ dictionary.migrationPageConfigurationTitle }}({{migrationCountData?.configuration}})</button>
+        <clr-tab-content *clrIfActive>
+            <router-outlet></router-outlet>
+        </clr-tab-content>
+    </clr-tab>
+
+    <clr-tab>
+        <button clrTabLink routerLink="./ready">{{ dictionary.migrationPageReadyTitle }}({{migrationCountData?.ready}})</button>
+        <clr-tab-content *clrIfActive>
+            <router-outlet></router-outlet>
+        </clr-tab-content>
+    </clr-tab>
+
+    <clr-tab>
+        <button clrTabLink routerLink="./completed">{{ dictionary.migrationPageCompletedTitle }}({{migrationCountData?.completed}})</button>
+        <clr-tab-content *clrIfActive>
+            <router-outlet></router-outlet>
+        </clr-tab-content>
+    </clr-tab>
+</clr-tabs>
