@@ -1,0 +1,24 @@
+
+<h2>
+    {{ dictionary.landingPageMigrationToolsTitle }}
+</h2>
+
+<div class="clr-row">
+    <div class="clr-col-lg-3 clr-col-md-6 clr-col-12">
+        <div class="card">
+            <h3 class="card-header">
+                <img width="100%" height="100%" src="assets/images/f5vm-logo.png"/>
+            </h3>
+            <div class="card-block">
+                <h4 class="card-title"> {{dictionary.landingPageF5Migration}} </h4>
+                <div class="card-text">
+                    ...
+                </div>
+            </div>
+            <div class="card-footer">
+                <button class="btn btn-sm btn-link" (click)="onClick()"> {{dictionary.landingPageStartBtn}} </button>
+            </div>
+        </div>
+    </div>
+</div>
+<start-wizard [open]="open" (onCancel)="onCancel($event)"></start-wizard>

@@ -1,36 +1,25 @@
-<div class="content">
-  <div class="card highlight-card">
-    <span>{{ title }} app is running!</span>
+<div class="main-container">
+  <header class="header header-6">
+    <div class="branding">
+        <a href="" class="nav-link">
+            <cds-icon shape="vm-bug"></cds-icon>
+            <span class="title">NSX-ALB Migration Tool</span>
+        </a>
+    </div>
+  </header>
+  <div class="content-container">
+      <clr-vertical-nav [clrVerticalNavCollapsible]="true">
+        <a clrVerticalNavLink routerLink="./" routerLinkActive="active">
+            <cds-icon clrVerticalNavIcon shape="two-way-arrows"></cds-icon>
+            {{ dictionary.appPageMigrationToolsTitle }}
+        </a>
+    </clr-vertical-nav>
+    <div class="content-area">
+      <router-outlet></router-outlet>
+    </div>
   </div>
-</div>
-
-<div>
-  <div class="buttons-section">
-    <button
-      class="seperator"
-      (click)="handleGetData()"
-    >
-      Get Data
-    </button>
-
-    <button
-      class="seperator"
-      (click)="handleStorerData()"
-    >
-      Store Data
-    </button>
-
-    <button
-      (click)="handleClearData()"
-    >
-      Clear Data
-    </button>
-  </div>
-  <p> {{ responseMessage | json }} </p>
 </div>
 
 <div class="loading-overlay" *ngIf="loading$ | async">
   <div class="spinner"></div>
 </div>
-
-<router-outlet></router-outlet>
