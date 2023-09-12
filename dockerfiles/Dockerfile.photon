@@ -3,16 +3,26 @@ ARG BASE_IMAGE=projects.registry.vmware.com/photon/photon4:latest
 
 FROM ${BASE_IMAGE}
 
+# Terraform version parameter.
+ARG tf_version="1.5.4"
+# Go version parameter.
+ARG golang_version="1.20.6"
 # This parameter include avi_version e.g 30.2.1
 ARG avi_version="30.2.1"
 # Branch name to build on specific branch
 ARG branch=${avi_version}
-RUN echo "Branch: ${branch}"
 
 # Set the locale
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:en
 ENV LC_ALL en_US.UTF-8
+
+# Set up env variables for Go and Terraform
+ENV GOROOT "/usr/local/go"
+ENV GOPATH $HOME
+ENV GOBIN "$HOME/bin"
+ENV PATH "$PATH:/usr/local/go/bin:$HOME/bin:/avi/scripts"
+ENV TF_PLUGIN_CACHE_DIR "$HOME/.terraform.d/plugin-cache"
 
 # Install dependencies
 RUN tdnf check-update && \
@@ -41,6 +51,7 @@ RUN bash create_sdk_pip_packages.sh migrationtools
 
 WORKDIR /
 RUN tdnf install -y \
+    build-essential \
     gnupg \
     iproute2 \
     make \
@@ -82,14 +93,35 @@ RUN tdnf install -y \
 WORKDIR /alb-sdk/python/avi/migrationtools/nsxt_converter/
 RUN python3 install_nsx_dependencies.py
 
-# Clone avitools and devops repositories
+# Install terraform
 WORKDIR /
+RUN curl https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip -o terraform_${tf_version}_linux_amd64.zip &&  \
+    unzip terraform_${tf_version}_linux_amd64.zip -d /usr/local/bin && \
+    rm -rf terraform_${tf_version}_linux_amd64.zip
+
+# Clone avitools and devops repositories
 RUN cd $HOME && \
     git clone https://github.com/avinetworks/devops && \
     git clone https://github.com/vmware/nsx-advanced-load-balancer-tools avitools && \
     mkdir -p /avi/scripts && \
     cp -r avitools/scripts/* /avi/scripts && \
     rm -rf $HOME/avitools
+
+# Install go for AVI terraform provider
+RUN curl -L https://go.dev/dl/go${golang_version}.linux-amd64.tar.gz -o go${golang_version}.linux-amd64.tar.gz && \
+    rm -rf /usr/local/go && tar -C /usr/local -xzf go${golang_version}.linux-amd64.tar.gz && \
+    go version && \
+    rm go${golang_version}.linux-amd64.tar.gz
+
+# Clone terraform provider repository and build provider locally.
+RUN cd $HOME && \
+    git clone --branch ${branch} https://github.com/vmware/terraform-provider-avi && \
+    cd ~/terraform-provider-avi && \
+    make fmt . && \
+    go mod tidy && \
+    make build13 && \
+    cd ~/terraform-provider-avi/examples/aws/cluster_stages/1_aws_resources && \
+    terraform init
 
 # # Clone ansible repo and install ansible collections.
 RUN cd $HOME && \
@@ -123,4 +155,4 @@ RUN chmod +x avitools-list && \
 
 # Clean out the cache
 RUN tdnf clean all && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* $HOME/.cache $HOME/src 
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* $HOME/.cache $HOME/go/src $HOME/src ${GOPATH}/pkg
