@@ -8,6 +8,16 @@ const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
 
+const data = require('./data');
+
+app.post('/api/f5login', (req, res, next) => {
+  res.status(200).send(data.getF5LoginError);
+})
+
+app.get('/api/f5migrationcount', (req, res, next) => {
+  res.status(200).send(data.getF5MigrationCount);
+})
+
 // MongoDB connection URL
 const connUri = 'mongodb://localhost:27017/';
 

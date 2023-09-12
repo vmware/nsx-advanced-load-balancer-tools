@@ -1,0 +1,63 @@
+<clr-wizard #wizard [(clrWizardOpen)]="open" (clrWizardOnCancel)="doCancel()" [clrWizardPreventDefaultNext]="true">
+    <clr-wizard-title> {{dictionary.startWizardF5Migration}} </clr-wizard-title>
+
+    <clr-wizard-button [type]="'next'"> {{dictionary.startWizardNextLabel}} </clr-wizard-button>
+
+    <clr-wizard-page
+        (clrWizardPageNext)="pageCustomNext()"
+        [clrWizardPagePreventDefaultNext]="true"
+        [clrWizardPageNextDisabled]="!form.valid"
+    >
+        <clr-spinner *ngIf="loadingFlag">
+        </clr-spinner>
+        <ng-template clrPageTitle> {{dictionary.startWizardCollectConfigurations}} </ng-template>
+        <ng-template clrPageNavTitle> {{dictionary.startWizardCollectConfigurations}} </ng-template>
+        <p>
+            {{ dictionary.startWizardCollectPageTitle }}
+        </p>
+        <p>
+            {{ dictionary.startWizardCollectPageSubTitle }}
+        </p>
+        <div class="alert alert-danger" role="alert" *ngIf="f5LoginError">
+            <div class="alert-items">
+                <div class="alert-item static">
+                    <div class="alert-icon-wrapper">
+                        <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+                    </div>
+                    <span class="alert-text">
+                        {{ f5LoginError }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <form clrForm [formGroup]="form" clrLayout="vertical">
+            <clr-input-container>
+              <label> {{dictionary.startWizardIpAddressLabel}} </label>
+              <input clrInput type="text" formControlName="ipAddr" required size="100" />
+            </clr-input-container>
+            <clr-input-container>
+                <label> {{dictionary.startWizardUsernameLabel}} </label>
+                <input clrInput type="text" formControlName="username" required size="100" />
+            </clr-input-container>
+            <clr-password-container>
+                <label> {{dictionary.startWizardPasswordLabel}} </label>
+                <input
+                  clrPassword
+                  name="password"
+                  formControlName="password"
+                  size="95"
+                  required
+                />
+            </clr-password-container>
+        </form>
+    </clr-wizard-page>
+
+    <clr-wizard-page>
+        <ng-template clrPageTitle> {{dictionary.startWizardAnalyzing}} </ng-template>
+        <ng-template clrPageNavTitle> {{dictionary.startWizardAnalyzing}} </ng-template>
+        <div class="center">
+            <img width="350" height="220"  src="assets/images/analyzing.png"/>
+        </div>
+        <div class="progress loop progress-bar"><progress></progress></div>
+    </clr-wizard-page>
+</clr-wizard>
