@@ -27,6 +27,7 @@ ENV TF_PLUGIN_CACHE_DIR "$HOME/.terraform.d/plugin-cache"
 # Install dependencies
 RUN tdnf check-update && \
     tdnf install -qq -y \
+    build-essential \
     python3 \
     git \
     sshpass \
@@ -49,9 +50,9 @@ RUN bash create_sdk_pip_packages.sh sdk
 # Install migrationtools bundle
 RUN bash create_sdk_pip_packages.sh migrationtools
 
+# Install dependencies
 WORKDIR /
 RUN tdnf install -y \
-    build-essential \
     gnupg \
     iproute2 \
     make \
