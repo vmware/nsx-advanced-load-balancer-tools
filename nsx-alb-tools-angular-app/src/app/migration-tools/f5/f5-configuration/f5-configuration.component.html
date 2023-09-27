@@ -1,0 +1,31 @@
+<h6>
+    Incomplete ({{ incompleteMigrationData.length }})
+</h6>
+
+<clr-datagrid>
+    <clr-dg-column>Name</clr-dg-column>
+    <clr-dg-column># of Flags</clr-dg-column>
+    <clr-dg-column>Status</clr-dg-column>
+    <clr-dg-column>ET</clr-dg-column>
+    <clr-dg-column>Actions</clr-dg-column>
+
+    <clr-dg-row *ngFor="let vsConfig of incompleteMigrationData; index as i; trackBy: trackByIndex">
+        <clr-dg-cell>{{vsConfig.vsName}}</clr-dg-cell>
+        <clr-dg-cell>{{vsConfig.flaggedObjects.length}}</clr-dg-cell>
+        <clr-dg-cell>{{vsConfig.status}}</clr-dg-cell>
+        <clr-dg-cell>{{vsConfig.ET}}</clr-dg-cell>
+        <clr-dg-cell>
+            <button (click)="openVsConfigEditorModal(i)" type="button">
+                <cds-icon shape="bars"></cds-icon>
+            </button>
+        </clr-dg-cell>
+    </clr-dg-row>
+
+    <clr-dg-footer>{{incompleteMigrationData.length}} objects</clr-dg-footer>
+</clr-datagrid>
+
+<vs-config-editor-modal
+    *ngIf="isOpenVsConfigEditorModal && incompleteMigrationData.length"
+    [vsConfig]="selectedVsForEditing"
+    (onCloseVsConfigEditorModal)="closeVsConfigEditorModal()"
+></vs-config-editor-modal>

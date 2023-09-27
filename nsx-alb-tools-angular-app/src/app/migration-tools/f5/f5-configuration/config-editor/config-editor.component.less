@@ -1,0 +1,60 @@
+
+.config-editor {
+  display: flex;
+  border: 2px solid #CCCCCC;
+
+  .header {
+    margin-top: 0px;
+    background-color: #FAFAFA;
+    padding: 6px 12px;
+    font-weight: bold;
+    height: 35px;;
+  }
+
+  & .left-section {
+    width: 50%;
+    background-color: #FAFAFA;
+    font-weight: bold;
+
+    & .left-text-area {
+      border: 2px solid #CCCCCC;
+      height: 350px;
+      max-height: 350px;
+      width: 100%;
+      display: block;
+      padding: 7px;
+      background-color: #FAFAFA
+      ;
+    }
+  }
+
+  & .right-section {
+    flex-grow: 1;
+    max-width: 50%;
+  }
+}
+
+:host ::ng-deep .jsoneditor {
+  border: 2px solid #CCCCCC;
+  height: 350px;
+  max-height: 350px;
+
+  .jsoneditor-menu {
+    display: none;
+  }
+
+  .jsoneditor-text {
+    padding: 5px;
+  }
+
+  .jsoneditor-outer {
+    margin: 0px;
+    padding: 0px;
+  }
+
+  .jsoneditor-validation-errors-container {
+    .jsoneditor-additional-errors {
+      display: none !important;
+    }
+  }
+}
