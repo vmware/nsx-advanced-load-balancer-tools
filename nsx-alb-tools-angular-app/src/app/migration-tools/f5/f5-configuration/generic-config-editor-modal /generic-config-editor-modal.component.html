@@ -1,0 +1,29 @@
+<div class="general-config-editor-modal ">
+    <clr-modal [(clrModalOpen)]="isOpen" [clrModalSize]="'xl'">
+        <h3 class="modal-title">ObjectName2 Editor</h3>
+
+        <div class="modal-body">
+            <div class="alerts-section">
+                <clr-alert [clrAlertType]="'warning'">
+                    <clr-alert-item>
+                        <span class="alert-text">
+                            Try closing this alert.
+                        </span>
+                    </clr-alert-item>
+                </clr-alert>
+            </div>
+            <config-editor
+                *ngIf="isOpen"
+                [leftSectionConfig]="config.F5Obj"
+                [rightSectionConfig]="config.aviObj"
+                (isConfigEditorValid)="handleConfigEditorValidationChange($event)"
+            ></config-editor>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" (click)="closeModal(false)">Cancel</button>
+
+            <button type="button" class="btn btn-primary" (click)="closeModal(true)" [disabled]="!isConfigEditorValid">Accept</button>
+        </div>
+    </clr-modal>
+</div>

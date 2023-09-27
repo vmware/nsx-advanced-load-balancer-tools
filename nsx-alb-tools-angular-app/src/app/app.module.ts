@@ -1,6 +1,6 @@
 
 
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -19,17 +19,24 @@ import { F5ReportComponent } from './migration-tools/f5/f5-report/f5-report.comp
 import { F5ConfigurationComponent } from './migration-tools/f5/f5-configuration/f5-configuration.component';
 import { F5ReadyComponent } from './migration-tools/f5/f5-ready/f5-ready.component';
 import { F5CompletedComponent } from './migration-tools/f5/f5-completed/f5-completed.component';
+import { ConfigEditorComponent } from './migration-tools/f5/f5-configuration/config-editor/config-editor.component';
+import { VsConfigEditorModalComponent } from './migration-tools/f5/f5-configuration/vs-config-editor-modal/vs-config-editor-modal.component';
+import { GenericConfigEditorModalComponent } from './migration-tools/f5/f5-configuration/generic-config-editor-modal /generic-config-editor-modal.component';
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    LandingPageComponent,
+    ConfigEditorComponent,
     F5ConfigurationComponent,
     F5MigrationComponent,
     F5CompletedComponent,
     F5ReadyComponent,
     F5ReportComponent,
+    GenericConfigEditorModalComponent,
+    LandingPageComponent,
     StartWizardComponent,
+    VsConfigEditorModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -42,6 +49,10 @@ import { F5CompletedComponent } from './migration-tools/f5/f5-completed/f5-compl
   providers: [
     HttpService,
   ],
+  schemas: [
+    CUSTOM_ELEMENTS_SCHEMA,
+    NO_ERRORS_SCHEMA,
+],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

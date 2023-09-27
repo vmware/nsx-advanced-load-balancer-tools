@@ -1,0 +1,38 @@
+<div class="vs-config-editor-modal">
+    <clr-modal [(clrModalOpen)]="isOpen" [clrModalSize]="'xl'" *ngIf="vsConfig">
+        <h3 class="modal-title">VirtualServiceName2 Editor</h3>
+
+        <div class="modal-body">
+            <div class="alert-section" *ngIf="vsConfig.flaggedObjects.length">
+                <clr-alert [clrAlertType]="'warning'" *ngFor="let config of vsConfig.flaggedObjects; trackBy: trackByIndex">
+                    <clr-alert-item>
+                        <span class="alert-text">
+                            Try closing this alert.
+                        </span>
+                        <div class="alert-actions">
+                            <span class="alert-action" (click)="openChildConfigEditorModal(config)" *ngIf="config.needReview">Review Now</span>
+                        </div>
+                    </clr-alert-item>
+                </clr-alert>
+            </div>
+            <config-editor
+                *ngIf="isOpen"
+                [leftSectionConfig]="vsConfig.F5Obj"
+                [rightSectionConfig]="vsConfig.aviObj"
+                (isConfigEditorValid)="handleVsConfigEditorValidationChange($event)"
+            ></config-editor>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" (click)="closeModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" (click)="closeModal()" [disabled]="vsConfig.flaggedObjects.length || !isVsConfigEditorValid">Accept</button>
+        </div>
+    </clr-modal>
+</div>
+
+<generic-config-editor-modal
+    *ngIf="isOpenChildConfigEditorModal"
+    [vsName]="vsConfig.vsName"
+    [config]="childConfigEditorConfig"
+    (onCloseGeneralConfigEditorModal)="handleCloseChildConfigEditorModal($event)"
+></generic-config-editor-modal>
