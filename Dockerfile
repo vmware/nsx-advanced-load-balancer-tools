@@ -183,20 +183,19 @@ RUN chmod +x avitools-list && \
 RUN tdnf clean all && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* $HOME/.cache $HOME/go/src $HOME/src ${GOPATH}/pkg
 
-RUN apt-get update && \
-    apt-get install -y curl && \
-    curl -s https://deb.nodesource.com/setup_18.x | bash && \
-    apt-get install -y nodejs
+# Angular app code
+RUN tdnf update && \
+    tdnf install -y nodejs
 
-WORKDIR /app
+WORKDIR /nsx-alb-tools-angular-app
 
 # Copy the Angular project files to the container
 COPY /nsx-alb-tools-angular-app/dist ./dist
 
+WORKDIR /server
+
 # Copy the server files to the container
-WORKDIR /app/server
-COPY /nsx-alb-tools-angular-app/server/package.json /nsx-alb-tools-angular-app/server/package-lock.json ./
-COPY /nsx-alb-tools-angular-app/server/server.js ./
+COPY ./server ./
 RUN npm ci
 
 # Expose the necessary port (e.g., 3000 for backend)

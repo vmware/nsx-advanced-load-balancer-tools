@@ -17,7 +17,7 @@ const routes: Routes = [
       {
         path:'',
         redirectTo: 'report',
-        pathMatch: 'full' 
+        pathMatch: 'full'
       },
       {
         path: 'report',
@@ -41,6 +41,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class AppRoutingModule { }
