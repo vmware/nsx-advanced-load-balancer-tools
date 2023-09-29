@@ -32,7 +32,7 @@
     if [ $3 ]; then
         GOLANG_VERSION=$3
     else
-        GOLANG_VERSION=1.18
+        GOLANG_VERSION=1.20.6
     fi
 
     if [ $4 ]; then
@@ -41,6 +41,13 @@
         AKO_BRANCH=master
     fi
 
+    if [ $AVI_VERSION == "30.2.1" ]
+    then
+        BRANCH="eng"
+    else
+        BRANCH=$AVI_VERSION
+    fi
+
     cd $(git rev-parse --show-toplevel)
-    docker build -t avinetworks/avitools:$AVI_VERSION --build-arg avi_sdk_version=$AVI_SDK_VERSION --build-arg avi_version=$AVI_VERSION --build-arg golang_version=$GOLANG_VERSION --build-arg ako_branch=$AKO_BRANCH -f Dockerfile .
+    docker build -t avinetworks/avitools:$AVI_VERSION --build-arg avi_sdk_version=$AVI_SDK_VERSION --build-arg branch=$BRANCH --build-arg avi_version=$AVI_VERSION --build-arg golang_version=$GOLANG_VERSION --build-arg ako_branch=$AKO_BRANCH -f Dockerfile .
 }
