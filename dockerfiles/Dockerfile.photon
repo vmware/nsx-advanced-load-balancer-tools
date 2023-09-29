@@ -6,11 +6,13 @@ FROM ${BASE_IMAGE}
 # Terraform version parameter.
 ARG tf_version="1.5.4"
 # Go version parameter.
-ARG golang_version="1.20.6"
+ARG golang_version
 # This parameter include avi_version e.g 30.2.1
-ARG avi_version="30.2.1"
+ARG avi_version
 # Branch name to build on specific branch
-ARG branch=${avi_version}
+ARG branch
+# AKO branch version
+ARG ako_branch
 
 # Set the locale
 ENV LANG en_US.UTF-8
@@ -53,6 +55,7 @@ RUN bash create_sdk_pip_packages.sh migrationtools
 # Install dependencies
 WORKDIR /
 RUN tdnf install -y \
+    nodejs \
     gnupg \
     iproute2 \
     make \
@@ -63,8 +66,8 @@ RUN tdnf install -y \
     jq \
     gcc \
     vim && \
-    pip3 install ansible==2.9.13 && \
-    pip3 install ansible-lint \
+    pip install ansible==2.9.13 && \
+    pip install ansible-lint \
     f5-sdk \
     flask \
     jinja2 \
@@ -108,6 +111,14 @@ RUN cd $HOME && \
     cp -r avitools/scripts/* /avi/scripts && \
     rm -rf $HOME/avitools
 
+# Ako and infra binaries
+RUN mkdir -p $HOME/src/github.com/vmware && \
+    cd $HOME/src/github.com/vmware && \
+    git clone -b ${ako_branch} --single-branch https://github.com/vmware/load-balancer-and-ingress-services-for-kubernetes && \
+    cd load-balancer-and-ingress-services-for-kubernetes && \
+    make build-local && make build-local-infra && cp -r bin/* $HOME/ && \
+    chmod +x $HOME/ako $HOME/ako-infra
+
 # Install go for AVI terraform provider
 RUN curl -L https://go.dev/dl/go${golang_version}.linux-amd64.tar.gz -o go${golang_version}.linux-amd64.tar.gz && \
     rm -rf /usr/local/go && tar -C /usr/local -xzf go${golang_version}.linux-amd64.tar.gz && \
@@ -144,7 +155,8 @@ RUN touch list && \
     echo "echo "virtualservice_examples_api.py"" >> avitools-list && \
     echo "echo "config_patch.py"" >> avitools-list && \
     echo "echo "vs_filter.py"" >> avitools-list && \
-    echo "echo "nsxt_converter.py"" >> avitools-list
+    echo "echo "nsxt_converter.py"" >> avitools-list \
+    echo "echo "v2avi_converter.py"" >> avitools-list
 
 # Verify all script in avitools-list
 RUN for script in $(ls /avi/scripts); do echo "echo $script" >> avitools-list; done;

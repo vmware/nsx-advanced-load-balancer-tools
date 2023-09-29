@@ -1,195 +1,124 @@
-FROM ubuntu:focal-20200925
+# Global build time Args
+ARG BASE_IMAGE=projects.registry.vmware.com/photon/photon4:latest
 
-ARG tf_version="0.14.5"
-ARG avi_sdk_version
-ARG avi_version
+FROM ${BASE_IMAGE}
+
+# Terraform version parameter.
+ARG tf_version="1.5.4"
+# Go version parameter.
 ARG golang_version
+# This parameter include avi_version e.g 30.2.1
+ARG avi_version
+# Branch name to build on specific branch
+ARG branch
+# AKO branch version
 ARG ako_branch
 
-RUN echo "export GOROOT=/usr/local/go" >> /etc/bash.bashrc && \
-    echo "export TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache"  >> /etc/bash.bashrc && \
-    echo "export GOPATH=$HOME" >> /etc/bash.bashrc && \
-    echo "export GOBIN=$HOME/bin" >> /etc/bash.bashrc && \
-    echo "export ANSIBLE_FORCE_COLOR=True" >> /etc/bash.bashrc && \
-    export PATH=$PATH:/usr/lib/go/bin:$HOME/bin:/avi/scripts:/usr/local/go/bin && \
-    echo "export PATH=$PATH:/usr/lib/go/bin:$HOME/bin:/avi/scripts:/usr/local/go/bin" >> /etc/bash.bashrc && \
-    echo '"\e[A":history-search-backward' >> /root/.inputrc && \
-    echo '"\e[B":history-search-forward' >> /root/.inputrc
+# Set the locale
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
-RUN apt-get update && \
-    apt install -y software-properties-common && \
-    add-apt-repository -y ppa:deadsnakes/ppa && \
-    apt update && \
-    apt install -y python3.8 \
-    python3.8-dev \
-    python3.8-distutils \
-    python2.7 \
-    python2.7-dev \
-    jq \
-    curl && \
-    cd /tmp && curl -O https://bootstrap.pypa.io/get-pip.py && \
-    curl -o get-pip-27.py https://bootstrap.pypa.io/pip/2.7/get-pip.py && \
-    python2.7 /tmp/get-pip-27.py && \
-    python3.8 /tmp/get-pip.py && \
-    ln -s /usr/bin/python2.7 /usr/bin/python && \
-    rm -rf /usr/local/bin/pip
+# Set up env variables for Go and Terraform
+ENV GOROOT "/usr/local/go"
+ENV GOPATH $HOME
+ENV GOBIN "$HOME/bin"
+ENV PATH "$PATH:/usr/local/go/bin:$HOME/bin:/avi/scripts"
+ENV TF_PLUGIN_CACHE_DIR "$HOME/.terraform.d/plugin-cache"
 
-RUN apt-get update && \ 
-    apt-get install -y \
-    apache2-utils \
-    apt-transport-https \
-    lsb-release \
-    gnupg \
-    dnsutils \
+# Install dependencies
+RUN tdnf check-update && \
+    tdnf install -qq -y \
+    build-essential \
+    python3 \
     git \
-    httpie \
-    inetutils-ping \
+    sshpass \
+    sshfs \
+    wget \
+    sudo \
+    python3-devel \
+    python3-pip \
+    libffi-devel && tdnf clean all
+
+RUN git clone --branch ${branch}  https://github.com/vmware/alb-sdk /alb-sdk
+
+# Update pycrypto in migrationtools for python3
+WORKDIR /alb-sdk/python/avi/migrationtools
+RUN sed -i "s/pycrypto/pycryptodome/g" setup.py
+
+# This will install tar bundle for avisdk and migrationtools.
+WORKDIR /alb-sdk/python/
+RUN bash create_sdk_pip_packages.sh sdk
+# Install migrationtools bundle
+RUN bash create_sdk_pip_packages.sh migrationtools
+
+# Install dependencies
+WORKDIR /
+RUN tdnf install -y \
+    nodejs \
+    gnupg \
     iproute2 \
-    libffi-dev \
-    libssl-dev \
-    lua5.3 \
     make \
     netcat \
     nmap \
-    slowhttptest \
-    sshpass \
     tree \
     unzip \
     jq \
     gcc \
     vim && \
-    pip2 install -U appdirs \
-    aws-google-auth \
-    awscli \
-    bigsuds \
-    ConfigParser \
-    ecdsa \
+    pip install ansible==2.9.13 && \
+    pip install ansible-lint \
     f5-sdk \
     flask \
     jinja2 \
     jsondiff \
-    kubernetes \
-    netaddr \
     networkx \
-    nose-html-reporting \
-    nose-testconfig \
     openpyxl \
-    openstacksdk \
+    netaddr \
     pandas \
     paramiko \
     pexpect \
+    pycryptodome \ 
     pyOpenssl \
     pyparsing \
-    pytest-cov \
-    pytest-xdist \
     pytest \
     pyvmomi \
     pyyaml \
     requests-toolbelt \
-    requests \
-    unittest2 \
+    xlsxwriter \
+    hvac \
+    ansible_runner \
     vcrpy \
-    xlrd \
-    xlsxwriter \
-    urllib3 \
-    hvac \
-    yq \
-    avisdk==${avi_sdk_version} \
-    avimigrationtools==22.1.4.post1 && \
-    pip3 install setuptools==57.5.0 && \
-    pip3 uninstall ansible-core -y \
-    pip3 install ansible==2.9.13 && \
-    pip3 install ansible-lint \
-    awscli \
-    bigsuds \
-    f5-sdk \
-    flask \
-    jinja2 \
-    jsondiff \
-    kubernetes \
-    openstacksdk \
-    netaddr \
-    pandas \
-    paramiko \
-    pexpect \
-    pycrypto \
-    pyOpenssl \
-    pyparsing \
-    pyvmomi \
-    pyyaml \
-    requests-toolbelt \
-    requests \
-    xlsxwriter \
-    urllib3 \
-    hvac \
-    yq \
-    avisdk==${avi_sdk_version} \
-    avimigrationtools==22.1.4.post1 && \
-    ansible-galaxy install -c avinetworks.avicontroller-azure \
-    avinetworks.docker \
-    avinetworks.network_interface \
-    avinetworks.avimigrationtools && \
-    ansible-galaxy collection install vmware.alb
+    wheel \
+    parameterized \
+    /alb-sdk/python/dist/avisdk-${avi_version}.tar.gz \
+    /alb-sdk/python/dist/avimigrationtools-${avi_version}.tar.gz
 
-RUN echo "Check specified terraform version is release."
-RUN if curl -sL --fail https://registry.terraform.io/v1/providers/vmware/avi/versions | jq -r '.versions[].version' | grep ${avi_version}; then \
-        echo "Terraform version is available." ; \
-    else \
-        echo "Terraform version is not available with the specified version ${avi_version}." && exit 1; \
-    fi
+# This script will install nsx dependencies.
+WORKDIR /alb-sdk/python/avi/migrationtools/nsxt_converter/
+RUN python3 install_nsx_dependencies.py
 
-RUN install_nsx_dependencies.py
-
-RUN cd /tmp && curl -O https://raw.githubusercontent.com/avinetworks/avitools/master/files/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle
-RUN /bin/bash /tmp/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle --eulas-agreed --required --console
-RUN rm -f /tmp/VMware-ovftool-4.4.0-16360108-lin.x86_64.bundle
-
-RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc |   gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg && \
-    AZ_REPO=$(lsb_release -cs) && \
-    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list && \
-    apt-get update && \
-    apt-get install -y azure-cli
-
-RUN curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
+# Install terraform
+WORKDIR /
 RUN curl https://releases.hashicorp.com/terraform/${tf_version}/terraform_${tf_version}_linux_amd64.zip -o terraform_${tf_version}_linux_amd64.zip &&  \
     unzip terraform_${tf_version}_linux_amd64.zip -d /usr/local/bin && \
     rm -rf terraform_${tf_version}_linux_amd64.zip
 
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
-    touch /etc/apt/sources.list.d/kubernetes.list && \
-    echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list && \
-    apt-get update && apt-get install -y kubectl
-
-RUN echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt \
-    cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && curl \
-    https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  \
-    add - && apt-get update -y && apt-get install google-cloud-sdk -y
-
-RUN curl -L https://github.com/vmware/govmomi/releases/download/v0.22.1/govc_linux_amd64.gz \ | gunzip > /usr/local/bin/govc && \
-    chmod +x /usr/local/bin/govc
-
+# Clone avitools and devops repositories
 RUN cd $HOME && \
     git clone https://github.com/avinetworks/devops && \
-    git clone https://github.com/as679/power-beaver && \
-    git clone https://github.com/vmware/terraform-provider-avi && \
-    git clone https://github.com/avinetworks/avitools && \
+    git clone https://github.com/vmware/nsx-advanced-load-balancer-tools avitools && \
     mkdir -p /avi/scripts && \
     cp -r avitools/scripts/* /avi/scripts && \
-    rm -rf $HOME/avitools && \
-    mkdir $HOME/.terraform.d/ && \
-    mkdir $HOME/.terraform.d/plugin-cache && \
-    cd ~/terraform-provider-avi/examples/aws/cluster_stages/1_aws_resources && \
-    export TF_PLUGIN_CACHE_DIR=$HOME/.terraform.d/plugin-cache && \
-    sed -i 's/version = ".*\..*\..*"/version =  "'${avi_version}'"/g' versions.tf && \
-    terraform init
+    rm -rf $HOME/avitools
 
-RUN apt update && apt install nodejs -y && \
-    curl -L https://go.dev/dl/go${golang_version}.linux-amd64.tar.gz -o go${golang_version}.linux-amd64.tar.gz && \
+# Install go 
+RUN curl -L https://go.dev/dl/go${golang_version}.linux-amd64.tar.gz -o go${golang_version}.linux-amd64.tar.gz && \
     rm -rf /usr/local/go && tar -C /usr/local -xzf go${golang_version}.linux-amd64.tar.gz && \
+    go version && \
     rm go${golang_version}.linux-amd64.tar.gz
-ENV PATH="${PATH}:/usr/local/go/bin"
 
+# Ako and infra binaries
 RUN mkdir -p $HOME/src/github.com/vmware && \
     cd $HOME/src/github.com/vmware && \
     git clone -b ${ako_branch} --single-branch https://github.com/vmware/load-balancer-and-ingress-services-for-kubernetes && \
@@ -197,6 +126,25 @@ RUN mkdir -p $HOME/src/github.com/vmware && \
     make build-local && make build-local-infra && cp -r bin/* $HOME/ && \
     chmod +x $HOME/ako $HOME/ako-infra
 
+# Clone terraform provider repository and build provider locally.
+RUN cd $HOME && \
+    git clone --branch ${branch} https://github.com/vmware/terraform-provider-avi && \
+    cd ~/terraform-provider-avi && \
+    make fmt . && \
+    go mod tidy && \
+    make build13 && \
+    cd ~/terraform-provider-avi/examples/aws/cluster_stages/1_aws_resources && \
+    terraform init
+
+# # Clone ansible repo and install ansible collections.
+RUN cd $HOME && \
+    git clone --branch ${branch} https://github.com/vmware/ansible-collection-alb && \
+    cd ~/ansible-collection-alb && \
+    ansible-galaxy collection build && \
+    ansible-galaxy collection install vmware-alb-*.tar.gz && \
+    pip3 install -r ~/.ansible/collections/ansible_collections/vmware/alb/requirements.txt
+
+# Verify all converters files.
 RUN touch list && \
     echo '#!/bin/bash' > avitools-list && \
     echo "echo "f5_converter.py"" >> avitools-list && \
@@ -208,16 +156,17 @@ RUN touch list && \
     echo "echo "virtualservice_examples_api.py"" >> avitools-list && \
     echo "echo "config_patch.py"" >> avitools-list && \
     echo "echo "vs_filter.py"" >> avitools-list && \
-    echo "echo "nsxt_converter.py"" >> avitools-list
+    echo "echo "nsxt_converter.py"" >> avitools-list \
+    echo "echo "v2avi_converter.py"" >> avitools-list
 
+# Verify all script in avitools-list
 RUN for script in $(ls /avi/scripts); do echo "echo $script" >> avitools-list; done;
 
+# make executables
 RUN chmod +x avitools-list && \
     cp avitools-list /usr/local/bin/ && \
     echo "alias avitools-list=/usr/local/bin/avitools-list" >> ~/.bashrc
 
-RUN apt-get clean && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* $HOME/.cache $HOME/go/src $HOME/src
-
-ENV cmd cmd_to_run
-CMD eval $cmd
+# Clean out the cache
+RUN tdnf clean all && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* $HOME/.cache $HOME/go/src $HOME/src ${GOPATH}/pkg
