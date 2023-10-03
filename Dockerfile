@@ -6,11 +6,13 @@ FROM ${BASE_IMAGE}
 # Terraform version parameter.
 ARG tf_version="1.5.4"
 # Go version parameter.
-ARG golang_version
+ARG golang_version="1.20.6"
 # This parameter include avi_version e.g 30.2.1
 ARG avi_version
-# Branch name to build on specific branch
-ARG branch
+# Branch name for AVI SDK
+ARG avi_sdk_branch=${avi_version}
+# avitools branch
+ARG tools_branch=${avi_version}
 # AKO branch version
 ARG ako_branch
 
@@ -40,7 +42,7 @@ RUN tdnf check-update && \
     python3-pip \
     libffi-devel && tdnf clean all
 
-RUN git clone --branch ${branch}  https://github.com/vmware/alb-sdk /alb-sdk
+RUN git clone --branch ${avi_sdk_branch}  https://github.com/vmware/alb-sdk /alb-sdk
 
 # Update pycrypto in migrationtools for python3
 WORKDIR /alb-sdk/python/avi/migrationtools
@@ -91,8 +93,8 @@ RUN tdnf install -y \
     vcrpy \
     wheel \
     parameterized \
-    /alb-sdk/python/dist/avisdk-${avi_version}.tar.gz \
-    /alb-sdk/python/dist/avimigrationtools-${avi_version}.tar.gz
+    /alb-sdk/python/dist/avisdk-*.tar.gz \
+    /alb-sdk/python/dist/avimigrationtools-*.tar.gz
 
 # This script will install nsx dependencies.
 WORKDIR /alb-sdk/python/avi/migrationtools/nsxt_converter/
@@ -128,7 +130,7 @@ RUN mkdir -p $HOME/src/github.com/vmware && \
 
 # Clone terraform provider repository and build provider locally.
 RUN cd $HOME && \
-    git clone --branch ${branch} https://github.com/vmware/terraform-provider-avi && \
+    git clone -b ${tools_branch} --single-branch https://github.com/vmware/terraform-provider-avi && \
     cd ~/terraform-provider-avi && \
     make fmt . && \
     go mod tidy && \
@@ -138,7 +140,7 @@ RUN cd $HOME && \
 
 # # Clone ansible repo and install ansible collections.
 RUN cd $HOME && \
-    git clone --branch ${branch} https://github.com/vmware/ansible-collection-alb && \
+    git clone -b ${tools_branch} --single-branch https://github.com/vmware/ansible-collection-alb && \
     cd ~/ansible-collection-alb && \
     ansible-galaxy collection build && \
     ansible-galaxy collection install vmware-alb-*.tar.gz && \

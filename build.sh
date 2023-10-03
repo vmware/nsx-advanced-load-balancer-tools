@@ -17,37 +17,38 @@
 # permission is obtained from Avi Networks Incorporated.
 ###
 {
-    if [ $1 ]; then
-        AVI_VERSION=$1
-    else
-        AVI_VERSION=22.1.4
-    fi
-
-    if [ $2 ]; then
-        AVI_SDK_VERSION=$2
-    else
-        AVI_SDK_VERSION=$AVI_VERSION
-    fi
-
-    if [ $3 ]; then
-        GOLANG_VERSION=$3
-    else
-        GOLANG_VERSION=1.20.6
-    fi
-
-    if [ $4 ]; then
-        AKO_BRANCH=$4
-    else
-        AKO_BRANCH=master
-    fi
-
-    if [ $AVI_VERSION == "30.2.1" ]
-    then
-        BRANCH="eng"
-    else
+    AVI_VERSION=22.1.4
+    GOLANG_VERSION=1.20.6
+    AKO_BRANCH=master
+    while getopts "v:b:hg:a:" OPTION
+    do
+        case $OPTION in
+            v)
+                AVI_VERSION="$OPTARG"
+                ;;
+            b)
+                BRANCH="$OPTARG"
+                ;;
+            g)
+                GOLANG_VERSION="$OPTARG"
+                ;;
+            a)
+                AKO_BRANCH="$OPTARG"
+                ;;
+            h)
+                echo "-v  string   specify AVI_VERSION, default value: $AVI_VERSION"
+                echo "-b  string   specify SDK branch name, default value: $AVI_VERSION"
+                echo "-g  string   specify Golang version, default value: $GOLANG_VERSION"
+                echo "-a  string   specify AKO branch name, default value: $AKO_BRANCH"
+                exit 0
+                ;;
+        esac
+    done
+    cd $(git rev-parse --show-toplevel)
+    TOOLS_BRANCH=$AVI_VERSION
+    if [ ! -n "$BRANCH" ]; then
         BRANCH=$AVI_VERSION
     fi
 
-    cd $(git rev-parse --show-toplevel)
-    docker build -t avinetworks/avitools:$AVI_VERSION --build-arg avi_sdk_version=$AVI_SDK_VERSION --build-arg branch=$BRANCH --build-arg avi_version=$AVI_VERSION --build-arg golang_version=$GOLANG_VERSION --build-arg ako_branch=$AKO_BRANCH -f Dockerfile .
+    echo "docker build -t avinetworks/avitools:$AVI_VERSION --build-arg tools_branch=$TOOLS_BRANCH --build-arg avi_sdk_branch=$BRANCH --build-arg avi_version=$AVI_VERSION --build-arg golang_version=$GOLANG_VERSION --build-arg ako_branch=$AKO_BRANCH -f Dockerfile ."
 }
