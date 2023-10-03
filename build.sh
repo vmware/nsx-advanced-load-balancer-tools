@@ -50,5 +50,5 @@
         BRANCH=$AVI_VERSION
     fi
 
-    echo "docker build -t avinetworks/avitools:$AVI_VERSION --build-arg tools_branch=$TOOLS_BRANCH --build-arg avi_sdk_branch=$BRANCH --build-arg avi_version=$AVI_VERSION --build-arg golang_version=$GOLANG_VERSION --build-arg ako_branch=$AKO_BRANCH -f Dockerfile ."
+    docker build -t avinetworks/avitools:$AVI_VERSION --build-arg tools_branch=$TOOLS_BRANCH --build-arg avi_sdk_branch=$BRANCH --build-arg avi_version=$AVI_VERSION --build-arg golang_version=$GOLANG_VERSION --build-arg ako_branch=$AKO_BRANCH -f Dockerfile .
 }
