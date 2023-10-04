@@ -7,12 +7,8 @@ FROM ${BASE_IMAGE}
 ARG tf_version="1.5.4"
 # Go version parameter.
 ARG golang_version="1.20.6"
-# This parameter include avi_version e.g 30.2.1
-ARG avi_version
-# Branch name for AVI SDK
-ARG avi_sdk_branch=${avi_version}
 # avitools branch
-ARG tools_branch=${avi_version}
+ARG branch="22.1.4"
 # AKO branch version
 ARG ako_branch
 
@@ -42,7 +38,11 @@ RUN tdnf check-update && \
     python3-pip \
     libffi-devel && tdnf clean all
 
-RUN git clone --branch ${avi_sdk_branch}  https://github.com/vmware/alb-sdk /alb-sdk
+RUN if git clone --branch ${branch}  https://github.com/vmware/alb-sdk /alb-sdk; then \
+        echo "alb-sdk cloned." ; \
+    else \
+        echo "Branch is not available with the specified name on alb-sdk repository." && exit 1; \
+    fi
 
 # Update pycrypto in migrationtools for python3
 WORKDIR /alb-sdk/python/avi/migrationtools
@@ -130,18 +130,28 @@ RUN mkdir -p $HOME/src/github.com/vmware && \
 
 # Clone terraform provider repository and build provider locally.
 RUN cd $HOME && \
-    git clone -b ${tools_branch} --single-branch https://github.com/vmware/terraform-provider-avi && \
-    cd ~/terraform-provider-avi && \
+    if git clone --branch ${branch}  https://github.com/vmware/terraform-provider-avi; then \
+        echo "terraform-provider-avi cloned." ; \
+    else \
+        echo "Branch is not available with the specified name on terraform-provider-avi repository." && exit 1; \
+    fi
+
+RUN cd ~/terraform-provider-avi && \
     make fmt . && \
     go mod tidy && \
     make build13 && \
     cd ~/terraform-provider-avi/examples/aws/cluster_stages/1_aws_resources && \
     terraform init
 
-# # Clone ansible repo and install ansible collections.
+# Clone ansible repo and install ansible collections.
 RUN cd $HOME && \
-    git clone -b ${tools_branch} --single-branch https://github.com/vmware/ansible-collection-alb && \
-    cd ~/ansible-collection-alb && \
+    if git clone --branch ${branch}  https://github.com/vmware/ansible-collection-alb; then \
+        echo "ansible-collection-alb cloned." ; \
+    else \
+        echo "Branch is not available with the specified name on ansible-collection-alb repository." && exit 1; \
+    fi
+
+RUN cd ~/ansible-collection-alb && \
     ansible-galaxy collection build && \
     ansible-galaxy collection install vmware-alb-*.tar.gz && \
     pip3 install -r ~/.ansible/collections/ansible_collections/vmware/alb/requirements.txt
