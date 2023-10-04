@@ -17,37 +17,35 @@
 # permission is obtained from Avi Networks Incorporated.
 ###
 {
-    if [ $1 ]; then
-        AVI_VERSION=$1
-    else
-        AVI_VERSION=22.1.4
-    fi
-
-    if [ $2 ]; then
-        AVI_SDK_VERSION=$2
-    else
-        AVI_SDK_VERSION=$AVI_VERSION
-    fi
-
-    if [ $3 ]; then
-        GOLANG_VERSION=$3
-    else
-        GOLANG_VERSION=1.20.6
-    fi
-
-    if [ $4 ]; then
-        AKO_BRANCH=$4
-    else
-        AKO_BRANCH=master
-    fi
-
+    AVI_VERSION=22.1.4
+    GOLANG_VERSION=1.20.6
+    AKO_BRANCH=master
+    while getopts "v:hg:a:" OPTION
+    do
+        case $OPTION in
+            v)
+                AVI_VERSION="$OPTARG"
+                ;;
+            g)
+                GOLANG_VERSION="$OPTARG"
+                ;;
+            a)
+                AKO_BRANCH="$OPTARG"
+                ;;
+            h)
+                echo "-v  string   specify AVI_VERSION, default value: $AVI_VERSION"
+                echo "-g  string   specify Golang version, default value: $GOLANG_VERSION"
+                echo "-a  string   specify AKO branch name, default value: $AKO_BRANCH"
+                exit 0
+                ;;
+        esac
+    done
     if [ $AVI_VERSION == "30.2.1" ]
     then
         BRANCH="eng"
     else
         BRANCH=$AVI_VERSION
     fi
-
     cd $(git rev-parse --show-toplevel)
-    docker build -t avinetworks/avitools:$AVI_VERSION --build-arg avi_sdk_version=$AVI_SDK_VERSION --build-arg branch=$BRANCH --build-arg avi_version=$AVI_VERSION --build-arg golang_version=$GOLANG_VERSION --build-arg ako_branch=$AKO_BRANCH -f Dockerfile .
+    docker build -t avinetworks/avitools:$AVI_VERSION --build-arg branch=$BRANCH --build-arg golang_version=$GOLANG_VERSION --build-arg ako_branch=$AKO_BRANCH -f Dockerfile .
 }
