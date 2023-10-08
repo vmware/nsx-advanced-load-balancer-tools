@@ -1,8 +1,8 @@
-const controller = require('../controllers/configuration.controller');
+const controller = require('../controllers/migration.controller');
 const express = require("express");
 const router = express.Router();
 
-router.get('/getAllIncompleteVSMigrationData', controller.getAllIncompleteVSMigrationData);
+router.get('/getConfiguration', controller.getConfiguration);
 
 router.get('/getLabControllerDetails', controller.getLabControllerDetails);
 
