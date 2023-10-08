@@ -1,3 +1,178 @@
-<h1>
-   Report page
-</h1>
+<div>
+   <h5>
+      {{ dictionary.reportPageLevelOfComplexityTitle }}
+   </h5>
+
+   <div class="progress-block">
+      <clr-progress-bar class="progress-bar" id="demoProgressBar" clrSuccess clrValue="85"></clr-progress-bar>
+      <span> {{ getLevelText() }} </span>
+   </div>
+
+   <p>
+      {{ dictionary.reportPageComplexityText }}
+   </p>
+
+   <button class="btn btn-primary"> {{ dictionary.reportPageContinueMigrationText }} </button>
+   <button class="btn btn-link"> {{ dictionary.reportPageDownloadReportButtonText }} </button>
+
+   <div class="clr-row">
+      <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
+         <div class="card">
+            <div class="card-header">
+               <cds-icon size="30" shape="vmw-app" status="success"></cds-icon>
+               {{ dictionary.reportPageVirtualServicesLabel }}
+            </div>
+            <div class="card-block">
+               <div class="card-text">
+                  <figure id="donut"></figure>
+               </div>
+            </div>
+            <div class="card-footer">
+               <div class="footer">
+                  <clr-progress-bar class="progress-bar" id="demoProgressBar" clrSuccess clrValue="85"></clr-progress-bar>
+                  <div class="footer-row">
+                     <div> {{ dictionary.reportPageEnabledText }} </div>
+                     <div> {{ report?.virtualService?.enabledCount }} </div>
+                  </div>
+                  <div class="footer-row">
+                     <div> {{ dictionary.reportPageDeactivatedText }} </div>
+                     <div> {{ report?.virtualService?.deactivatedCount }} </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
+         <div class="card">
+            <div class="card-header">
+               <cds-icon size="30" shape="network-switch" status="success"></cds-icon>
+               {{ dictionary.reportPagePoolsLabel }}
+            </div>
+            <div class="card-block">
+               <div class="center">
+                  <div>
+                     <h3 class="card-title text-blue"> {{ report?.pools?.total }} </h3>
+                     <div class="card-text">
+                           {{ dictionary.reportPageTotalLabel }}
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="card-footer">
+               <div class="footer">
+                  <clr-progress-bar class="progress-bar" id="demoProgressBar" clrSuccess clrValue="85"></clr-progress-bar>
+                  <div class="footer-row">
+                     <div> {{ dictionary.reportPageEnabledText }} </div>
+                     <div> {{ report?.pools?.enabledCount }} </div>
+                  </div>
+                  <div class="footer-row">
+                     <div> {{ dictionary.reportPageDeactivatedText }} </div>
+                     <div> {{ report?.pools?.deactivatedCount }} </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
+         <div class="card">
+            <div class="card-header">
+               <cds-icon size="30" shape="list" status="success"></cds-icon>
+               {{ dictionary.reportPageiRulesLabel }}
+            </div>
+            <div class="card-block">
+               <div class="center">
+                  <div>
+                     <h3 class="card-title text-blue"> {{ report?.iRules?.total }} </h3>
+                     <div class="card-text">
+                           {{ dictionary.reportPageTotalLabel }}
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="card-footer ">
+               <div class="footer">
+                  <div class="footer-row">
+                     <div> {{ dictionary.reportPageConversionRate }} </div>
+                     <div> {{ report?.iRules?.conversionRate }}% </div>
+                  </div>
+                  <clr-progress-bar class="progress-bar" id="demoProgressBar" clrSuccess clrValue="85"></clr-progress-bar>
+               </div>
+            </div>
+         </div>
+      </div>
+  </div>
+
+  <div class="clr-row">
+      <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
+         <div class="card">
+            <div class="card-header">
+               <cds-icon size="30" shape="user" status="success"></cds-icon>
+               {{ dictionary.reportPageTenantsLabel }}
+            </div>
+            <div class="card-block">
+               <div class="center">
+                  <div>
+                     <h3 class="card-title text-blue"> {{ report?.tenants?.total }} </h3>
+                     <div class="card-text">
+                           {{ dictionary.reportPageTotalLabel }}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
+         <div class="card">
+            <div class="card-header">
+               <cds-icon size="30" shape="cloud-traffic" status="success"></cds-icon>
+               {{ dictionary.reportPageTrafficLabel }}
+            </div>
+            <div class="card-block">
+               <div class="traffic-card">
+                  <div>
+                     <h6 class="headings">
+                        {{ dictionary.reportPageRequestText }}
+                     </h6>
+                     <h3 class="card-title text-blue"> {{ report?.traffic?.request }}/sec </h3>
+                  </div>
+                  <div>
+                     <h6 class="headings">
+                        {{ dictionary.reportPageBytesText }}
+                     </h6>
+                     <h3 class="card-title text-blue"> {{ report?.traffic?.bytes }}/sec </h3>
+                  </div>
+                  <div>
+                     <h6 class="headings">
+                        {{ dictionary.reportPageMaxConnectionsText }}
+                     </h6>
+                     <h3 class="card-title text-blue"> {{ report?.traffic?.maxConnections }} </h3>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
+         <div class="card">
+            <div class="card-header">
+               <cds-icon size="30" shape="exclamation-circle" status="success"></cds-icon>
+               {{ dictionary.reportPageUnsupportedLabel }}
+            </div>
+            <div class="card-block">
+               <div class="center">
+                  <div>
+                     <h3 class="card-title text-blue"> {{ report?.unsupported?.total }} </h3>
+                     <div class="card-text">
+                           {{ dictionary.reportPageTotalLabel }}
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+</div>

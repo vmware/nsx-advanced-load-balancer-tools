@@ -19,6 +19,18 @@ app.get('/api/f5migrationcount', (req, res, next) => {
   res.status(200).send(data.getF5MigrationCount);
 })
 
+app.get('/api/f5report', (req, res, next) => {
+  res.status(200).send(data.getReportPageData);
+})
+
+app.get('/api/f5ready', (req, res, next) => {
+  res.status(200).send(data.getReadyPageData);
+})
+
+app.get('/api/f5destination', (req, res, next) => {
+  res.status(200).send(data.getF5DestinationData);
+})
+
 // MongoDB connection URL
 const connUri = 'mongodb://localhost:27017/';
 
