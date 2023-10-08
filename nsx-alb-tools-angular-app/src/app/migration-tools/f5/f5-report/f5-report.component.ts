@@ -164,4 +164,21 @@ export class F5ReportComponent implements OnInit {
       }
     }
 
+    generateReport(): void {
+      const reqBody = {
+        f5_host_ip: '10.206.40.100',
+        f5_ssh_user: 'admin',
+        f5_ssh_password: 'AviNetworks123!'
+      };
+
+      this.http.post('discovery/generateReport', reqBody).subscribe(
+        (data) => {
+          console.log('Data from API:', data);
+        },
+        (error) => {
+          console.error('Error from API:', error);
+        }
+      );
+    }
+
 }

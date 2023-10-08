@@ -12,7 +12,7 @@ export class ConfigurationTabService {
   ) {}
 
   public getAllIncompleteVSMigrationsData(): Observable<incompleteVsMigration[]> {
-    return this.http.get('configTab/getAllIncompleteVSMigrationData');
+    return this.http.get('migration/getConfiguration');
   }
 
   public getLabControllerDetails(): Observable<labController> {

@@ -2,7 +2,8 @@ const express = require('express');
 const path = require('path');
 const cors = require('cors');
 const toolsRouter = require("./app/routes/tools.route");
-const configurationsRouter = require("./app/routes/configuration.route");
+const discoveryRouter = require('./app/routes/discovery.route');
+const migrationRouter = require("./app/routes/migration.route");
 var mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
@@ -59,8 +60,11 @@ app.use(express.static(path.join(__dirname, '../nsx-alb-tools-angular-app', 'dis
 // Route for serving the data asked by Angular application.
 app.use("/migrationTools", toolsRouter);
 
+// Route for Report page.
+app.use('/api/discovery', discoveryRouter);
+
 // Route for serving the data asked by Angular application.
-app.use("/api/configTab", configurationsRouter);
+app.use("/api/migration", migrationRouter);
 
 // Route for serving the Angular application.
 app.get('*', (req, res) => {
