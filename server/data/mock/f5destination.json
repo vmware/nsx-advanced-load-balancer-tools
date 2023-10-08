@@ -1,0 +1,22 @@
+{
+    "tenant": [
+        "admin",
+        "T1",
+        "T2",
+        "T3",
+        "T4"
+    ],
+    "cloud": [
+        "Default cloud",
+        "AWS",
+        "NSX"
+    ],
+    "vrf": [
+        "global",
+        "local"
+    ],
+    "seGroup": [
+        "Default-Group",
+        "SE Group 2"
+    ]
+}

@@ -1,0 +1,41 @@
+{
+    "destinationController": {
+        "ipAddr": "12.12.23.32",
+        "username": "xyzabcdef@vmware.com",
+        "password": "************"
+    },
+    "mapping": {
+        "cloud": "Default cloud",
+        "vrf": "global",
+        "tenant": "admin",
+        "seGroup": "Default-Group"
+    },
+    "inProgress": [
+        {
+            "name": "playbook name1",
+            "processPercent": 85
+        }
+    ],
+    "vsStatusData": [
+        {
+          "name": "Vs1",
+          "status": "Reviewed"
+        },
+        {
+          "name": "Vs2",
+          "status": "Auto Converted"
+        },
+        {
+          "name": "Vs3",
+          "status": "Ready"
+        },
+        {
+          "name": "Vs4",
+          "status": "unused"
+        },
+        {
+          "name": "Vs5",
+          "status": "Needs Review"
+        }
+      ]
+}

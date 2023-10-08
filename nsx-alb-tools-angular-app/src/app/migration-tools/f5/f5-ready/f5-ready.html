@@ -1,3 +1,289 @@
-<h1>
-   Ready page
-</h1>
+<div>
+
+
+   <div class="clr-row">
+      <div class="clr-col-lg-12 clr-col-12">
+         <div class="card top-row">
+            <div class="card-block">
+               <h5 class="card-title"> {{ dictionary.readypageConfigMigrationTitle }} </h5>
+               <p class="card-text">
+                  <clr-progress-bar class="progress-bar" clrSuccess clrValue="85">20% completed</clr-progress-bar> 
+               </p>
+            </div>
+            <div class="card-block">
+               <h5 class="card-title"> {{ dictionary.readypageIRuleMigrationTitle }} </h5>
+               <p class="card-text">
+                  <clr-progress-bar class="progress-bar" clrDanger clrValue="85"></clr-progress-bar> 0% done
+               </p>
+            </div>
+            <div class="card-block">
+               <h5 class="card-title"> {{ dictionary.readypageFullyMigratedTitle }} </h5>
+               <p class="card-text">
+                  <clr-progress-bar class="progress-bar" clrWarning clrValue="85"></clr-progress-bar>
+               </p>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <div class="clr-row">
+      <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
+         <div class="card">
+            <div class="card-header">
+               <cds-icon size="30" shape="map-marker" status="success"></cds-icon>
+               {{ dictionary.readyPageDestinationControllerTitle }}
+            </div>
+            <div class="card-block">
+               <div class="card-text">
+
+                  <div>
+                     <h6>
+                        {{ dictionary.readyPageIpAddressTitle }}
+                     </h6>
+                     <div>
+                        {{ data?.destinationController?.ipAddr }}
+                     </div>
+                  </div>
+
+                  <div class="card-row">
+                     <div class="first-item">
+                        <h6>
+                           {{ dictionary.readyPageUserNameTitle }}
+                        </h6>
+                        <div>
+                           {{ data?.destinationController?.username }}
+                        </div>
+                     </div>
+                     <div>
+                        <h6>
+                           {{ dictionary.readyPagePasswordTitle }}
+                        </h6>
+                        <div>
+                           {{ data?.destinationController?.password }}
+                        </div>
+                     </div>
+                  </div>
+
+               </div>
+            </div>
+            <div class="card-footer">
+               <div class="footer">
+                  <button class="btn btn-link" (click)="editDestDetails()"> {{ dictionary.readyPageEditButtonText }} </button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
+         <div class="card">
+            <div class="card-header">
+               <cds-icon size="30" shape="map" status="success"></cds-icon>
+               {{ dictionary.readyPageMappingTitle }}
+            </div>
+            <div class="card-block">
+               <div class="card-row">
+                  <div class="first-item">
+                     <h6>
+                        {{ dictionary.readyPageCloudTitle }}
+                     </h6>
+                     <div>
+                        {{ data?.mapping?.cloud }}
+                     </div>
+                  </div>
+                  <div>
+                     <h6>
+                        {{ dictionary.readyPageVrfTitle }}
+                     </h6>
+                     <div>
+                        {{ data?.mapping?.vrf }}
+                     </div>
+                  </div>
+               </div>
+               <div class="card-row">
+                  <div class="first-item">
+                     <h6>
+                        {{ dictionary.readyPageTenantTitle }}
+                     </h6>
+                     <div>
+                        {{ data?.mapping?.tenant }}
+                     </div>
+                  </div>
+                  <div>
+                     <h6>
+                        {{ dictionary.readyPageSeGroupTitle }}
+                     </h6>
+                     <div>
+                        {{ data?.mapping?.seGroup }}
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div class="card-footer">
+               <div class="footer">
+                  <button class="btn btn-link" (click)="editMappingDetails()"> {{ dictionary.readyPageEditButtonText }} </button>
+               </div>
+            </div>
+         </div>
+      </div>
+
+      <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
+         <div class="card">
+            <div class="card-header">
+               <cds-icon size="30" shape="shield" status="success"></cds-icon>
+               {{ dictionary.readyPageInProgressTitle }}
+            </div>
+            <div class="card-block">
+               <h6>
+                  {{ data?.inProgress[0]?.name }}
+               </h6>
+               <clr-progress-bar class="progress-bar" id="demoProgressBar" clrInfo clrValue="{{ data?.inProgress[0]?.processPercent }}"></clr-progress-bar>
+
+            </div>
+         </div>
+      </div>
+  </div>
+
+  <div>
+      <h6 class="grid-title">
+         {{ dictionary.readyPageReviewedTitle }} (6)
+      </h6>
+
+      <button type="button" class="btn btn-icon btn-primary" [disabled]="!selected?.length" (click)="playbookModalOpened=true">
+         <cds-icon shape="book"></cds-icon>
+         {{ dictionary.readyPageGeneratePlaybookTitle }}
+     </button>
+
+     <clr-datagrid [(clrDgSelected)]="selected">
+         <clr-dg-column> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
+         <clr-dg-column> {{ dictionary.readyPageStatusTitle }} </clr-dg-column>
+         <clr-dg-row *clrDgItems="let each of vsStatusGridData" [clrDgItem]="each">
+            <clr-dg-cell>{{each.name}}</clr-dg-cell>
+            <clr-dg-cell>{{each.status}}</clr-dg-cell>
+         </clr-dg-row>
+         <clr-dg-footer></clr-dg-footer>
+      </clr-datagrid>
+  </div>
+
+   <clr-wizard #wizard
+      [(clrWizardOpen)]="open"
+      (clrWizardOnCancel)="doCancel()"
+      [clrWizardPreventDefaultNext]="true"
+      (clrWizardOnFinish)="doFinish()"
+   >
+      <clr-wizard-title> {{dictionary.readyPagePlaybookPreparationTitle}} </clr-wizard-title>
+      <clr-wizard-button [type]="'next'"> {{dictionary.readyPageNextLabel}} </clr-wizard-button>
+      <clr-wizard-button [type]="'finish'"> {{dictionary.readyPageSubmitLabel}} </clr-wizard-button>
+      <clr-wizard-page
+         (clrWizardPageNext)="pageCustomNext()"
+         [clrWizardPagePreventDefaultNext]="true"
+         [clrWizardPageNextDisabled]="!destinationCtrlForm.valid"
+      >
+         <ng-template clrPageTitle> {{dictionary.readyPageDestinationControllerTitle}} </ng-template>
+         <ng-template clrPageNavTitle> {{dictionary.readyPageConnectDestControllerLabel}} </ng-template>
+         <div *ngIf="!loadingFlag">
+            <p>
+               {{ dictionary.readyPageDestPageSubTitle }}
+            </p>
+            <div class="alert alert-danger" role="alert" *ngIf="f5LoginError">
+               <div class="alert-items">
+                     <div class="alert-item static">
+                        <div class="alert-icon-wrapper">
+                           <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+                        </div>
+                        <span class="alert-text">
+                           {{ f5LoginError }}
+                        </span>
+                     </div>
+               </div>
+            </div>
+            <form clrForm [formGroup]="destinationCtrlForm" clrLayout="vertical">
+               <clr-input-container>
+                  <label> {{dictionary.readyPageIpAddressTitle}} </label>
+                  <input clrInput type="text" formControlName="ipAddr" required size="100" />
+               </clr-input-container>
+               <clr-input-container>
+                     <label> {{dictionary.readyPageUserNameTitle}} </label>
+                     <input clrInput type="text" formControlName="username" required size="100" />
+               </clr-input-container>
+               <clr-password-container>
+                     <label> {{dictionary.readyPagePasswordTitle}} </label>
+                     <input
+                     clrPassword
+                     name="password"
+                     formControlName="password"
+                     size="95"
+                     required
+                     />
+               </clr-password-container>
+            </form>
+         </div>
+         <div *ngIf="loadingFlag">
+            <div class="center">
+               <img width="350" height="220"  src="assets/images/analyzing.png"/>
+            </div>
+            <div class="progress loop progress-bar"><progress></progress></div>
+         </div>
+      </clr-wizard-page>
+
+      <clr-wizard-page [clrWizardPageNextDisabled]="!mapDestinationForm.valid">
+         <ng-template clrPageTitle> {{ dictionary.readyPageMapDestinationTitle }} </ng-template>
+         <ng-template clrPageNavTitle> {{ dictionary.readyPageMapDestinationTitle }} </ng-template>
+
+         <form clrForm [formGroup]="mapDestinationForm" clrLayout="vertical">
+            <clr-select-container>
+               <label> {{ dictionary.readyPageTenantTitle }} </label>
+               <select clrSelect name="options" class="select-input" formControlName="tenant">
+                  <option *ngFor="let tenant of f5DestinationData?.tenant" [value]="tenant"> {{tenant}} </option>
+               </select>
+            </clr-select-container>
+            <clr-select-container>
+               <label> {{ dictionary.readyPageCloudTitle }} </label>
+               <select clrSelect name="options" class="select-input" formControlName="cloud">
+                  <option *ngFor="let cloud of f5DestinationData?.cloud" [value]="cloud"> {{cloud}} </option>
+               </select>
+            </clr-select-container>
+            <clr-select-container>
+               <label> {{ dictionary.readyPageVrfTitle }} </label>
+               <select clrSelect name="options" class="select-input" formControlName="vrf">
+                  <option *ngFor="let vrf of f5DestinationData?.vrf" [value]="vrf"> {{vrf}} </option>
+               </select>
+            </clr-select-container>
+            <clr-select-container>
+               <label> {{ dictionary.readyPageSeGroupTitle }} </label>
+               <select clrSelect name="options" class="select-input" formControlName="seGroup">
+                  <option *ngFor="let seGroup of f5DestinationData?.seGroup" [value]="seGroup"> {{seGroup}} </option>
+               </select>
+            </clr-select-container>
+        </form>
+
+      </clr-wizard-page>
+   </clr-wizard>
+
+   <clr-modal [(clrModalOpen)]="playbookModalOpened" [clrModalClosable]="true">
+      <h3 class="modal-title"> {{ dictionary.readyPageGeneratePlaybookTitle }} </h3>
+      <div class="modal-body">
+         <form clrForm [formGroup]="playbookForm" clrLayout="vertical">
+            <clr-input-container>
+               <label> {{dictionary.readyPagePlaybookNameTitle}} </label>
+               <input clrInput type="text" formControlName="playbookName" required size="100" />
+            </clr-input-container>
+            <h6 class="grid-title">
+               {{ dictionary.readyPagePlaybookContentsTitle }} (6)
+            </h6>
+            <clr-datagrid>
+               <clr-dg-column> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
+               <clr-dg-row *clrDgItems="let each of selected" [clrDgItem]="each">
+                  <clr-dg-cell>{{each.name}}</clr-dg-cell>
+               </clr-dg-row>
+               <clr-dg-footer></clr-dg-footer>
+            </clr-datagrid>
+         </form>
+      </div>
+      <div class="modal-footer">
+          <button type="button" [disabled]="!playbookForm.valid" class="btn btn-primary" (click)="playbookModalOpened = false">
+              {{ dictionary.readyPageGenerateTitle }}
+          </button>
+      </div>
+  </clr-modal>
+
+</div>
