@@ -1,0 +1,34 @@
+
+<div class="card">
+    <h3 class="card-header">
+        <cds-icon shape="flask" size='md' status="success"></cds-icon>
+        {{ dictionary.header }}
+    </h3>
+    <div class="card-block">
+        <form clrForm [clrLayout]="verticalLayout">
+            <div class="lab-controller-card__row">
+                <clr-input-container class="lab-controller-card__no-margin-top">
+                    <label>{{ dictionary.AddressLabel }}</label>
+                    <input placeholder="NA" clrInput [value]="labControllerDetails?.ipAddress" name="name"
+                        readonly />
+                </clr-input-container>
+            </div>
+            <div class="lab-controller-card__row">
+                <clr-input-container>
+                    <label>{{ dictionary.usernameLabel }}</label>
+                    <input placeholder="NA" clrInput [value]="labControllerDetails?.username" name="name"
+                        readonly />
+                </clr-input-container>
+                <clr-input-container>
+                    <label>{{ dictionary.passwordLabel }}</label>
+                    <input placeholder="NA" clrInput type="password" [value]="labControllerDetails?.password"
+                        name="flaggedObjectsCount" readonly />
+                </clr-input-container>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-primary" (click)="handleFetch()">{{ dictionary.fetchLabel }}</button>
+        <button class="btn btn-link" (click)="handleEdit()">{{ dictionary.editLabel }}</button>
+    </div>
+</div>

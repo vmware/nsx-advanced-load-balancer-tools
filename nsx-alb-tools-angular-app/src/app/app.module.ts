@@ -1,10 +1,19 @@
 
 
-import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA, NgModule } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  NO_ERRORS_SCHEMA,
+  NgModule,
+} from '@angular/core';
+
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { ReactiveFormsModule } from '@angular/forms';
+
+import {
+  FormsModule,
+  ReactiveFormsModule
+} from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,6 +31,10 @@ import { F5CompletedComponent } from './migration-tools/f5/f5-completed/f5-compl
 import { ConfigEditorComponent } from './migration-tools/f5/f5-configuration/config-editor/config-editor.component';
 import { VsConfigEditorModalComponent } from './migration-tools/f5/f5-configuration/vs-config-editor-modal/vs-config-editor-modal.component';
 import { GenericConfigEditorModalComponent } from './migration-tools/f5/f5-configuration/generic-config-editor-modal /generic-config-editor-modal.component';
+import { IncompleteMigrationsGridComponent } from './migration-tools/f5/f5-configuration/incomplete-migrations-grid/incomplete-migrations-grid.component';
+import { NextConversionCardComponent } from './migration-tools/f5/f5-configuration/next-conversion-card/next-conversion-card.component';
+import { LabControllerCardComponent } from './migration-tools/f5/f5-configuration/lab-controller-card/lab-controller-card.component';
+import { StartMigrationWizardComponent } from './migration-tools/f5/start-migration-wizard/start-migration-wizard.component';
 
 
 @NgModule({
@@ -34,7 +47,11 @@ import { GenericConfigEditorModalComponent } from './migration-tools/f5/f5-confi
     F5ReadyComponent,
     F5ReportComponent,
     GenericConfigEditorModalComponent,
+    IncompleteMigrationsGridComponent,
+    LabControllerCardComponent,
     LandingPageComponent,
+    NextConversionCardComponent,
+    StartMigrationWizardComponent,
     StartWizardComponent,
     VsConfigEditorModalComponent,
   ],
@@ -45,6 +62,7 @@ import { GenericConfigEditorModalComponent } from './migration-tools/f5/f5-confi
     BrowserAnimationsModule,
     ClarityModule,
     ReactiveFormsModule,
+    FormsModule ,
   ],
   providers: [
     HttpService,

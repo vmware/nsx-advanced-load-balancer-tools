@@ -23,6 +23,8 @@ export class F5ReportComponent implements OnInit {
 
     report: any;
 
+    public openStartMigrationWizard: boolean = false;
+
     private margin = { top: 10, right: 10, bottom: 10, left: 10 };
     private width = 450;
     private height = 250;
@@ -141,6 +143,14 @@ export class F5ReportComponent implements OnInit {
             return d.name + ' ' + d.value;
           })
     }
+
+    public handleOpenStartMigrationWizard(): void {
+        this.openStartMigrationWizard = true;
+    }
+
+    public handleCloseStartMigrationWizard(): void {
+      this.openStartMigrationWizard = false;
+  }
 
     getLevelText(): string {
       if(this.levelOfComplexity == 'low') {

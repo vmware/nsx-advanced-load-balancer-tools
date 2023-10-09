@@ -14,10 +14,14 @@ import {
     shieldIcon,
     bookIcon,
     exclamationCircleIcon,
+    checkboxListIcon,
+    flaskIcon,
 } from '@cds/core/icon';
 
 const clarityIcons = [
     userIcon,
+    checkboxListIcon,
+    flaskIcon,
     vmBugIcon,
     vmwAppIcon,
     twoWayArrowsIcon,
