@@ -1,0 +1,35 @@
+<div class="incomplete-migrations-grid">
+    <h6> {{ dictionary.incompleteLabel }} ({{ incompleteMigrationsData.length }}) </h6>
+
+    <clr-datagrid>
+        <clr-dg-column clrDgField="vsName">{{ dictionary.nameLabel }}</clr-dg-column>
+        <clr-dg-column clrDgField="flaggedObjects.length">{{ dictionary.noOfFlagesLabel }}</clr-dg-column>
+        <clr-dg-column clrDgField="status">{{ dictionary.statusLabel }}</clr-dg-column>
+        <clr-dg-column>{{ dictionary.actionsLabel }}</clr-dg-column>
+
+        <clr-dg-row *clrDgItems="let incompleteMigration of incompleteMigrationsData; trackBy: trackByIndex">
+            <clr-dg-cell class="incomplete-migrations-grid__name">{{ incompleteMigration.vsName }}</clr-dg-cell>
+            <clr-dg-cell>{{ incompleteMigration.flaggedObjects.length }}</clr-dg-cell>
+            <clr-dg-cell>{{ incompleteMigration.status }}</clr-dg-cell>
+            <clr-dg-cell>
+                    <cds-icon shape="checkbox-list"  status="info" (click)="handleOpenVsConfigEditorModal(incompleteMigration)"></cds-icon>
+            </clr-dg-cell>
+        </clr-dg-row>
+
+        <clr-dg-footer>
+            <clr-dg-pagination
+                #pagination [clrDgPageSize]="5"
+                [clrDgTotalItems]="incompleteMigrationsData.length"
+            >
+                <clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20, 50, 100]">{{ dictionary.objectsPerPageLabel }}</clr-dg-page-size>
+                {{ incompleteMigrationsData.length }} {{ dictionary.objectsLabel }}
+            </clr-dg-pagination>
+        </clr-dg-footer>
+    </clr-datagrid>
+</div>
+
+<vs-config-editor-modal
+    *ngIf="isOpenVsConfigEditorModal"
+    [vsConfig]="selectedMigrationForEditing"
+    (onCloseVsConfigEditorModal)="handleCloseVsConfigEditorModal()"
+></vs-config-editor-modal>

@@ -4,7 +4,6 @@ export interface incompleteVsMigration {
     F5Obj: string,
     aviObj: incompleteVsMigrationAviObject,
     status: string,
-    ET: number,
     flaggedObjects: vsFlaggedObject[],
   }
 export interface incompleteVsMigrationAviObject {
@@ -38,4 +37,10 @@ export interface vsAviObjectService {
     type: string,
     F5Obj: string,
     aviObj: any,
+  }
+
+  export interface labController {
+    username: string,
+    password: string,
+    ipAddress: string
   }

@@ -1,31 +1,36 @@
-<h6>
-    Incomplete ({{ incompleteMigrationData.length }})
-</h6>
-
-<clr-datagrid>
-    <clr-dg-column>Name</clr-dg-column>
-    <clr-dg-column># of Flags</clr-dg-column>
-    <clr-dg-column>Status</clr-dg-column>
-    <clr-dg-column>ET</clr-dg-column>
-    <clr-dg-column>Actions</clr-dg-column>
-
-    <clr-dg-row *ngFor="let vsConfig of incompleteMigrationData; index as i; trackBy: trackByIndex">
-        <clr-dg-cell>{{vsConfig.vsName}}</clr-dg-cell>
-        <clr-dg-cell>{{vsConfig.flaggedObjects.length}}</clr-dg-cell>
-        <clr-dg-cell>{{vsConfig.status}}</clr-dg-cell>
-        <clr-dg-cell>{{vsConfig.ET}}</clr-dg-cell>
-        <clr-dg-cell>
-            <button (click)="openVsConfigEditorModal(i)" type="button">
-                <cds-icon shape="bars"></cds-icon>
-            </button>
-        </clr-dg-cell>
-    </clr-dg-row>
-
-    <clr-dg-footer>{{incompleteMigrationData.length}} objects</clr-dg-footer>
-</clr-datagrid>
+<div class="f5-configuration">
+    <div class="f5-configuration__cards">
+        <div class="clr-row">
+            <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
+              <next-conversion-card
+                [selectedMigrationData]="selectedMigrationData"
+                (onSkip)="handleSkip()"
+                (onStart)="handleStart()"
+              ></next-conversion-card>
+            </div>
+            <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
+              <lab-controller-card
+                (onEdit)="handleLabControllerEdit()"
+              ></lab-controller-card>
+            </div>
+          </div>
+    </div>
+    <div class="f5-configuration__grid">
+        <incomplete-migrations-grid
+            [incompleteMigrationsData]="incompleteMigrationsData"
+            (onRefreshIncompleteMigrationsData)="handleRefreshIncompleteMigrationsData()"
+        ></incomplete-migrations-grid>
+    </div>
+</div>
 
 <vs-config-editor-modal
-    *ngIf="isOpenVsConfigEditorModal && incompleteMigrationData.length"
-    [vsConfig]="selectedVsForEditing"
-    (onCloseVsConfigEditorModal)="closeVsConfigEditorModal()"
+    *ngIf="isOpenVsConfigEditorModal"
+    [vsConfig]="selectedMigrationData"
+    (onCloseVsConfigEditorModal)="handleCloseVsConfigEditorModal($event)"
 ></vs-config-editor-modal>
+
+<start-migration-wizard
+   *ngIf="openEditControllerConfig"
+   [isEditLabControllerDetails]="true"
+   (onClose)="handleCloseStartMigrationWizard()"
+></start-migration-wizard>

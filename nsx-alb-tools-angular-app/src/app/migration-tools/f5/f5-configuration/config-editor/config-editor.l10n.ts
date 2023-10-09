@@ -4,5 +4,6 @@
  */
 
 export const ENGLISH = {
-    'configurationPageTitle': 'Configuration',
+    f5Label: 'F5',
+    nsxAlbConfigLabel: 'NSX-ALB Config',
 };

@@ -12,7 +12,7 @@
       {{ dictionary.reportPageComplexityText }}
    </p>
 
-   <button class="btn btn-primary"> {{ dictionary.reportPageContinueMigrationText }} </button>
+   <button class="btn btn-primary" (click)="handleOpenStartMigrationWizard()"> {{ dictionary.reportPageContinueMigrationText }} </button>
    <button class="btn btn-link"> {{ dictionary.reportPageDownloadReportButtonText }} </button>
 
    <div class="clr-row">
@@ -176,3 +176,8 @@
    </div>
 
 </div>
+
+<start-migration-wizard
+   *ngIf="openStartMigrationWizard"
+   (onClose)="handleCloseStartMigrationWizard()"
+></start-migration-wizard>
