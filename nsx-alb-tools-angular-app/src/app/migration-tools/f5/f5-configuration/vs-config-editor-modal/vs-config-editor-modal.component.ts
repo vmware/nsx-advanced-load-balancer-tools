@@ -1,20 +1,32 @@
 import {
-  ChangeDetectionStrategy,
   Component,
   EventEmitter,
   Input,
-  OnInit,
   Output,
 } from '@angular/core';
-import { incompleteVsMigration, vsFlaggedObject } from '../f5-configuration.types';
+
+import {
+  incompleteVsMigration,
+  vsFlaggedObject
+} from '../f5-configuration.types';
+
+import { ConfigurationTabService } from 'src/app/shared/configuration-tab-response-data/configuration-tab-response-data.service';
+import { lastValueFrom } from 'rxjs';
+import * as l10n from './vs-config-editor-modal.l10n';
+
+const { ENGLISH: dictionary } = l10n;
 
 @Component({
   selector: 'vs-config-editor-modal',
   templateUrl: './vs-config-editor-modal.component.html',
   styleUrls: ['./vs-config-editor-modal.component.less'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class VsConfigEditorModalComponent implements OnInit {
+export class VsConfigEditorModalComponent {
+  @Input()
+  public vsConfig: incompleteVsMigration;
+
+  @Output()
+  public onCloseVsConfigEditorModal = new EventEmitter<boolean>();
 
   public isOpen = true;
 
@@ -22,32 +34,25 @@ export class VsConfigEditorModalComponent implements OnInit {
 
   public isVsConfigEditorValid = true;
 
-  public childConfigEditorConfig: vsFlaggedObject;
+  public childConfigEditorConfig: vsFlaggedObject | undefined;
 
-  @Input()
-  public vsConfig: incompleteVsMigration;
-
-  @Output()
-  public onCloseVsConfigEditorModal = new EventEmitter<void>();
+  public dictionary = dictionary;
 
   constructor(
+    private readonly configurationTabService: ConfigurationTabService,
   ) { }
 
-  /** @override */
-  public async ngOnInit(): Promise<void> {
-  }
-
-  public handleCloseChildConfigEditorModal(saveConfiguration: boolean) {
-    this.isOpenChildConfigEditorModal = false;
-
+  public async handleCloseChildConfigEditorModal(saveConfiguration: boolean): Promise<void> {
     if (saveConfiguration) {
-      // If saveConfiguration is true then send request to server and update the flagged object array of VS
       this.vsConfig.flaggedObjects = this.vsConfig.flaggedObjects.filter((element: vsFlaggedObject) => {
         return element.objectName !== this.childConfigEditorConfig?.objectName;
       });
+
+      const updateMigrationData$ = this.configurationTabService.updateMigrationData(this.vsConfig);
+      await lastValueFrom(updateMigrationData$);
     }
 
-    this.setChildConfigEditorConfig();
+    this.isOpenChildConfigEditorModal = false;
   }
 
   public handleVsConfigEditorValidationChange(isConfigEditorValid: boolean) {
@@ -64,15 +69,11 @@ export class VsConfigEditorModalComponent implements OnInit {
     return index;
   }
 
-  public setChildConfigEditorConfig(config?: vsFlaggedObject): void {
-    if (config) {
-      this.childConfigEditorConfig = config;
-    }
+  private setChildConfigEditorConfig(config: vsFlaggedObject): void {
+    this.childConfigEditorConfig = config;
   }
 
-  public closeModal(): void {
-    this.isOpen = false;
-
-    this.onCloseVsConfigEditorModal.emit();
+  public closeModal(saveConfiguration: boolean): void {
+    this.onCloseVsConfigEditorModal.emit(saveConfiguration);
   }
 }

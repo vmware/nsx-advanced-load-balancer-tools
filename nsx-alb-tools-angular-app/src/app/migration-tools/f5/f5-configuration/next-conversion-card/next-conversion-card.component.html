@@ -1,0 +1,27 @@
+
+<div class="next-conversion-card card">
+    <h3 class="card-header">
+        <cds-icon shape="two-way-arrows" size='md' status="success"></cds-icon>
+        {{ dictionary.header }}
+    </h3>
+    <div class="card-block">
+        <form clrForm [clrLayout]="verticalLayout">
+            <div class="next-conversion-card__row">
+                <clr-input-container class="next-conversion-card__no-margin-top">
+                    <label>{{ dictionary.nameLabel }}</label>
+                    <input placeholder="NA" clrInput [value]="selectedMigrationData?.vsName" name="name"
+                        readonly />
+                </clr-input-container>
+                <clr-input-container class="next-conversion-card__no-margin-top">
+                    <label>{{ dictionary.noOfFlagesLabel }}</label>
+                    <input placeholder="NA" clrInput [value]="selectedMigrationData?.flaggedObjects?.length"
+                        name="flaggedObjectsCount" readonly />
+                </clr-input-container>
+            </div>
+        </form>
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-primary" (click)="handleStart()">{{ dictionary.startLabel }}</button>
+        <button class="btn btn-link" (click)="handleSkip()">{{ dictionary.skipLabel }}</button>
+    </div>
+</div>

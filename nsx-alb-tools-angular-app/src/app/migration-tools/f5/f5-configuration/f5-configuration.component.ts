@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import * as l10n from './f5-configuration.l10n';
+import {
+  Component,
+  OnInit
+} from '@angular/core';
+
 import { ConfigurationTabService } from 'src/app/shared/configuration-tab-response-data/configuration-tab-response-data.service';
 import { incompleteVsMigration } from './f5-configuration.types';
-
-const { ENGLISH: dictionary, ...l10nKeys } = l10n;
+import { ClrFormLayout } from '@clr/angular';
+import { lastValueFrom } from 'rxjs';
 
 @Component({
   selector: 'f5-configuration',
@@ -11,14 +14,17 @@ const { ENGLISH: dictionary, ...l10nKeys } = l10n;
   styleUrls: ['./f5-configuration.component.less'],
 })
 export class F5ConfigurationComponent implements OnInit {
+  public incompleteMigrationsData: incompleteVsMigration[] = [];
 
-  dictionary = dictionary;
+  public selectedMigrationData: incompleteVsMigration;
+
+  public selectedMigrationIndex: number = 0;
 
   public isOpenVsConfigEditorModal = false;
 
-  public selectedVsForEditing: incompleteVsMigration;
+  public openEditControllerConfig = false;
 
-  public incompleteMigrationData: incompleteVsMigration[] = [];
+  public readonly verticalLayout = ClrFormLayout.VERTICAL;
 
   constructor(
     private readonly configurationTabService: ConfigurationTabService,
@@ -26,25 +32,42 @@ export class F5ConfigurationComponent implements OnInit {
 
   /** @override */
   public async ngOnInit(): Promise<void> {
-    this.configurationTabService.getAllIncompleteVSMigrationData().subscribe((data)=> {
-      this.incompleteMigrationData = data;
-    });
+    await this.getAllIncompleteVSMigrationsData();
   }
 
-  public refreshInIncompleteVSData(): void {
-
+  public handleRefreshIncompleteMigrationsData(): void {
+    // this.getAllIncompleteVSMigrationsData();
   }
 
-  public openVsConfigEditorModal(index: number): void {
-    this.selectedVsForEditing = this.incompleteMigrationData[index];
+  public handleCloseStartMigrationWizard(): void {
+    this.openEditControllerConfig = false
+  }
+
+  public handleSkip(): void {
+    this.selectedMigrationIndex += 1;
+    this.selectedMigrationData = this.incompleteMigrationsData[this.selectedMigrationIndex];
+  }
+
+  public handleStart(): void {
     this.isOpenVsConfigEditorModal = true;
   }
 
-  public closeVsConfigEditorModal(): void {
+  public handleLabControllerEdit(): void {
+    this.openEditControllerConfig = true;
+  }
+
+  public async handleCloseVsConfigEditorModal(saveConfiguration: boolean): Promise<void> {
+    if (saveConfiguration) {
+      const updateMigrationData$ = this.configurationTabService.updateMigrationData(this.selectedMigrationData);
+      await lastValueFrom(updateMigrationData$);
+    }
+
     this.isOpenVsConfigEditorModal = false;
   }
 
-  public trackByIndex(index: number): number {
-    return index;
+  private async getAllIncompleteVSMigrationsData(): Promise<void> {
+    const incompleteMigrationsData$ = this.configurationTabService.getAllIncompleteVSMigrationsData();
+    this.incompleteMigrationsData = await lastValueFrom(incompleteMigrationsData$);
+    this.selectedMigrationData = this.incompleteMigrationsData[this.selectedMigrationIndex];
   }
 }

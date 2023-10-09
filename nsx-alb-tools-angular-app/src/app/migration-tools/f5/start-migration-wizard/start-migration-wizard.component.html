@@ -1,0 +1,87 @@
+<div class="start-migration-wizard">
+    <clr-wizard #wizard [(clrWizardOpen)]="isWizardOpen"   [clrWizardDisableStepnav]="true" [clrWizardClosable]="false">
+        <clr-wizard-title>{{ dictionary.header }}</clr-wizard-title>
+
+        <clr-wizard-button [type]="'previous'">{{ dictionary.backLabel }}</clr-wizard-button>
+        <clr-wizard-button [type]="'next'">{{ dictionary.nextLabel }}</clr-wizard-button>
+
+        <clr-wizard-page [clrWizardPageNextDisabled]="!certsAndKeysForm.valid">
+            <ng-template clrPageTitle>{{ dictionary.certsAndKeysPageTitle }}</ng-template>
+            <ng-template clrPageNavTitle>{{ dictionary.certsAndKeysPageNavTitle }}</ng-template>
+
+            <span>{{ dictionary.certsAndKeysPageHeaderMessage }}</span>
+
+            <form clrForm [formGroup]="certsAndKeysForm" [clrLayout]="verticalLayout">
+                <clr-input-container>
+                    <label>{{ dictionary.usernameLabel }}</label>
+                    <input clrInput placeholder="{{ dictionary.usernamePlaceholder }}" size="100" formControlName="username"/>
+                    <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
+                </clr-input-container>
+
+                <clr-input-container>
+                    <label>{{ dictionary.ipAddressLabel }}</label>
+                    <input clrInput placeholder="{{ dictionary.ipAddressPlaceholder }}" formControlName="ipAddress" size="100"/>
+                    <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
+                </clr-input-container>
+
+                <clr-password-container>
+                    <label>{{ dictionary.passwordLabel }}</label>
+                    <input
+                        clrPassword
+                        placeholder="{{ dictionary.passwordPlaceholder }}"
+                        formControlName="password"
+                        size="95"
+                    />
+                    <clr-control-error>{{ dictionary.requiredErrorMessage }}</clr-control-error>
+                  </clr-password-container>
+            </form>
+        </clr-wizard-page>
+
+        <clr-wizard-page [clrWizardPageNextDisabled]="!labControllerForm.valid"  #pageTwo>
+            <ng-template clrPageTitle>{{ dictionary.labControllerPageTitle }}</ng-template>
+            <ng-template clrPageTitle>{{ dictionary.labControllerPageNavTitle }}</ng-template>
+
+            <span>{{ dictionary.labControllerPageHeaderMessage }}</span>
+
+            <form clrForm [formGroup]="labControllerForm" [clrLayout]="verticalLayout">
+                <clr-input-container>
+                    <label>{{ dictionary.usernameLabel }}</label>
+                    <input clrInput placeholder="Enter Username" size="100" formControlName="username"/>
+                    <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
+                </clr-input-container>
+
+                <clr-input-container>
+                    <label>{{ dictionary.ipAddressLabel }}</label>
+                    <input clrInput placeholder="Address please!" size="100" formControlName="ipAddress"/>
+                    <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
+                </clr-input-container>
+
+                <clr-password-container>
+                    <label>{{ dictionary.passwordLabel }}</label>
+                    <input
+                        clrPassword
+                        placeholder="Enter Password"
+                        formControlName="password"
+                        size="95"
+                    />
+                    <clr-control-error>{{ dictionary.requiredErrorMessage }}</clr-control-error>
+                  </clr-password-container>
+            </form>
+        </clr-wizard-page>
+
+        <clr-wizard-page (clrWizardPageOnLoad)="onFinalizeLoad()" (clrWizardPageCustomButton)="closeWizard()">
+            <ng-template clrPageTitle>{{ dictionary.finalizingImportPageTitle }} </ng-template>
+            <ng-template clrPageNavTitle>{{ dictionary.finalizingImportPageTitle }}</ng-template>
+
+            <div class="finalizing-section">
+                <div class="finalizing-picture">
+                    <img width="350" height="220"  src="assets/images/analyzing.png"/>
+                </div>
+                <div class="progress loop progress-bar"><progress></progress></div>
+            </div>
+            <ng-template clrPageButtons>
+                <clr-wizard-button [type]="'custom-finish'"> {{ finished ?  dictionary.doneLabel : dictionary.inProgressLabel }}</clr-wizard-button>
+              </ng-template>
+        </clr-wizard-page>
+    </clr-wizard>
+</div>
