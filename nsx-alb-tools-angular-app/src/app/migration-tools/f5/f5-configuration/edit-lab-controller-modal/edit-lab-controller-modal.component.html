@@ -1,0 +1,44 @@
+<div class="edit-lab-controller-modal">
+    <clr-modal [(clrModalOpen)]="isOpen" [clrModalSize]="'lg'">
+        <h3 class="modal-title">{{ dictionary.header }}</h3>
+
+        <div class="modal-body">
+            <clr-alert [clrAlertType]="'danger'" *ngIf="errorMessage">
+                <clr-alert-item>
+                  <span class="alert-text">{{ errorMessage }}</span>
+                </clr-alert-item>
+              </clr-alert>
+
+            <form clrForm [formGroup]="labControllerForm" [clrLayout]="verticalLayout">
+                <clr-input-container>
+                    <label>{{ dictionary.ipAddressLabel }}</label>
+                    <input clrInput placeholder="{{ dictionary.ipAddressPlaceholder }}" size="100" formControlName="ipAddress"/>
+                    <clr-control-error>{{ dictionary.requiredErrorMessage }}</clr-control-error>
+                </clr-input-container>
+
+                <clr-input-container>
+                    <label>{{ dictionary.usernameLabel }}</label>
+                    <input clrInput placeholder="{{ dictionary.usernameLabel }}" size="100" formControlName="username"/>
+                    <clr-control-error>{{ dictionary.requiredErrorMessage }}</clr-control-error>
+                </clr-input-container>
+
+                <clr-password-container>
+                    <label>{{ dictionary.passwordLabel }}</label>
+                    <input
+                        clrPassword
+                        placeholder="{{ dictionary.passwordPlaceholder }}"
+                        formControlName="password"
+                        size="95"
+                    />
+                    <clr-control-error>{{ dictionary.requiredErrorMessage }}</clr-control-error>
+                  </clr-password-container>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" (click)="closeModal(false)">{{ dictionary.cancelLabel }}</button>
+
+            <button type="button" class="btn btn-primary" (click)="closeModal(true)" [disabled]="!labControllerForm.valid || errorMessage">{{ dictionary.saveLabel }}</button>
+        </div>
+    </clr-modal>
+</div>

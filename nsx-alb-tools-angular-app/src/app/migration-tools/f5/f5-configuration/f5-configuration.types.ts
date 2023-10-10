@@ -6,6 +6,12 @@ export interface incompleteVsMigration {
     status: string,
     flaggedObjects: vsFlaggedObject[],
   }
+
+  export interface incompleteVsMigrationsData {
+    incompleteVSMigrationsData: incompleteVsMigration[],
+    completedVSMigrationsCount: number,
+  }
+
 export interface incompleteVsMigrationAviObject {
     name: string,
     description: string,

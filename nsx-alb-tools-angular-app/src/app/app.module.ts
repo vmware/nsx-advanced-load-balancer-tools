@@ -35,12 +35,14 @@ import { IncompleteMigrationsGridComponent } from './migration-tools/f5/f5-confi
 import { NextConversionCardComponent } from './migration-tools/f5/f5-configuration/next-conversion-card/next-conversion-card.component';
 import { LabControllerCardComponent } from './migration-tools/f5/f5-configuration/lab-controller-card/lab-controller-card.component';
 import { StartMigrationWizardComponent } from './migration-tools/f5/start-migration-wizard/start-migration-wizard.component';
+import { EditLabControllerModalComponent } from './migration-tools/f5/f5-configuration/edit-lab-controller-modal/edit-lab-controller-modal.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     ConfigEditorComponent,
+    EditLabControllerModalComponent,
     F5ConfigurationComponent,
     F5MigrationComponent,
     F5CompletedComponent,
