@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  Input,
   OnInit,
   Output,
 } from '@angular/core';
@@ -25,6 +26,7 @@ export class LabControllerCardComponent implements OnInit {
   @Output()
   public onFetch = new EventEmitter<void>();
 
+  @Input()
   public labControllerDetails: labController | undefined;
 
   public readonly verticalLayout = ClrFormLayout.VERTICAL;
