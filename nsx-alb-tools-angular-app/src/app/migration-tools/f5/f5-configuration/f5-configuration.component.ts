@@ -4,13 +4,19 @@ import {
 } from '@angular/core';
 
 import { ConfigurationTabService } from 'src/app/shared/configuration-tab-response-data/configuration-tab-response-data.service';
-import { incompleteVsMigration } from './f5-configuration.types';
-import { ClrFormLayout } from '@clr/angular';
-import * as l10n from './f5-configuration.l10n';
 
+import {
+  incompleteVsMigration,
+  incompleteVsMigrationsData,
+  labController,
+} from './f5-configuration.types';
+
+import { ClrFormLayout } from '@clr/angular';
 import { lastValueFrom } from 'rxjs';
-import { HttpService } from '../../../shared/http/http.service';
-const { ENGLISH: dictionary, ...l10nKeys } = l10n;
+import * as l10n from './f5-configuration.l10n';
+import { HttpService } from 'src/app/shared/http/http.service';
+
+const { ENGLISH: dictionary } = l10n;
 
 @Component({
   selector: 'f5-configuration',
@@ -22,7 +28,11 @@ export class F5ConfigurationComponent implements OnInit {
 
   public selectedMigrationData: incompleteVsMigration;
 
-  public selectedMigrationIndex: number = 0;
+  public labControllerDetails: labController;
+
+  public selectedMigrationIndex = 0;
+
+  public completedVSMigrationsCount = 0;
 
   public isOpenVsConfigEditorModal = false;
 
@@ -30,29 +40,32 @@ export class F5ConfigurationComponent implements OnInit {
 
   public readonly verticalLayout = ClrFormLayout.VERTICAL;
 
-  data;
+  public migrationOverviewData;
 
-  dictionary = dictionary;
+  public dictionary = dictionary;
 
   constructor(
-    private readonly configurationTabService: ConfigurationTabService,
+    public readonly configurationTabService: ConfigurationTabService,
     private http: HttpService,
-  ) {
-    this.http.get('f5ready').subscribe((data)=> {
-      this.data = data;
-    });
-  }
+  ) { }
+
 
   /** @override */
   public async ngOnInit(): Promise<void> {
     await this.getAllIncompleteVSMigrationsData();
+    await this.getLabControllerDetails();
+    await this.getMigrationOverviewData();
   }
 
   public handleRefreshIncompleteMigrationsData(): void {
     // this.getAllIncompleteVSMigrationsData();
   }
 
-  public handleCloseStartMigrationWizard(): void {
+  public async handleCloseLabControllerEditModal(getDetails: boolean): Promise<void> {
+    if (getDetails) {
+      await this.getLabControllerDetails();
+    }
+
     this.openEditControllerConfig = false
   }
 
@@ -65,8 +78,22 @@ export class F5ConfigurationComponent implements OnInit {
     this.isOpenVsConfigEditorModal = true;
   }
 
-  public handleLabControllerEdit(): void {
+  public handleLabControllerCardEdit(): void {
     this.openEditControllerConfig = true;
+  }
+
+  public async getMigrationOverviewData(): Promise<void> {
+    const migrationOverviewData$ = this.configurationTabService.getMigrationOverviewData();
+    this.migrationOverviewData = await lastValueFrom(migrationOverviewData$);
+  }
+
+  public async handleLabControllerCardFetch(): Promise<void> {
+    const fetchFromController$ = this.configurationTabService.fetchFromController();
+    const allVSMigrationsData: incompleteVsMigrationsData = await lastValueFrom(fetchFromController$);
+
+    this.incompleteMigrationsData = allVSMigrationsData.incompleteVSMigrationsData;
+    this.completedVSMigrationsCount = allVSMigrationsData.completedVSMigrationsCount;
+    this.configurationTabService.showCompletedMigrationsCountAlert = true;
   }
 
   public async handleCloseVsConfigEditorModal(saveConfiguration: boolean): Promise<void> {
@@ -79,8 +106,18 @@ export class F5ConfigurationComponent implements OnInit {
   }
 
   private async getAllIncompleteVSMigrationsData(): Promise<void> {
-    const incompleteMigrationsData$ = this.configurationTabService.getAllIncompleteVSMigrationsData();
-    this.incompleteMigrationsData = await lastValueFrom(incompleteMigrationsData$);
+    const allVSMigrationsData$ = this.configurationTabService.getAllIncompleteVSMigrationsData();
+    const allVSMigrationsData: incompleteVsMigrationsData = await lastValueFrom(allVSMigrationsData$);
+    this.incompleteMigrationsData = allVSMigrationsData.incompleteVSMigrationsData;
     this.selectedMigrationData = this.incompleteMigrationsData[this.selectedMigrationIndex];
+  }
+
+  public onAlertClose(): void {
+    this.configurationTabService.showCompletedMigrationsCountAlert = false;
+  }
+
+  private async getLabControllerDetails(): Promise<void> {
+    const labControllerDetails$ = this.configurationTabService.getLabControllerDetails();
+    this.labControllerDetails = await lastValueFrom(labControllerDetails$);
   }
 }

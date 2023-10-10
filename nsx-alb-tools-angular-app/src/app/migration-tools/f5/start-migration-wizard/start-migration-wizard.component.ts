@@ -1,8 +1,6 @@
 import {
   Component,
   ViewChild,
-  AfterViewInit,
-  Input,
   EventEmitter,
   Output,
 } from '@angular/core';
@@ -10,7 +8,6 @@ import {
 import {
   ClrFormLayout,
   ClrWizard,
-  ClrWizardPage
 } from '@clr/angular';
 
 import {
@@ -22,6 +19,7 @@ import {
 import { ConfigurationTabService } from '../../../shared/configuration-tab-response-data/configuration-tab-response-data.service';
 import { lastValueFrom } from 'rxjs';
 import * as l10n from './start-migration-wizard.l10n';
+import { Router } from '@angular/router';
 
 const { ENGLISH: dictionary } = l10n;
 
@@ -30,24 +28,21 @@ const { ENGLISH: dictionary } = l10n;
   templateUrl: './start-migration-wizard.component.html',
   styleUrls: ['./start-migration-wizard.component.less']
 })
-export class StartMigrationWizardComponent implements AfterViewInit {
+export class StartMigrationWizardComponent {
   @ViewChild('wizard') wizard: ClrWizard;
-
-  @ViewChild('pageTwo') pageTwo: ClrWizardPage;
-
-  @Input()
-  isEditLabControllerDetails: boolean = false;
 
   @Output()
   public onClose = new EventEmitter<void>();
 
-  certsAndKeysForm: FormGroup;
+  public certsAndKeysForm: FormGroup;
 
-  labControllerForm: FormGroup;
+  public labControllerForm: FormGroup;
 
-  isWizardOpen: boolean = true;
+  public isWizardOpen = true;
 
-  finished: boolean = false;
+  public finished = false;
+
+  public errorMessage = '';
 
   public dictionary = dictionary;
 
@@ -56,6 +51,7 @@ export class StartMigrationWizardComponent implements AfterViewInit {
   constructor(
     private formBuilder: FormBuilder,
     private readonly configurationTabService: ConfigurationTabService,
+    private router: Router,
   ) {
     const groupMembers = {
       username: ['', [Validators.required, Validators.email]],
@@ -67,23 +63,18 @@ export class StartMigrationWizardComponent implements AfterViewInit {
     this.labControllerForm = this.formBuilder.group(groupMembers);
   }
 
-  /** @override */
-  public ngAfterViewInit(): void {
-    if (this.isEditLabControllerDetails) {
-      this.jumpTo(this.pageTwo);
-      //setTimeout(() =>this.jumpTo(this.pageTwo), 0);
-    }
-  }
-
   public async onFinalizeLoad(): Promise<void> {
     try {
       const data$ = this.configurationTabService.startMigration({});
       await lastValueFrom(data$);
 
       this.finished = true;
+      this.configurationTabService.showCompletedMigrationsCountAlert = true;
 
       this.closeWizard();
-    } catch (errors) {
+      this.router.navigate(['f5-migration', 'configuration'])
+    } catch (error) {
+      this.errorMessage = dictionary.generalErrorMessage;
       this.finished = true;
     }
   }
@@ -92,15 +83,7 @@ export class StartMigrationWizardComponent implements AfterViewInit {
     if (this.finished) {
       this.wizard.finish();
       this.onClose.emit();
+      this.isWizardOpen = false;
     }
-  }
-
-  public jumpTo(page: ClrWizardPage) {
-    if (page) {
-      this.wizard.navService.currentPage = page;
-    } else {
-      this.wizard.navService.setLastEnabledPageCurrent();
-    }
-    this.wizard.open();
   }
 }

@@ -9,7 +9,7 @@ export const ENGLISH = {
     backLabel: 'Back',
     invalidErrorMessage: 'This field is invalid!',
     certsAndKeysPageHeaderMessage: 'To properly map configurations we will need to access F5 Certificates and Keys. yadda yadda',
-    usernameLabel: 'username',
+    usernameLabel: 'Username',
     usernamePlaceholder: 'Enter Username',
     ipAddressLabel: 'IP Address',
     ipAddressPlaceholder: 'Enter IP Address',
@@ -24,4 +24,5 @@ export const ENGLISH = {
     finalizingImportPageTitle: 'Finalizing Import ',
     doneLabel: 'Done',
     inProgressLabel: 'In Progress',
+    generalErrorMessage: 'Try closing this alert',
 };

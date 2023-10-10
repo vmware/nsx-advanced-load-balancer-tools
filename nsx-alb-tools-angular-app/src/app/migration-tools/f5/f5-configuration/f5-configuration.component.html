@@ -5,12 +5,12 @@
           <div class="card-block">
              <h5 class="card-title"> {{ dictionary.readyPageConfigMigrationTitle }} </h5>
              <div class="card-text card-progress-text">
-                <clr-progress-bar class="progress-bar" clrSuccess clrValue="{{ data?.migration?.config?.completedPercent }}"></clr-progress-bar>
-                <div class="no-wrap ml-12"> {{ data?.migration?.config?.completedPercent }} % completed</div>
+                <clr-progress-bar class="progress-bar" clrSuccess clrValue="{{ migrationOverviewData?.migration?.config?.completedPercent }}"></clr-progress-bar>
+                <div class="no-wrap ml-12"> {{ migrationOverviewData?.migration?.config?.completedPercent }} % completed</div>
              </div>
              <div>
-                <span class="badge badge-blue"></span> {{ dictionary.readyPageReviewedTitle }} {{ data?.migration?.config?.reviewed }}
-                <span class="badge ml-12"></span> {{ dictionary.readyPageIncompleteTitle }}  {{ data?.migration?.config?.incomplete }}
+                <span class="badge badge-blue"></span> {{ dictionary.readyPageReviewedTitle }} {{ migrationOverviewData?.migration?.config?.reviewed }}
+                <span class="badge ml-12"></span> {{ dictionary.readyPageIncompleteTitle }}  {{ migrationOverviewData?.migration?.config?.incomplete }}
              </div>
           </div>
        </div>
@@ -28,7 +28,9 @@
             </div>
             <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
               <lab-controller-card
-                (onEdit)="handleLabControllerEdit()"
+                [labControllerDetails]="labControllerDetails"
+                (onEdit)="handleLabControllerCardEdit()"
+                (onFetch)="handleLabControllerCardFetch()"
               ></lab-controller-card>
             </div>
           </div>
@@ -39,6 +41,17 @@
             (onRefreshIncompleteMigrationsData)="handleRefreshIncompleteMigrationsData()"
         ></incomplete-migrations-grid>
     </div>
+
+    <div class="f5-configuration__alert-section" *ngIf="configurationTabService.showCompletedMigrationsCountAlert">
+      <clr-alert [clrAlertType]="'success'" (clrAlertClosedChange)="onAlertClose()">
+          <clr-alert-item>
+              <span class="alert-text">
+                <span class="f5-configuration__alert-header">{{ dictionary.convertedLabel }} {{ completedVSMigrationsCount }} {{ dictionary.completedMigrationsAlertHeader }}</span>
+                <span class="f5-configuration__alert-body">{{ dictionary.completedMigrationsAlertMessage }}</span>
+              </span>
+          </clr-alert-item>
+      </clr-alert>
+  </div>
 </div>
 
 <vs-config-editor-modal
@@ -47,8 +60,7 @@
     (onCloseVsConfigEditorModal)="handleCloseVsConfigEditorModal($event)"
 ></vs-config-editor-modal>
 
-<start-migration-wizard
-   *ngIf="openEditControllerConfig"
-   [isEditLabControllerDetails]="true"
-   (onClose)="handleCloseStartMigrationWizard()"
-></start-migration-wizard>
+<edit-lab-controller-modal
+  *ngIf="openEditControllerConfig"
+  (onClose)="handleCloseLabControllerEditModal($event)"
+></edit-lab-controller-modal>
