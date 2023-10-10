@@ -10,4 +10,8 @@ router.post('/updateMigrationData', controller.updateMigrationData);
 
 router.post('/startMigration', controller.startMigration);
 
+router.post('/setLabControllerDetails', controller.setLabControllerDetails);
+
+router.get('/fetchFromController', controller.fetchFromController);
+
 module.exports = router;

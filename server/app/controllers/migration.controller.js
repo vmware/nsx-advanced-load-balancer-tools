@@ -25,3 +25,16 @@ exports.startMigration = asyncHandler(async (req, res, next) => {
 
     res.status(200).json(result);
 });
+
+exports.fetchFromController = asyncHandler(async (req, res, next) => {
+    const result = data.getAllIncompleteVSMigrationData;
+
+    res.status(200).json(result);
+});
+
+exports.setLabControllerDetails = asyncHandler(async (req, res, next) => {
+    data.labControllerDetails = req.body;
+    const result =  data.labControllerDetails;
+
+    res.status(200).json(result);
+});

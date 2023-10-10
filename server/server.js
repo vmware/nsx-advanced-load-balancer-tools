@@ -12,6 +12,9 @@ const port = process.env.PORT || 3000;
 
 const data = require('./data');
 
+app.use(bodyParser.json());
+app.use(cors());
+
 app.post('/api/f5login', (req, res, next) => {
   res.status(200).send(data.getF5LoginError);
 })
@@ -46,9 +49,6 @@ const connUri = 'mongodb://localhost:27017/';
 // Database name
 const dbName = 'nsxAlbMigrationTools';
 
-app.use(bodyParser.json());
-app.use(cors());
-
 // Connect to MongoDB
 mongoose.connect(connUri, {
   dbName: dbName,
@@ -72,7 +72,7 @@ app.use("/migrationTools", toolsRouter);
 app.use('/api/discovery', discoveryRouter);
 
 // Route for serving the data asked by Angular application.
-app.use("/api/migration", migrationRouter);
+app.use("/api/configuration", migrationRouter);
 
 // Route for serving the Angular application.
 app.get('*', (req, res) => {

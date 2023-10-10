@@ -1,5 +1,5 @@
 <div class="start-migration-wizard">
-    <clr-wizard #wizard [(clrWizardOpen)]="isWizardOpen"   [clrWizardDisableStepnav]="true" [clrWizardClosable]="false">
+    <clr-wizard #wizard [(clrWizardOpen)]="isWizardOpen" [clrWizardDisableStepnav]="true" [clrWizardClosable]="false">
         <clr-wizard-title>{{ dictionary.header }}</clr-wizard-title>
 
         <clr-wizard-button [type]="'previous'">{{ dictionary.backLabel }}</clr-wizard-button>
@@ -13,14 +13,14 @@
 
             <form clrForm [formGroup]="certsAndKeysForm" [clrLayout]="verticalLayout">
                 <clr-input-container>
-                    <label>{{ dictionary.usernameLabel }}</label>
-                    <input clrInput placeholder="{{ dictionary.usernamePlaceholder }}" size="100" formControlName="username"/>
+                    <label>{{ dictionary.ipAddressLabel }}</label>
+                    <input clrInput placeholder="{{ dictionary.ipAddressPlaceholder }}" formControlName="ipAddress" size="100"/>
                     <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
                 </clr-input-container>
 
                 <clr-input-container>
-                    <label>{{ dictionary.ipAddressLabel }}</label>
-                    <input clrInput placeholder="{{ dictionary.ipAddressPlaceholder }}" formControlName="ipAddress" size="100"/>
+                    <label>{{ dictionary.usernameLabel }}</label>
+                    <input clrInput placeholder="{{ dictionary.usernamePlaceholder }}" size="100" formControlName="username"/>
                     <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
                 </clr-input-container>
 
@@ -45,14 +45,14 @@
 
             <form clrForm [formGroup]="labControllerForm" [clrLayout]="verticalLayout">
                 <clr-input-container>
-                    <label>{{ dictionary.usernameLabel }}</label>
-                    <input clrInput placeholder="Enter Username" size="100" formControlName="username"/>
+                    <label>{{ dictionary.ipAddressLabel }}</label>
+                    <input clrInput placeholder="{{ dictionary.ipAddressPlaceholder }}" size="100" formControlName="ipAddress"/>
                     <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
                 </clr-input-container>
 
                 <clr-input-container>
-                    <label>{{ dictionary.ipAddressLabel }}</label>
-                    <input clrInput placeholder="Address please!" size="100" formControlName="ipAddress"/>
+                    <label>{{ dictionary.usernameLabel }}</label>
+                    <input clrInput placeholder="{{ dictionary.usernameLabel }}" size="100" formControlName="username"/>
                     <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
                 </clr-input-container>
 
@@ -60,7 +60,7 @@
                     <label>{{ dictionary.passwordLabel }}</label>
                     <input
                         clrPassword
-                        placeholder="Enter Password"
+                        placeholder="{{ dictionary.passwordPlaceholder }}"
                         formControlName="password"
                         size="95"
                     />
@@ -74,10 +74,17 @@
             <ng-template clrPageNavTitle>{{ dictionary.finalizingImportPageTitle }}</ng-template>
 
             <div class="finalizing-section">
-                <div class="finalizing-picture">
+                <clr-alert [clrAlertType]="'danger'" *ngIf="errorMessage">
+                    <clr-alert-item>
+                      <span class="alert-text">{{ errorMessage }}</span>
+                    </clr-alert-item>
+                  </clr-alert>
+
+                <div class="finalizing-picture" *ngIf="!finished">
                     <img width="350" height="220"  src="assets/images/analyzing.png"/>
                 </div>
-                <div class="progress loop progress-bar"><progress></progress></div>
+
+                <div class="progress loop progress-bar" *ngIf="!finished"><progress></progress></div>
             </div>
             <ng-template clrPageButtons>
                 <clr-wizard-button [type]="'custom-finish'"> {{ finished ?  dictionary.doneLabel : dictionary.inProgressLabel }}</clr-wizard-button>
