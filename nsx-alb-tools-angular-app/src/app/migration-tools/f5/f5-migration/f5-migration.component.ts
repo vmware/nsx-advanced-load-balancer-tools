@@ -5,6 +5,7 @@ import { ClrFormLayout } from '@clr/angular';
 import * as l10n from './f5-migration.l10n';
 import { HttpService } from 'src/app/shared/http/http.service';
 import { ClrWizard } from "@clr/angular";
+import { Router } from '@angular/router';
 
 
 const { ENGLISH: dictionary, ...l10nKeys } = l10n;
@@ -23,6 +24,7 @@ export class F5MigrationComponent implements OnInit {
 
     constructor(
         private http: HttpService,
+        private router: Router,
     ) {}
 
     ngOnInit(): void {
@@ -37,6 +39,13 @@ export class F5MigrationComponent implements OnInit {
 
     onCancel(event: any): void {
       this.open = false;
+    }
+
+    isActive(tabName): boolean {
+      if(this.router.url.lastIndexOf(tabName) !== -1) {
+        return true;
+      }
+      return false;
     }
 
 }

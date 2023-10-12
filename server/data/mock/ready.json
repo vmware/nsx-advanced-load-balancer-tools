@@ -37,5 +37,39 @@
           "name": "Vs5",
           "status": "Needs Review"
         }
+      ],
+      "migration": {
+        "config": {
+          "reviewed": 12,
+          "incomplete": 10,
+          "completedPercent": 80
+        },
+        "fully": {
+          "completed": 0,
+          "incomplete": 17,
+          "completedPercent": 0
+        }
+      },
+      "playbooks": [
+        {
+          "name": "Vs1",
+          "status": "Ready",
+          "date": 1695769612178
+        },
+        {
+          "name": "Vs2",
+          "status": "Ready",
+          "date": 1696669622178
+        },
+        {
+          "name": "Vs3",
+          "status": "Ready",
+          "date": 1696759612178
+        },
+        {
+          "name": "Vs4",
+          "status": "ready",
+          "date": 1666769602178
+        }
       ]
 }

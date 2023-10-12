@@ -13,6 +13,8 @@ import {
     cloudTrafficIcon,
     shieldIcon,
     bookIcon,
+    downloadIcon,
+    checkIcon,
     exclamationCircleIcon,
     checkboxListIcon,
     flaskIcon,
@@ -33,6 +35,8 @@ const clarityIcons = [
     cloudTrafficIcon,
     shieldIcon,
     bookIcon,
+    downloadIcon,
+    checkIcon,
     exclamationCircleIcon,
 ]
 

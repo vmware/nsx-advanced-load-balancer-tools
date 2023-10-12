@@ -25,6 +25,7 @@ export class F5ReadyComponent implements OnInit {
   loadingFlag: boolean;
   data;
   vsStatusGridData;
+  playbooksGridData;
   destinationCtrlForm: FormGroup;
   mapDestinationForm: FormGroup;
   playbookForm: FormGroup;
@@ -32,8 +33,13 @@ export class F5ReadyComponent implements OnInit {
   f5DestinationData: any;
   selected;
 
+  showToaster = false;
+  toasterMessage: string;
+
   open = false;
   playbookModalOpened = false;
+  openMappingEditModal = false;
+  openDestinationEditModal = false;
 
   constructor(
       private http: HttpService,
@@ -61,6 +67,7 @@ export class F5ReadyComponent implements OnInit {
     this.http.get('f5ready').subscribe((data)=> {
       this.data = data;
       this.vsStatusGridData = data.vsStatusData;
+      this.playbooksGridData = data.playbooks;
     });
     this.http.get('f5destination').subscribe((data)=> {
       this.f5DestinationData = data;
@@ -83,13 +90,20 @@ export class F5ReadyComponent implements OnInit {
 
   editMappingDetails(): void {
     this.setCurrentModalValues();
-    this.open = true;
-    this.wizard.forceNext();
+    this.openMappingEditModal = true;
   }
 
-  editDestDetails(): void {
+  saveMappingDetails(): void {
+    this.openMappingEditModal = false;
+  }
+
+  editDestinationControllerDetails(): void {
     this.setCurrentModalValues();
-    this.open = true;
+    this.openDestinationEditModal = true;
+  }
+
+  saveDestinationControllerDetails(): void {
+    this.openDestinationEditModal = false;
   }
 
   setCurrentModalValues(): void {
@@ -106,13 +120,42 @@ export class F5ReadyComponent implements OnInit {
     });
   }
 
+  downloadPlaybook(): void {
+    console.log('downloaded');
+  }
+
+  // markComplete(playbook): void {
+  //   this.http.post('f5pbmarkcomplete', this.playbookForm.value).subscribe((data)=> {
+  //     console.log('completed');
+  //     this.showToaster = true;
+  //     this.toasterMessage = dictionary.readyPagePlaybookMarkedSuccessMessage;
+  //   }, (error) => {
+  //       console.log('error');
+  //   });
+  // }
+
+  generatePlaybook(): void {
+    this.http.post('f5generateplaybook', this.playbookForm.value).subscribe((data)=> {
+        this.playbookModalOpened = false;
+        this.showToaster = true;
+        this.toasterMessage = dictionary.readyPagePlaybookGeneratedSuccessMessage;
+      }, (error) => {
+          console.log('error');
+          this.playbookModalOpened = false;
+      });
+  }
+
+  generateSinglePlaybook(vs): void {
+    this.selected = vs;
+    this.playbookModalOpened = true;
+  }
+
   pageCustomNext(): void {
     this.loadingFlag = true;
     this.http.post('f5login', this.destinationCtrlForm.value).subscribe((data)=> {
         setTimeout(()=> {
             this.loadingFlag = false;
             this.wizard.forceNext();
-            // this.open = false;
         }, 1000)
     }, (error) => {
         this.loadingFlag = false;

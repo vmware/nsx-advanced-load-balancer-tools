@@ -6,7 +6,11 @@ import {
 import { ConfigurationTabService } from 'src/app/shared/configuration-tab-response-data/configuration-tab-response-data.service';
 import { incompleteVsMigration } from './f5-configuration.types';
 import { ClrFormLayout } from '@clr/angular';
+import * as l10n from './f5-configuration.l10n';
+
 import { lastValueFrom } from 'rxjs';
+import { HttpService } from '../../../shared/http/http.service';
+const { ENGLISH: dictionary, ...l10nKeys } = l10n;
 
 @Component({
   selector: 'f5-configuration',
@@ -26,9 +30,18 @@ export class F5ConfigurationComponent implements OnInit {
 
   public readonly verticalLayout = ClrFormLayout.VERTICAL;
 
+  data;
+
+  dictionary = dictionary;
+
   constructor(
     private readonly configurationTabService: ConfigurationTabService,
-  ) { }
+    private http: HttpService,
+  ) {
+    this.http.get('f5ready').subscribe((data)=> {
+      this.data = data;
+    });
+  }
 
   /** @override */
   public async ngOnInit(): Promise<void> {

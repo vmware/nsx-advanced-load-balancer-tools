@@ -5,23 +5,18 @@
 .card-row {
     display: flex;
     .first-item {
-        width: 200px;
+        width: 300px;
     }
 }
 
 .card.top-row {
     height: unset;
-    display: flex;
-    justify-content: space-between;
-}
-
-.card.top-row > .card-block {
-    width: 33%;
 }
 
 .progress-bar {
     position: relative;
     margin-top: 10px;
+    font-size: 1px;
 }
 
 .grid-title {
@@ -35,10 +30,30 @@
     width: 50%;
 }
 
-.progress-bar {
-    font-size: 1px;
-}
-
 .select-input {
     width: 780px;
+}
+
+.card-progress-text {
+    display: flex;
+}
+
+.no-wrap {
+    text-wrap: nowrap;
+}
+
+.ml-12 {
+    margin-left: 12px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.btm-toaster {
+    width: 30%;
+    position: sticky;
+    left: 70%;
+    bottom: 0;
+    z-index: 999;
 }
