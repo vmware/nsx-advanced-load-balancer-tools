@@ -1,4 +1,22 @@
 <div class="f5-configuration">
+  <div class="clr-row">
+    <div class="clr-col-lg-12 clr-col-12">
+       <div class="card top-row">
+          <div class="card-block">
+             <h5 class="card-title"> {{ dictionary.readyPageConfigMigrationTitle }} </h5>
+             <div class="card-text card-progress-text">
+                <clr-progress-bar class="progress-bar" clrSuccess clrValue="{{ data?.migration?.config?.completedPercent }}"></clr-progress-bar>
+                <div class="no-wrap ml-12"> {{ data?.migration?.config?.completedPercent }} % completed</div>
+             </div>
+             <div>
+                <span class="badge badge-blue"></span> {{ dictionary.readyPageReviewedTitle }} {{ data?.migration?.config?.reviewed }}
+                <span class="badge ml-12"></span> {{ dictionary.readyPageIncompleteTitle }}  {{ data?.migration?.config?.incomplete }}
+             </div>
+          </div>
+       </div>
+    </div>
+  </div>
+
     <div class="f5-configuration__cards">
         <div class="clr-row">
             <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">

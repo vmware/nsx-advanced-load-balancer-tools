@@ -22,16 +22,14 @@
     },
     "virtualService": {
         "total": 34,
-        "chart": [
-            { "name": "a", "value": "9", "color": "#665faac" },
-            { "name": "b", "value": "20", "color": "#dd8050c4" },
-            { "name": "c", "value": "30", "color": "#63adfeb3" },
-            { "name": "d", "value": "8", "color": "#24b044d9" },
-            { "name": "e", "value": "12", "color": "#ff516ed9" },
-            { "name": "f", "value": "3", "color": "#ffcf59ed" },
-            { "name": "g", "value": "7", "color": "#17a2b8" },
-            { "name": "h", "value": "14", "color": "#976a6af2" }
-        ],
+        "types": {
+            "L4": 10,
+            "L7": 95,
+            "DNS": 20,
+            "UDP": 30,
+            "SSL": 40,
+            "WAF": 50
+        },
         "enabledCount": 10,
         "deactivatedCount": 5
     }
