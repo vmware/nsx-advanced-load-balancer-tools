@@ -32,6 +32,14 @@ app.get('/api/f5destination', (req, res, next) => {
   res.status(200).send(data.getF5DestinationData);
 })
 
+app.post('/api/f5generateplaybook', (req, res, next) => {
+  res.status(200).send();
+})
+
+app.post('/api/f5pbmarkcomplete', (req, res, next) => {
+  res.status(200).send();
+})
+
 // MongoDB connection URL
 const connUri = 'mongodb://localhost:27017/';
 

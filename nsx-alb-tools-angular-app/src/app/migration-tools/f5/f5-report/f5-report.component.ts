@@ -10,6 +10,16 @@ import * as d3 from 'd3';
 
 const { ENGLISH: dictionary, ...l10nKeys } = l10n;
 
+let colors = [
+  "#665faac",
+  "#dd8050c4",
+  "#63adfeb3",
+  "#24b044d9",
+  "ff516ed9",
+  "#ffcf59ed",
+  "#17a2b8",
+  "#976a6af2",
+]
 @Component({
   selector: 'f5-report',
   templateUrl: './f5-report.html',
@@ -29,7 +39,7 @@ export class F5ReportComponent implements OnInit {
     private width = 450;
     private height = 250;
     private svg: any;
-    private colors: any;
+    private colors: any = colors;
     private radius = Math.min(this.width, this.height) / 2 - this.margin.left;
 
     constructor(
@@ -40,9 +50,19 @@ export class F5ReportComponent implements OnInit {
     ngOnInit(): void {
       this.http.get('f5report').subscribe((data)=> {
         this.report = data;
+        const chart = [];
+        const keys = Object.keys(this.report.virtualService.types);
+        keys.forEach((key, index) => {
+          const each = {
+            name: key,
+            value: this.report.virtualService.types[key],
+            color: this.colors[index],
+          };
+          chart.push(each as never);
+        });
         this.createSvg();
-        this.createColors(this.report.virtualService.chart);
-        this.drawChart(this.report.virtualService.chart);
+        this.createColors(chart);
+        this.drawChart(chart);
       });
     }
 

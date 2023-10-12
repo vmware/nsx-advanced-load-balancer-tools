@@ -5,7 +5,9 @@
 
 export const ENGLISH = {
   readyPageDestinationControllerTitle: 'Destination Controller',
+  readyPageEditDestinationCtrlTitle: 'Edit Destination Controller Details',
   readyPageMappingTitle: 'Mapping',
+  readyPageEditMappingTitle: 'Edit Map Destination Details',
   readyPageInProgressTitle: 'In Progress',
   readyPageEditButtonText: 'Edit',
   readyPageIpAddressTitle: 'Ip Address',
@@ -25,6 +27,7 @@ export const ENGLISH = {
   readyPageMapDestinationTitle: 'Map Destination',
   readyPageNextLabel: 'Next',
   readyPageSubmitLabel: 'Submit',
+  readyPageSaveLabel: 'Save',
   readyPageConnectDestControllerLabel: 'Connect Destination Controller',
   readyPageDestPageSubTitle: 'By providing destination controller will be able to fetch pre populated fields and push playbooks.',
   readyPageCancelLabel: 'Cancel',
@@ -32,7 +35,15 @@ export const ENGLISH = {
   readyPageFinishLabel: 'Finish',
   readyPagePlaybookNameTitle: 'Playbook Name',
   readyPagePlaybookContentsTitle: 'Playbook Contents',
-  readypageConfigMigrationTitle: 'Config Migration',
-  readypageIRuleMigrationTitle: 'IRule Migration',
-  readypageFullyMigratedTitle: 'Fully Migrated',
+  readyPageConfigMigrationTitle: 'Config Migration',
+  readyPageIRuleMigrationTitle: 'IRule Migration',
+  readyPageFullyMigratedTitle: 'Fully Migrated',
+  readyPageIncompleteTitle: 'Incomplete',
+  readyPageCompletedTitle: 'Completed',
+  readyPagePlaybooksTitle: 'Playbooks',
+  readyPageDownloadPlaybookTitle: 'Download Playbook',
+  readyPageMarkCompleteTitle: 'Mark Complete',
+  readyPageDateTitle: 'Date',
+  readyPagePlaybookMarkedSuccessMessage: 'Playbook marked as completed.',
+  readyPagePlaybookGeneratedSuccessMessage: 'Playbook generated.'
 };
