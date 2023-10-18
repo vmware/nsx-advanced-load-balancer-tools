@@ -6,6 +6,17 @@ const aviLabDetailsSchema = mongoose.Schema({
     avi_lab_password: String,
 });
 
+const aviDestinationDetailsSchema = mongoose.Schema({
+    avi_destination_ip: String,
+    avi_destination_user: String,
+    avi_destination_password: String,
+    avi_destination_version: String,
+    avi_mapped_vrf: String,
+    avi_mapped_tenant: String,
+    avi_mapped_cloud: String,
+    avi_mapped_segroup: String,
+});
+
 const conversionStatusSchema = mongoose.Schema({
     status_sheet: [{
         "profile": Object,
@@ -50,12 +61,14 @@ const aviOutputSchema = mongoose.Schema({
 
 
 const AviLabDetailsModel  = mongoose.model('AviLabDetailsModel', aviLabDetailsSchema);
+const AviDestinationDetailsModel  = mongoose.model('AviDestinationDetailsModel', aviDestinationDetailsSchema);
 const ConversionStatusModel  = mongoose.model('ConversionStatusModel', conversionStatusSchema);
 const AviOutputModel  = mongoose.model('AviOutputModel', aviOutputSchema);
 
 
 module.exports = {
     AviLabDetailsModel,
+    AviDestinationDetailsModel,
     ConversionStatusModel,
     AviOutputModel,
 }
