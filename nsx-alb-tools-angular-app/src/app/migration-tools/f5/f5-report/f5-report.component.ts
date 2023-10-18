@@ -199,4 +199,21 @@ export class F5ReportComponent implements OnInit {
       );
     }
 
+    generateConfiguration(): void {
+      const reqBody = {
+        avi_lab_ip: '10.10.10.10',
+        avi_lab_user: 'admin',
+        avi_lab_password:'abc',
+      };
+
+      this.http.post('configuration/generateConfiguration', reqBody).subscribe(
+        (data) => {
+          console.log('Data from API:', data);
+        },
+        (error) => {
+          console.error('Error from API:', error);
+        }
+      );
+    }
+
 }
