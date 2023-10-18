@@ -1,28 +1,22 @@
 const mongoose = require('mongoose');
 
-const migrationSchema = mongoose.Schema({
+const aviLabDetailsSchema = mongoose.Schema({
+    avi_lab_ip: String,
+    avi_lab_user: String,
+    avi_lab_password: String,
+});
+
+const conversionStatusSchema = mongoose.Schema({
     status_sheet: [{
-        index: Number,
-        F5_type: String,
-        F5_SubType: String,
-        F5_ID: String,
-        Status: String,
-        Skipped_settings: String,
-        Indirect_mapping: String,
-        Not_Applicable: String,
-        User_Ignored: String,
-        Skipped_for_defaults: String,
-        Complexity_Level: {
-            type: String,
-            default: null, // This allows the field to have a string value or be null
-        },
-        F5_Object: String,
-        Avi_Object: Object,
-        Vs_Mappings: Object,
-        Needs_Review: {
-            type: String,
-            default: null, // This allows the field to have a string value or be null
-        }
+        "profile": Object,
+        "monitor": Object,
+        "pool": Object,
+        "persistence": Object,
+        "policy": Object,
+        "virtual": Object,
+        "data-group": Object,
+        "virtual-address": Object,
+        "node": Object,
     }],
     pivot_sheet: [{
         Status: String,
@@ -32,4 +26,36 @@ const migrationSchema = mongoose.Schema({
     }]
 });
 
-module.exports = mongoose.model('MigrationSheet', migrationSchema);
+const aviOutputSchema = mongoose.Schema({
+    ApplicationProfile: Object,
+    NetworkProfile: Object,
+    SSLProfile: Object,
+    PKIProfile: Object,
+    SSLKeyAndCertificate: Object,
+    ApplicationPersistenceProfile: Object,
+    HealthMonitor: Object,
+    IpAddrGroup: Object,
+    StringGroup: Object,
+    HTTPPolicySet: Object,
+    VrfContext: Object,
+    PoolGroup: Object,
+    PriorityLabels: Object,
+    Pool: Object,
+    VirtualService: Object,
+    VSDataScriptSet: Object,
+    NetworkSecurityPolicy: Object,
+    VsVip: Object,
+    Tenant: Object,
+});
+
+
+const AviLabDetailsModel  = mongoose.model('AviLabDetailsModel', aviLabDetailsSchema);
+const ConversionStatusModel  = mongoose.model('ConversionStatusModel', conversionStatusSchema);
+const AviOutputModel  = mongoose.model('AviOutputModel', aviOutputSchema);
+
+
+module.exports = {
+    AviLabDetailsModel,
+    ConversionStatusModel,
+    AviOutputModel,
+}

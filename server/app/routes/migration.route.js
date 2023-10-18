@@ -2,7 +2,11 @@ const controller = require('../controllers/migration.controller');
 const express = require("express");
 const router = express.Router();
 
-router.get('/getConfiguration', controller.getConfiguration);
+router.post('/generateConfiguration', controller.generateConfiguration);
+
+/********************************************************************/
+//  Below is the list of APIs previously being added with mock data 
+/********************************************************************/
 
 router.get('/getLabControllerDetails', controller.getLabControllerDetails);
 
