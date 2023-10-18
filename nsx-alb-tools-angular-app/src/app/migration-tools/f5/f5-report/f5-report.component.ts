@@ -11,14 +11,12 @@ import * as d3 from 'd3';
 const { ENGLISH: dictionary, ...l10nKeys } = l10n;
 
 let colors = [
-  "#665faac",
-  "#dd8050c4",
-  "#63adfeb3",
-  "#24b044d9",
-  "ff516ed9",
-  "#ffcf59ed",
-  "#17a2b8",
-  "#976a6af2",
+  "#225677",
+  "#C9E0ED",
+  "#945DB7",
+  "#737373",
+  "#454545",
+  "#B0D3E5",
 ]
 @Component({
   selector: 'f5-report',
