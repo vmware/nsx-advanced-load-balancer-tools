@@ -201,9 +201,17 @@ export class F5ReportComponent implements OnInit {
 
     generateConfiguration(): void {
       const reqBody = {
-        avi_lab_ip: '10.10.10.10',
+        avi_lab_ip:'10.10.10.10',
         avi_lab_user: 'admin',
-        avi_lab_password:'abc',
+        avi_lab_password: 'admin',
+        avi_destination_ip: '10.10.10.10',
+        avi_destination_user: 'admin',
+        avi_destination_password: 'admin',
+        avi_destination_version: '30.2.1',
+        avi_mapped_vrf: 'global', 
+        avi_mapped_tenant: 'admin', 
+        avi_mapped_cloud: 'Default-Cloud',
+        avi_mapped_segroup: 'Default-Group',
       };
 
       this.http.post('configuration/generateConfiguration', reqBody).subscribe(
