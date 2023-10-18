@@ -10,8 +10,6 @@ exports.generateReport = asyncHandler(async (req, res, next) => {
     const outputFilePath = `./migration/${f5_host_ip}/output/bigip-conversionstatus.json`; // bigip_discovery_data.json`;
     let dataToSend;
 
-    // TO DO: Need to take care of Refresh, as we will not re-run script if we already have data in DB
-
     // Spawn new child process to call the python script. // , '--discovery'
     const pythonProcess = spawn('f5_converter.py', ['--f5_host_ip', f5_host_ip, '--f5_ssh_user', f5_ssh_user, '--f5_ssh_password', f5_ssh_password, '--vrf', 'global', '--tenant', 'admin', '--controller_version', controllerVersion, '--cloud_name', 'Default-Cloud', '-o', 'migration']);
 
