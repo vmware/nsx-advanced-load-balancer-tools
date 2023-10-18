@@ -1,7 +1,13 @@
 const asyncHandler = require("express-async-handler");
 const fs = require("fs")
 const data = require("../../data/mock/configuration.data");
-const { AviLabDetailsModel, ConversionStatusModel, AviOutputModel } = require('../models/migration.model');
+const {
+    AviLabDetailsModel, 
+    AviDestinationDetailsModel, 
+    ConversionStatusModel, 
+    AviOutputModel,
+} = require('../models/migration.model');
+
 
 exports.generateConfiguration = asyncHandler(async (req, res, next) => {
     const {
@@ -10,37 +16,57 @@ exports.generateConfiguration = asyncHandler(async (req, res, next) => {
         f5_ssh_password,
         avi_lab_ip = '10.10.10.10',
         avi_lab_user = 'admin',
-        avi_lab_password = 'abc',
-        avi_vrf = 'global', 
-        avi_tenant = 'admin', 
-        avi_cloud = 'Default-Cloud',
-        avi_controller_version = '30.2.1'
+        avi_lab_password = 'admin',
+        avi_destination_ip = '10.10.10.10',
+        avi_destination_user = 'admin',
+        avi_destination_password = 'admin',
+        avi_destination_version = '30.2.1',
+        avi_mapped_vrf = 'global', 
+        avi_mapped_tenant = 'admin', 
+        avi_mapped_cloud = 'Default-Cloud',
+        avi_mapped_segroup = 'Default-Group',
     } = req.body;
 
-    const conversionStatusFilePath = `./migration/${f5_host_ip}/output/bigip-conversionstatus.json`; 
-    const aviOutputFilePath = `./migration/${f5_host_ip}/output/bigip-output.json`; 
 
-    // Save the Avi Lab details in DB. 
+    // Save the User provided details in DB.
     try {
+        // Save the Avi Lab details.
         await AviLabDetailsModel.insertMany({
             avi_lab_ip,
             avi_lab_user,
             avi_lab_password,
         });
+
+        // Save the Avi Desintion details & Mappings details.
+        await AviDestinationDetailsModel.insertMany({
+            avi_destination_ip,
+            avi_destination_user,
+            avi_destination_password,
+            avi_destination_version,
+            avi_mapped_vrf,
+            avi_mapped_tenant,
+            avi_mapped_cloud,
+            avi_mapped_segroup,
+        });
     } catch (err) {
-        res.status(200).json({ message: 'Error in saving the Avi Lab Controller details, '+err.message});
+        res.status(500).json({ message: 'Error in saving the Avi Lab/Destination details(mappings), '+err.message});
     }
 
-    // Run the migration tool with downloaded Certs & Keys and with fetched configuration from Lab Controller.
+    /**
+     *  Run the migration tool with downloaded Certs & Keys and with fetched configuration from Lab Controller. 
+     */
+    const conversionStatusFilePath = `./migration/${f5_host_ip}/output/bigip-conversionstatus.json`; 
+    const aviOutputFilePath = `./migration/${f5_host_ip}/output/bigip-output.json`; 
+    
     // let dataToSend;
     // const pythonProcess = spawn('f5_converter.py', [
     //     '--f5_host_ip', f5_host_ip, 
     //     '--f5_ssh_user', f5_ssh_user, 
     //     '--f5_ssh_password', f5_ssh_password, 
-    //     '--vrf', avi_vrf, 
-    //     '--tenant', avi_tenant, 
-    //     '--cloud_name', avi_cloud, 
-    //     '--controller_version', avi_controller_version, 
+    //     '--vrf', avi_mapped_vrf, 
+    //     '--tenant', avi_mapped_tenant, 
+    //     '--cloud_name', avi_mapped_cloud, 
+    //     '--controller_version', avi_destination_version, 
     //     '-o', 'migration'
     // ]);
 
@@ -69,7 +95,7 @@ exports.generateConfiguration = asyncHandler(async (req, res, next) => {
                 count++;
 
                 if(err) {
-                    res.status(200).json({ message: `Error while reading the ${modelType} JSON in DB, `+err.message});
+                    res.status(500).json({ message: `Error while reading the ${modelType} JSON in DB, `+err.message});
                 } else {
                     const outputJson = JSON.parse(data);
 
@@ -80,7 +106,7 @@ exports.generateConfiguration = asyncHandler(async (req, res, next) => {
                             await AviOutputModel.insertMany(outputJson); 
                         }
                     } catch (err) {
-                        res.status(200).json({ message: `Error while saving the ${modelType} JSON in DB, `+err.message});
+                        res.status(500).json({ message: `Error while saving the ${modelType} JSON in DB, `+err.message});
                     }
                 }
 
@@ -92,7 +118,7 @@ exports.generateConfiguration = asyncHandler(async (req, res, next) => {
             fs.readFile(conversionStatusFilePath, readFileHanlder.bind(null, 'ConversionStatus'));
             fs.readFile(aviOutputFilePath, readFileHanlder.bind(null, 'AviOutput'));
         } else {
-            res.status(200).json({ message: 'Error while generating required Configuration JSONs'});
+            res.status(500).json({ message: 'Error while generating required Configuration JSONs'});
         }
 
     // });
