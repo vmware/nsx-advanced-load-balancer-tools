@@ -41,23 +41,26 @@ exports.generateReport = asyncHandler(async (req, res, next) => {
 
                         res.status(200).json({ message: 'Report generated successfully.'});
                     } catch (err) {
-                        res.status(200).json({ message: 'Error in saving output in DB, '+err.message});
+                        res.status(500).json({ message: 'Error in saving output in DB, '+err.message});
                     }
                 } 
             });
         } else {
-            res.status(200).json({ message: 'Error in report generation'});
+            res.status(500).json({ message: 'Error in report generation'});
         }
     });
 });
 
 // Get the discovery report from DB.
 exports.getReport = asyncHandler(async (req, res, next) => {
-    // Fetch the data from MongoDB
-    const fetchResult = await ReportSheet.find({});
+    try {
+        const fetchResult = await ReportSheet.find({});
+        console.log(fetchResult);
 
-    console.log(fetchResult);
-    res.status(200).json(reportJson);
+        res.status(200).json(reportJson);
+    } catch (err) {
+        res.status(500).json({ message: 'Error in fetching report data'});
+    }
 });
 
 const reportJson = {
