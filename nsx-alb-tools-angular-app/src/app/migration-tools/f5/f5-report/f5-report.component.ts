@@ -224,4 +224,25 @@ export class F5ReportComponent implements OnInit {
       );
     }
 
+    getAviLabDetails(): void {
+      this.http.get('core/getAviLabDetails').subscribe(
+        (data) => {
+          console.log('Data from getAviLabDetails API:', data)
+        },
+        (error) => {
+          console.error('Error from getAviLabDetails API:', error);
+        }
+      );
+    }
+
+    getAviDestinationDetails(): void {
+      this.http.get('core/getAviDestinationDetails').subscribe(
+        (data) => {
+          console.log('Data from getAviDestinationDetails API:', data)
+        },
+        (error) => {
+          console.error('Error from getAviDestinationDetails API:', error);
+        }
+      );
+    }
 }
