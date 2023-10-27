@@ -24,9 +24,7 @@ const { ENGLISH: dictionary } = l10n;
   styleUrls: ['./f5-configuration.component.less'],
 })
 export class F5ConfigurationComponent implements OnInit {
-  public incompleteMigrationsData: incompleteVsMigration[] = [];
-
-  public selectedMigrationData: incompleteVsMigration;
+  public incompleteVSMigrationsData: incompleteVsMigration[] = [];
 
   public labControllerDetails: labController;
 
@@ -57,8 +55,8 @@ export class F5ConfigurationComponent implements OnInit {
     await this.getMigrationOverviewData();
   }
 
-  public handleRefreshIncompleteMigrationsData(): void {
-    // this.getAllIncompleteVSMigrationsData();
+  public handleCloseVsConfigEditor(): void {
+     this.isOpenVsConfigEditorModal = false;
   }
 
   public async handleCloseLabControllerEditModal(getDetails: boolean): Promise<void> {
@@ -71,7 +69,6 @@ export class F5ConfigurationComponent implements OnInit {
 
   public handleSkip(): void {
     this.selectedMigrationIndex += 1;
-    this.selectedMigrationData = this.incompleteMigrationsData[this.selectedMigrationIndex];
   }
 
   public handleStart(): void {
@@ -91,25 +88,17 @@ export class F5ConfigurationComponent implements OnInit {
     const fetchFromController$ = this.configurationTabService.fetchFromController();
     const allVSMigrationsData: incompleteVsMigrationsData = await lastValueFrom(fetchFromController$);
 
-    this.incompleteMigrationsData = allVSMigrationsData.incompleteVSMigrationsData;
-    this.completedVSMigrationsCount = allVSMigrationsData.completedVSMigrationsCount;
+    // this.incompleteMigrationsData = allVSMigrationsData.incompleteVSMigrationsData;
+    // this.completedVSMigrationsCount = allVSMigrationsData.completedVSMigrationsCount;
     this.configurationTabService.showCompletedMigrationsCountAlert = true;
   }
 
-  public async handleCloseVsConfigEditorModal(saveConfiguration: boolean): Promise<void> {
-    if (saveConfiguration) {
-      const updateMigrationData$ = this.configurationTabService.updateMigrationData(this.selectedMigrationData);
-      await lastValueFrom(updateMigrationData$);
-    }
-
-    this.isOpenVsConfigEditorModal = false;
-  }
-
   private async getAllIncompleteVSMigrationsData(): Promise<void> {
-    const allVSMigrationsData$ = this.configurationTabService.getAllIncompleteVSMigrationsData();
-    const allVSMigrationsData: incompleteVsMigrationsData = await lastValueFrom(allVSMigrationsData$);
-    this.incompleteMigrationsData = allVSMigrationsData.incompleteVSMigrationsData;
-    this.selectedMigrationData = this.incompleteMigrationsData[this.selectedMigrationIndex];
+    const data$ = this.configurationTabService.getAllIncompleteVSMigrationsData();
+    const data: incompleteVsMigrationsData = await lastValueFrom(data$);
+
+    this.incompleteVSMigrationsData = data.incompleteVSMigrationsData;
+    this.completedVSMigrationsCount = data.completedVSMigrationsCount;
   }
 
   public onAlertClose(): void {

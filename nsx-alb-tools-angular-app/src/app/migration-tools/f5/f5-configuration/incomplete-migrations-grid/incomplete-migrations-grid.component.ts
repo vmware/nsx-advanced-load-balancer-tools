@@ -20,23 +20,31 @@ export class IncompleteMigrationsGridComponent {
   public incompleteMigrationsData: incompleteVsMigration[] = [];
 
   @Output()
-  public onRefreshIncompleteMigrationsData = new EventEmitter<boolean>();
+  public onCloseVsConfigEditor = new EventEmitter<void>();
 
+  @Input()
   public isOpenVsConfigEditorModal = false;
 
-  public selectedMigrationForEditing: incompleteVsMigration;
+  @Input()
+  public selectedMigrationIndex: number;
 
   public dictionary = dictionary;
 
-  public handleOpenVsConfigEditorModal(incompleteVsMigration: incompleteVsMigration): void {
-    this.selectedMigrationForEditing = incompleteVsMigration;
+  public handleOpenVsConfigEditorModal(index: number): void {
+    this.selectedMigrationIndex = index;
     this.isOpenVsConfigEditorModal = true;
   }
 
-  public handleCloseVsConfigEditorModal(): void {
+  public handleCloseVsConfigEditorModal(isConfigurationAccepted: boolean): void {
+    if (isConfigurationAccepted) {
+      if (this.selectedMigrationIndex !== -1) {
+        this.incompleteMigrationsData.splice(this.selectedMigrationIndex, 1);
+      }
+    }
+
     this.isOpenVsConfigEditorModal = false;
 
-    this.onRefreshIncompleteMigrationsData.emit();
+    this.onCloseVsConfigEditor.emit();
   }
 
   public trackByIndex(index: number): number {

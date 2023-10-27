@@ -26,6 +26,10 @@ export class ConfigurationTabService {
     return this.http.get('configuration/getLabControllerDetails');
   }
 
+  public acceptConfiguration(data: any): Observable<void> {
+    return this.http.post(`configuration/acceptConfiguration?type=${data.type}`, data.config);
+  }
+
   public updateMigrationData(data: incompleteVsMigration): Observable<incompleteVsMigration> {
     return this.http.post('configuration/updateMigrationData', data);
   }

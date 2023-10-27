@@ -1,10 +1,21 @@
 
 export interface incompleteVsMigration {
-    vsName: string,
-    F5Obj: string,
-    aviObj: incompleteVsMigrationAviObject,
-    status: string,
-    flaggedObjects: vsFlaggedObject[],
+  index: number,
+  Complexity_Level: string,
+  F5_ID: string,
+  F5_Object: string,
+  F5_SubType: string,
+  F5_type: string,
+  Indirect_mapping: string,
+  Needs_Review: string,
+  Not_Applicable: string,
+  Skipped_for_defaults: string,
+  Skipped_settings: string,
+  Status: string,
+  User_Ignored: string,
+  Vs_Mappings: [vsFlaggedObject],
+  flaggedObjects: [vsFlaggedObject],
+  Avi_Object: object,
   }
 
   export interface incompleteVsMigrationsData {
@@ -12,37 +23,17 @@ export interface incompleteVsMigration {
     completedVSMigrationsCount: number,
   }
 
-export interface incompleteVsMigrationAviObject {
-    name: string,
-    description: string,
-    type: string,
-    enabled: boolean,
-    traffic_enabled: boolean,
-    cloud_ref: String,
-    services: vsAviObjectService[],
-    application_profile_ref: string,
-    vs_datascripts: [],
-    tenant_ref: string,
-    vh_type: string,
-    vrf_context_ref: string,
-    vsvip_ref: string,
-    pool_ref: string,
-    network_profile_ref: string,
-    ssl_profile_ref: string,
-    ssl_key_and_certificate_refs: string[]
-}
-
-export interface vsAviObjectService {
-    port: number,
-    enable_ssl: boolean
-  }
-
   export interface vsFlaggedObject {
-    objectName: string,
-    needReview: boolean,
-    type: string,
-    F5Obj: string,
-    aviObj: any,
+    F5_ID: string,
+    F5_Object?: string,
+    F5_SubType: string,
+    F5_type: string,
+    Status: string,
+    avi_objects: [{
+      Avi_Object?: object,
+      avi_name: string,
+      avi_type: string
+    }],
   }
 
   export interface labController {
