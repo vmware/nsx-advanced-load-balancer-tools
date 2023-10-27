@@ -8,6 +8,8 @@ const {
     AviOutputModel,
 } = require('../models/migration.model');
 
+const SINGLE_OBJECT_TYPE = 'singleObject';
+const VS_OBJECT_TYPE = 'virtualService';
 
 exports.generateConfiguration = asyncHandler(async (req, res, next) => {
     const {
@@ -154,4 +156,113 @@ exports.setLabControllerDetails = asyncHandler(async (req, res, next) => {
     const result =  data.labControllerDetails;
 
     res.status(200).json(result);
+});
+
+/**
+ * Replace "Avi_Object" in AviOutputModel for given avi_name and avi_type.
+ */
+const updateAviObjectInAviOutputModel = async (req, res) => {
+    try {
+        const { Vs_Mapping:{avi_objects: aviObjects}} = req.body;
+        const [{Avi_Object: aviObjectToUpdate}] = aviObjects;
+        const [{avi_type: profileType, avi_name: profileName}] = aviObjects;
+
+        const profileTypeString = `${profileType}.name`
+        const findQuery = {[profileTypeString]: `${profileName}`}
+        const doc = await AviOutputModel.findOne(findQuery);
+        const profile = doc[profileType]
+        if (profile) {
+            const indexToUpdate = profile.findIndex(profileItem => profileItem.name === profileName);
+            const updateQuery = `${profileType}.${indexToUpdate}`;
+            await AviOutputModel.findOneAndUpdate(findQuery, { $set: { [updateQuery]: aviObjectToUpdate } });
+        } else {
+            res.status(404).json({error: "Profile you are trying to update does not exists"});
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({error: error.message});
+    }
+};
+
+/**
+ * Replace Status with updated status coming from UI, at two places - 
+ * one at VS_mappings of an individual virtualservice(virtual) under ConversionStatusModel and
+ * second place at profile/pool or anyother entity type and subtype status key.
+ */
+const updateStatus = async (req, res) => {
+    try {
+        const { F5_type: parentF5Type, F5_SubType: parentF5SubType = '', F5_ID: parentF5Id } = req.body;
+        const { Vs_Mapping: { Status: mappingStatus, F5_type: childF5Type, F5_SubType: childF5SubType = '', F5_ID: childF5Id }} = req.body;
+
+        const profileTypeString = parentF5SubType.trim() ? `status_sheet.${parentF5Type}.${parentF5SubType}.F5_ID`: `status_sheet.${parentF5Type}.F5_ID`;
+        const findQuery = {[profileTypeString]: `${parentF5Id}`};
+        const doc = await ConversionStatusModel.findOne(findQuery).lean();
+        const parentEntity = parentF5SubType.trim() ? doc['status_sheet'][parentF5Type][parentF5SubType] : doc['status_sheet'][parentF5Type];
+
+        if (parentEntity) {
+            const parentIndexToUpdate = parentEntity.findIndex(item => item.F5_ID === parentF5Id);
+            const childIndexToUpdate = parentEntity[parentIndexToUpdate]['Vs_Mappings'].findIndex(item => item.F5_ID === childF5Id);
+            const subProfileIndexToUpdate =  doc['status_sheet'][childF5Type][childF5SubType].findIndex(item => item.F5_ID === childF5Id);
+            console.log('subProfileIndexToUpdate', subProfileIndexToUpdate)
+
+            const VsMappingUpdateQuery = parentF5SubType.trim() ? 
+                `status_sheet.${parentF5Type}.${parentF5SubType}.${parentIndexToUpdate}.Vs_Mappings.Status` : 
+                `status_sheet.${parentF5Type}.${parentIndexToUpdate}.Vs_Mappings.${childIndexToUpdate}.Status`;
+            const profileTypeUpdateQuery = `status_sheet.${childF5Type}.${childF5SubType}.${subProfileIndexToUpdate}.Status`;
+
+            const update = await ConversionStatusModel.findOneAndUpdate(findQuery, { $set: { [VsMappingUpdateQuery]: mappingStatus,  [profileTypeUpdateQuery]: mappingStatus} });
+        } else {
+            res.status(404).json({error: "Conversion Status Profile you are trying to update does not exists"});
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({error: error.message});
+    }
+};
+
+/**
+ * Replace entire object based on entity type and subtype status key.
+ */
+const replaceEntityObject = async (req, res) => {
+    try {
+        const { F5_type: entityF5Type, F5_SubType: entityF5SubType = '', F5_ID: entityF5Id } = req.body;
+       
+        const profileTypeString = entityF5SubType.trim() ? `status_sheet.${entityF5Type}.${entityF5SubType}.F5_ID`: `status_sheet.${entityF5Type}.F5_ID`;
+        const findQuery = {[profileTypeString]: `${entityF5Id}`};
+        const doc = await ConversionStatusModel.findOne(findQuery).lean();
+        const entity = entityF5SubType.trim() ? doc['status_sheet'][entityF5Type][entityF5SubType] : doc['status_sheet'][entityF5Type];
+
+        if (entity) {
+            const entityIndexToUpdate = entity.findIndex(item => item.F5_ID === entityF5Id);
+            console.log('entityIndexToUpdate', entityIndexToUpdate)
+
+            const entityUpdateQuery = entityF5SubType.trim() ? 
+                `status_sheet.${entityF5Type}.${entityF5SubType}.${entityIndexToUpdate}` : 
+                `status_sheet.${entityF5Type}.${entityIndexToUpdate}`;
+
+            const update = await ConversionStatusModel.findOneAndUpdate(findQuery, { $set: { [entityUpdateQuery]: req.body }});
+        } else {
+            res.status(404).json({error: "Conversion Status Profile you are trying to update does not exists"});
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({error: error.message});
+    }
+};
+
+exports.acceptConfiguration = asyncHandler(async (req, res, next) => {
+    const { type } = req.query;
+
+    if(type === SINGLE_OBJECT_TYPE) {
+        await updateAviObjectInAviOutputModel(req, res);
+        await updateStatus(req, res);
+
+        res.status(200).json({message:'Successfully updated Status and Avi_Object'});
+    } else if(type === VS_OBJECT_TYPE){
+        await replaceEntityObject(req, res)
+
+        res.status(200).json({message:'Successfully updated the VirtualService object'});
+    } else {
+        res.status(400).json({error: "Invalid parameters please send either singleObject or virtualService as type query parameters"});
+    }
 });
