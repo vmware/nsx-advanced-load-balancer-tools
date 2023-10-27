@@ -21,7 +21,7 @@
         <div class="clr-row">
             <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
               <next-conversion-card
-                [selectedMigrationData]="selectedMigrationData"
+                [selectedMigrationData]="incompleteVSMigrationsData[selectedMigrationIndex]"
                 (onSkip)="handleSkip()"
                 (onStart)="handleStart()"
               ></next-conversion-card>
@@ -37,8 +37,10 @@
     </div>
     <div class="f5-configuration__grid">
         <incomplete-migrations-grid
-            [incompleteMigrationsData]="incompleteMigrationsData"
-            (onRefreshIncompleteMigrationsData)="handleRefreshIncompleteMigrationsData()"
+            [incompleteMigrationsData]="incompleteVSMigrationsData"
+            [isOpenVsConfigEditorModal]="isOpenVsConfigEditorModal"
+            [selectedMigrationIndex]="selectedMigrationIndex"
+            (onCloseVsConfigEditor)="handleCloseVsConfigEditor()"
         ></incomplete-migrations-grid>
     </div>
 
@@ -53,12 +55,6 @@
       </clr-alert>
   </div>
 </div>
-
-<vs-config-editor-modal
-    *ngIf="isOpenVsConfigEditorModal"
-    [vsConfig]="selectedMigrationData"
-    (onCloseVsConfigEditorModal)="handleCloseVsConfigEditorModal($event)"
-></vs-config-editor-modal>
 
 <edit-lab-controller-modal
   *ngIf="openEditControllerConfig"

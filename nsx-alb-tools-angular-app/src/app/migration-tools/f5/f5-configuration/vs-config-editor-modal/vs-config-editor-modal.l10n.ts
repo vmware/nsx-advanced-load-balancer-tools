@@ -5,7 +5,7 @@
 
 export const ENGLISH = {
     editorLabel: 'Editor',
-    editorAlertMessage: 'Try closing this alert.',
+    editorAlertMessage: 'has been flagged and needs to be reviewed.',
     reviewNowLabel: 'Review Now',
     cancelLabel: 'Cancel',
     acceptLabel: 'Accept',

@@ -1,10 +1,18 @@
 <div class="config-editor">
-    <div class="left-section">
-        <h6 class="header">{{ dictionary.f5Label }}</h6>
-        <textarea class="left-text-area" readonly>{{ leftSectionConfig }}</textarea>
+    <div class="config-editor-section">
+        <div class="left-section">
+            <h6 class="header">{{ dictionary.f5Label }}</h6>
+            <textarea class="left-text-area" readonly>{{ leftSectionConfig }}</textarea>
+        </div>
+        <div class="right-section">
+            <h6 class="header">{{ dictionary.nsxAlbConfigLabel }}</h6>
+            <div #jsonEditorContainerNsxAlbConfig class="right-editor"></div>
+        </div>
     </div>
-    <div class="right-section">
-        <h6 class="header">{{ dictionary.nsxAlbConfigLabel }}</h6>
-        <div #jsonEditorContainerNsxAlbConfig class="right-editor"></div>
+
+    <div class="footer">
+        <button type="button" class="btn btn-outline" (click)="closeModal(false)">{{ dictionary.cancelLabel }}</button>
+
+        <button type="button" class="btn btn-primary" (click)="closeModal(true)" [disabled]="!isConfigEditorValid || disableAccept">{{ dictionary.acceptLabel }}</button>
     </div>
 </div>

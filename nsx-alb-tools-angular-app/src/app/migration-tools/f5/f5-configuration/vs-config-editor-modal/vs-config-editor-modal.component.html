@@ -1,36 +1,31 @@
 <div class="vs-config-editor-modal">
     <clr-modal [(clrModalOpen)]="isOpen" [clrModalSize]="'xl'" *ngIf="vsConfig">
-        <h3 class="modal-title">{{ vsConfig.vsName }} {{ dictionary.editorLabel }}</h3>
+        <h3 class="modal-title">{{ vsConfig.F5_ID }} {{ dictionary.editorLabel }}</h3>
 
         <div class="modal-body">
             <div class="alert-section" *ngIf="vsConfig.flaggedObjects.length">
-                <clr-alert [clrAlertType]="'warning'" *ngFor="let config of vsConfig.flaggedObjects; trackBy: trackByIndex">
+                <clr-alert [clrAlertType]="'warning'" *ngFor="let config of vsConfig.flaggedObjects; trackBy: trackByIndex; let i = index">
                     <clr-alert-item>
-                        <span class="alert-text">{{ dictionary.editorAlertMessage }}</span>
+                        <span class="alert-text">{{ config.F5_ID }} {{ dictionary.editorAlertMessage }}</span>
                         <div class="alert-actions">
-                            <span class="alert-action" (click)="openChildConfigEditorModal(config)" *ngIf="config.needReview">{{ dictionary.reviewNowLabel }}</span>
+                            <span class="alert-action" (click)="openChildConfigEditorModal(i)">{{ dictionary.reviewNowLabel }}</span>
                         </div>
                     </clr-alert-item>
                 </clr-alert>
             </div>
             <config-editor
-                *ngIf="isOpen"
-                [leftSectionConfig]="vsConfig.F5Obj"
-                [rightSectionConfig]="vsConfig.aviObj"
-                (isConfigEditorValid)="handleVsConfigEditorValidationChange($event)"
+                [leftSectionConfig]="vsConfig.F5_Object"
+                [rightSectionConfig]="vsConfig.Avi_Object"
+                [disableAccept]="!!vsConfig.flaggedObjects.length"
+                (onClose)="closeModal($event)"
             ></config-editor>
-        </div>
-
-        <div class="modal-footer">
-            <button type="button" class="btn btn-outline" (click)="closeModal(false)">{{ dictionary.cancelLabel }}</button>
-            <button type="button" class="btn btn-primary" (click)="closeModal(true)" [disabled]="vsConfig.flaggedObjects.length || !isVsConfigEditorValid">{{ dictionary.acceptLabel }}</button>
         </div>
     </clr-modal>
 </div>
 
 <generic-config-editor-modal
     *ngIf="isOpenChildConfigEditorModal"
-    [vsName]="vsConfig.vsName"
-    [config]="childConfigEditorConfig"
+    [vsName]="vsConfig.F5_ID"
+    [config]="vsConfig.flaggedObjects[childConfigEditorConfigIndex]"
     (onCloseGeneralConfigEditorModal)="handleCloseChildConfigEditorModal($event)"
 ></generic-config-editor-modal>

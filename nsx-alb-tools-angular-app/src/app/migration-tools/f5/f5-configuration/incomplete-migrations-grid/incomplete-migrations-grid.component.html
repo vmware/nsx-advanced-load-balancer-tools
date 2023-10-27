@@ -2,17 +2,17 @@
     <h6> {{ dictionary.incompleteLabel }} ({{ incompleteMigrationsData.length }}) </h6>
 
     <clr-datagrid>
-        <clr-dg-column clrDgField="vsName">{{ dictionary.nameLabel }}</clr-dg-column>
+        <clr-dg-column class="incomplete-migrations-grid__name" clrDgField="vsName">{{ dictionary.nameLabel }}</clr-dg-column>
         <clr-dg-column clrDgField="flaggedObjects.length">{{ dictionary.noOfFlagesLabel }}</clr-dg-column>
         <clr-dg-column clrDgField="status">{{ dictionary.statusLabel }}</clr-dg-column>
         <clr-dg-column>{{ dictionary.actionsLabel }}</clr-dg-column>
 
-        <clr-dg-row *clrDgItems="let incompleteMigration of incompleteMigrationsData; trackBy: trackByIndex">
-            <clr-dg-cell class="incomplete-migrations-grid__name">{{ incompleteMigration.vsName }}</clr-dg-cell>
+        <clr-dg-row *clrDgItems="let incompleteMigration of incompleteMigrationsData; trackBy: trackByIndex; let i = index">
+            <clr-dg-cell class="incomplete-migrations-grid__name">{{ incompleteMigration.F5_ID }}</clr-dg-cell>
             <clr-dg-cell>{{ incompleteMigration.flaggedObjects.length }}</clr-dg-cell>
-            <clr-dg-cell>{{ incompleteMigration.status }}</clr-dg-cell>
+            <clr-dg-cell>{{ incompleteMigration.Status }}</clr-dg-cell>
             <clr-dg-cell>
-                    <cds-icon shape="checkbox-list"  status="info" (click)="handleOpenVsConfigEditorModal(incompleteMigration)"></cds-icon>
+                    <cds-icon shape="checkbox-list"  status="info" (click)="handleOpenVsConfigEditorModal(i)"></cds-icon>
             </clr-dg-cell>
         </clr-dg-row>
 
@@ -30,6 +30,6 @@
 
 <vs-config-editor-modal
     *ngIf="isOpenVsConfigEditorModal"
-    [vsConfig]="selectedMigrationForEditing"
-    (onCloseVsConfigEditorModal)="handleCloseVsConfigEditorModal()"
+    [vsConfig]="incompleteMigrationsData[selectedMigrationIndex]"
+    (onCloseVsConfigEditorModal)="handleCloseVsConfigEditorModal($event)"
 ></vs-config-editor-modal>
