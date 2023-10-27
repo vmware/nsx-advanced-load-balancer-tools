@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -24,30 +25,50 @@ export class ConfigEditorComponent implements AfterViewInit {
   public leftSectionConfig: string | undefined = '';
 
   @Input()
-  public rightSectionConfig: any;
+  public rightSectionConfig: object | undefined;
+
+  @Input()
+  public disableAccept = false;
+
+  public isConfigEditorValid = false;
 
   @Output()
-  public isConfigEditorValid = new EventEmitter<boolean>();
+  public onClose = new EventEmitter<object>();
 
   @ViewChild('jsonEditorContainerNsxAlbConfig', { static: false })
   private jsonEditorContainerNsxAlbConfig!: ElementRef;
+
+  public jsonEditor: JSONEditor;
 
   public dictionary = dictionary;
 
   private options: JSONEditorOptions = {
     mode: 'text',
     onValidationError: (errors) => {
-      this.isConfigEditorValid.emit(!errors.length);
-    }
+      this.isConfigEditorValid = !errors.length;
+      this.cdr.detectChanges();
+    },
   }
+
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit() {
     const { options, jsonEditorContainerNsxAlbConfig } = this;
 
-    const jsonEditor = new JSONEditor(
+    this.jsonEditor = new JSONEditor(
       jsonEditorContainerNsxAlbConfig.nativeElement,
       options,
       this.rightSectionConfig,
     );
+  }
+
+  public closeModal(saveConfiguration: boolean): void {
+    let validConfig;
+
+    if (saveConfiguration) {
+      validConfig = this.jsonEditor.get();
+    }
+
+    this.onClose.emit(validConfig);
   }
 }

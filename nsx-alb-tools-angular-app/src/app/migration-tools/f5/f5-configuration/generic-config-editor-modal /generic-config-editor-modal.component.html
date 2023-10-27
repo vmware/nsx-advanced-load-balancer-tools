@@ -1,29 +1,23 @@
 <div class="general-config-editor-modal ">
     <clr-modal [(clrModalOpen)]="isOpen" [clrModalSize]="'xl'">
-        <h3 class="modal-title">{{ config?.objectName}} {{ dictionary.editorLabel }}</h3>
+        <h3 class="modal-title">{{ config.F5_ID}} {{ dictionary.editorLabel }}</h3>
 
         <div class="modal-body">
             <div class="alerts-section">
                 <clr-alert [clrAlertType]="'warning'">
                     <clr-alert-item>
                         <span class="alert-text">
-                            {{ dictionary.editorAlertMessage }}
+                            {{ config.F5_ID}} {{ dictionary.editorAlertMessage }}
                         </span>
                     </clr-alert-item>
                 </clr-alert>
             </div>
             <config-editor
                 *ngIf="isOpen"
-                [leftSectionConfig]="config?.F5Obj"
-                [rightSectionConfig]="config?.aviObj"
-                (isConfigEditorValid)="handleConfigEditorValidationChange($event)"
+                [leftSectionConfig]="config.F5_Object"
+                [rightSectionConfig]="aviConfig"
+                (onClose)="closeModal($event)"
             ></config-editor>
-        </div>
-
-        <div class="modal-footer">
-            <button type="button" class="btn btn-outline" (click)="closeModal(false)">{{ dictionary.cancelLabel }}</button>
-
-            <button type="button" class="btn btn-primary" (click)="closeModal(true)" [disabled]="!isConfigEditorValid">{{ dictionary.acceptLabel }}</button>
         </div>
     </clr-modal>
 </div>

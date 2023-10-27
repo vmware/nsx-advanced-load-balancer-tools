@@ -6,4 +6,6 @@
 export const ENGLISH = {
     f5Label: 'F5',
     nsxAlbConfigLabel: 'NSX-ALB Config',
+    cancelLabel: 'Cancel',
+    acceptLabel: 'Accept',
 };
