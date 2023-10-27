@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev-server": "nodemon server.js"
+    "dev-server": "nodemon server.js",
+    "dev-inspect": "nodemon --inspect server.js"
   },
   "author": "SURAJ KUMAR",
   "license": "ISC",

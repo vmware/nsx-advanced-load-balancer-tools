@@ -10,12 +10,14 @@ router.post('/generateConfiguration', controller.generateConfiguration);
 
 router.get('/getLabControllerDetails', controller.getLabControllerDetails);
 
+router.get('/fetchFromController', controller.fetchFromController);
+
 router.post('/updateMigrationData', controller.updateMigrationData);
 
 router.post('/startMigration', controller.startMigration);
 
 router.post('/setLabControllerDetails', controller.setLabControllerDetails);
 
-router.get('/fetchFromController', controller.fetchFromController);
+router.post('/acceptConfiguration', controller.acceptConfiguration);
 
 module.exports = router;
