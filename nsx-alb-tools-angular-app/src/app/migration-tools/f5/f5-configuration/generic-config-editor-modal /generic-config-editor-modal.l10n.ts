@@ -5,7 +5,7 @@
 
 export const ENGLISH = {
     editorLabel: 'Editor',
-    editorAlertMessage: 'Try closing this alert.',
+    editorAlertMessage: 'was partial converted, please review and complete.',
     cancelLabel: 'Cancel',
     acceptLabel: 'Accept',
 };
