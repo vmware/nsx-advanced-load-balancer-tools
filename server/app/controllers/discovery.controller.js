@@ -2,16 +2,33 @@ const { spawn } = require('child_process');
 const fs = require("fs")
 const asyncHandler = require('express-async-handler');
 const ReportSheet = require('../models/discovery.model');
+
+// Constants used in the APIs 
 const controllerVersion = '30.2.1';
+const tenantName = 'admin';
+const vrfName = 'global';
+const cloudName = 'Default-Cloud';
+const outputFolderName = 'migration';
+
 
 // Run f5_converter, generate output, save in DB.
 exports.generateReport = asyncHandler(async (req, res, next) => {
     const { f5_host_ip, f5_ssh_user, f5_ssh_password } = req.body;
-    const outputFilePath = `./migration/${f5_host_ip}/output/bigip-conversionstatus.json`; // bigip_discovery_data.json`;
+    const outputFilePath = `./migration/${f5_host_ip}/output/bigip_discovery_data.json`;
     let dataToSend;
 
-    // Spawn new child process to call the python script. // , '--discovery'
-    const pythonProcess = spawn('f5_converter.py', ['--f5_host_ip', f5_host_ip, '--f5_ssh_user', f5_ssh_user, '--f5_ssh_password', f5_ssh_password, '--vrf', 'global', '--tenant', 'admin', '--controller_version', controllerVersion, '--cloud_name', 'Default-Cloud', '-o', 'migration']);
+    // Spawn new child process to call the python script.
+    const pythonProcess = spawn('f5_converter.py', [
+        '--f5_host_ip', f5_host_ip, 
+        '--f5_ssh_user', f5_ssh_user, 
+        '--f5_ssh_password', f5_ssh_password, 
+        '--vrf', vrfName, 
+        '--tenant', tenantName, 
+        '--controller_version', controllerVersion, 
+        '--cloud_name', cloudName, 
+        '-o', outputFolderName,
+        '--discovery'
+    ]);
 
     // Collect data from script.
     pythonProcess.stdout.on('data', function (data) {
