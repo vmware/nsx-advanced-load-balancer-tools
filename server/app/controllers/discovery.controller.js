@@ -3,7 +3,7 @@ const fs = require("fs")
 const asyncHandler = require('express-async-handler');
 const ReportSheet = require('../models/discovery.model');
 
-// Constants used in the APIs 
+// Constants used in the APIs.
 const controllerVersion = '30.2.1';
 const tenantName = 'admin';
 const vrfName = 'global';
