@@ -1,0 +1,49 @@
+{
+    "se_in_provider_context": "False",
+    "tenants": [
+        "admin",
+        "tenant-A",
+        "tenant-B"
+    ],
+    "clouds": [
+        {
+            "cloud_name": "vcenter",
+            "vrf": [
+                {
+                    "name": "abc",
+                    "tenant": "admin"
+                },
+                {
+                    "name": "xyz",
+                    "tenant": "admin"
+                },
+                {
+                    "name": "tenant-based-A",
+                    "tenant": "tenant-A"
+                },
+                {
+                    "name": "tenant-based-B",
+                    "tenant": "tenant-B"
+                }
+            ],
+            "seg": [
+                {
+                    "name": "seg-tenant-based-B",
+                    "tenant": "tenant-B"
+                },
+                {
+                    "name": "seg-tenant-based-A",
+                    "tenant": "tenant-A"
+                }
+            ]
+        },
+        {
+            "cloud_name": "aws",
+            "vrf": [{
+                "name": "xyz-aws",
+                "tenant": "admin"
+            }],
+            "seg": []
+        }
+    ]
+}
