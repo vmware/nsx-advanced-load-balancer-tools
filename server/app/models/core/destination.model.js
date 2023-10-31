@@ -1,10 +1,19 @@
 const mongoose = require('mongoose');
 
-const destinationSchema = mongoose.Schema({
-    tenant: [String],
-    cloud: [String],
-    vrf: [String],
-    seGroup: [String],
+const destinationMappingSchema = mongoose.Schema({
+    avi_destination_ip: String,
+    tenants: [{
+        tenant: String,
+        clouds: [{
+            cloud_name: String,
+            vrf: [{ name: String }],
+            seg: [{ name: String }],
+        }]
+    }],
 });
 
-module.exports = mongoose.model('Destination', destinationSchema);
+const AviDestinationMappingModel = mongoose.model('AviDestinationMappingModel', destinationMappingSchema);
+
+module.exports = {
+    AviDestinationMappingModel,
+}
