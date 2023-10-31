@@ -5,6 +5,8 @@ const toolsRouter = require("./app/routes/tools.route");
 const discoveryRouter = require('./app/routes/discovery.route');
 const migrationRouter = require("./app/routes/migration.route");
 const coreRouter = require("./app/routes/core.route");
+const playbookRouter = require("./app/routes/playbook.route");
+
 var mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 
@@ -77,6 +79,9 @@ app.use("/api/configuration", migrationRouter);
 
 // Route for core APIs which includes API for Destinations, Lab Details etc.
 app.use("/api/core", coreRouter);
+
+// Router for Playbook related APIs
+app.use("/api/playbook", playbookRouter);
 
 // Route for serving the Angular application.
 app.get('*', (req, res) => {
