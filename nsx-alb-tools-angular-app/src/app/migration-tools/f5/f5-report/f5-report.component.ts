@@ -245,4 +245,19 @@ export class F5ReportComponent implements OnInit {
         }
       );
     }
+
+    generatePlaybook(): void {
+      const reqBody = {
+        playbookName: 'playbookTest_1'
+      };
+
+      this.http.post('playbook/generatePlaybook', reqBody).subscribe(
+        (data) => {
+          console.log('Data from generatePlaybook API:', data)
+        },
+        (error) => {
+          console.error('Error from generatePlaybook API:', error);
+        }
+      );
+    }
 }
