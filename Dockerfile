@@ -39,9 +39,9 @@ RUN tdnf check-update && \
     libffi-devel && tdnf clean all
 
 RUN if git clone --branch ${branch}  https://github.com/vmware/alb-sdk /alb-sdk; then \
-        echo "alb-sdk cloned." ; \
+    echo "alb-sdk cloned." ; \
     else \
-        echo "Branch is not available with the specified name on alb-sdk repository." && exit 1; \
+    echo "Branch is not available with the specified name on alb-sdk repository." && exit 1; \
     fi
 
 # Update pycrypto in migrationtools for python3
@@ -131,9 +131,9 @@ RUN mkdir -p $HOME/src/github.com/vmware && \
 # Clone terraform provider repository and build provider locally.
 RUN cd $HOME && \
     if git clone --branch ${branch}  https://github.com/vmware/terraform-provider-avi; then \
-        echo "terraform-provider-avi cloned." ; \
+    echo "terraform-provider-avi cloned." ; \
     else \
-        echo "Branch is not available with the specified name on terraform-provider-avi repository." && exit 1; \
+    echo "Branch is not available with the specified name on terraform-provider-avi repository." && exit 1; \
     fi
 
 RUN cd ~/terraform-provider-avi && \
@@ -146,15 +146,17 @@ RUN cd ~/terraform-provider-avi && \
 # Clone ansible repo and install ansible collections.
 RUN cd $HOME && \
     if git clone --branch ${branch}  https://github.com/vmware/ansible-collection-alb; then \
-        echo "ansible-collection-alb cloned." ; \
+    echo "ansible-collection-alb cloned." ; \
     else \
-        echo "Branch is not available with the specified name on ansible-collection-alb repository." && exit 1; \
+    echo "Branch is not available with the specified name on ansible-collection-alb repository." && exit 1; \
     fi
 
 RUN cd ~/ansible-collection-alb && \
     ansible-galaxy collection build && \
     ansible-galaxy collection install vmware-alb-*.tar.gz && \
     pip3 install -r ~/.ansible/collections/ansible_collections/vmware/alb/requirements.txt
+
+COPY files/get_all_destination_names.py /usr/local/bin/
 
 # Verify all converters files.
 RUN touch list && \
@@ -168,8 +170,9 @@ RUN touch list && \
     echo "echo "virtualservice_examples_api.py"" >> avitools-list && \
     echo "echo "config_patch.py"" >> avitools-list && \
     echo "echo "vs_filter.py"" >> avitools-list && \
-    echo "echo "nsxt_converter.py"" >> avitools-list \
-    echo "echo "v2avi_converter.py"" >> avitools-list
+    echo "echo "nsxt_converter.py"" >> avitools-list && \
+    echo "echo "v2avi_converter.py"" >> avitools-list && \
+    echo "echo "get_all_destination_names.py"" >> avitools-list
 
 # Verify all script in avitools-list
 RUN for script in $(ls /avi/scripts); do echo "echo $script" >> avitools-list; done;
