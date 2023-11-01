@@ -1,8 +1,11 @@
 const mongoose = require('mongoose');
 
 const playbookDetailsSchema = mongoose.Schema({
-    playbook_name: String,
-    playbook_creation_time: Date,
+    f5_host_ip: String,
+    playbooks: [{
+        playbook_name: String,
+        playbook_creation_time: Date,
+    }],
 });
 
 const PlaybookDetailsModel = mongoose.model('PlaybookDetailsModel', playbookDetailsSchema);
