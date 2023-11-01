@@ -6,6 +6,8 @@ router.post('/generateConfiguration', controller.generateConfiguration);
 
 router.post('/acceptConfiguration', controller.acceptConfiguration);
 
+router.get('/fetchConfiguration', controller.fetchConfiguration);
+
 router.get('/getConfiguration', controller.getConfiguration);
 
 /********************************************************************/

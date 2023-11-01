@@ -10,6 +10,7 @@ const {
     ConversionStatusModel,
     AviOutputModel,
 } = require('../models/migration.model');
+const coreController = require('./core.controller');
 
 const F5_HOST_IP = '10.206.40.100';
 const SINGLE_OBJECT_TYPE = 'singleObject';
@@ -223,6 +224,25 @@ function getAviConfig(config, name) {
         return config.find(element => element.name === name);
     }
 }
+
+exports.fetchConfiguration = asyncHandler(async (req, res, next) => {
+    try {
+        // Get the F5 Controller details.
+        const f5Details = await coreController.fetchF5Details();
+
+        // Get the Avi Lab details.
+        const labDetails = await coreController.fetchAviLabDetails();
+
+        // We should call the function which we call in generate API for running the script after getting the data.
+        const result = {}
+
+
+    } catch (err) {
+        res.status(500).json({ message: 'Error in getting the F5/Lab details, ' + err.message });
+    }
+
+    res.status(200).json(result);
+});
 
 exports.getLabControllerDetails = asyncHandler(async (req, res, next) => {
     const result = data.labControllerDetails;
