@@ -201,6 +201,9 @@ export class F5ReportComponent implements OnInit {
 
     generateConfiguration(): void {
       const reqBody = {
+        f5_host_ip: '10.206.40.100',
+        f5_ssh_user: 'admin',
+        f5_ssh_password: 'admin',
         avi_lab_ip:'10.10.10.10',
         avi_lab_user: 'admin',
         avi_lab_password: 'admin',
@@ -248,7 +251,8 @@ export class F5ReportComponent implements OnInit {
 
     generatePlaybook(): void {
       const reqBody = {
-        playbookName: 'playbookTest_1'
+        playbookName: 'playbookTest_1',
+        f5_host_ip: '10.206.40.100',
       };
 
       this.http.post('playbook/generatePlaybook', reqBody).subscribe(
