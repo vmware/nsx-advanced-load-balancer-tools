@@ -10,7 +10,7 @@ ARG golang_version="1.20.6"
 # avitools branch
 ARG branch="22.1.4"
 # AKO branch version
-ARG ako_branch
+ARG ako_branch="master"
 
 # Set the locale
 ENV LANG en_US.UTF-8
