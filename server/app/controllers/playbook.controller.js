@@ -6,20 +6,48 @@ const { PlaybookDetailsModel } = require('../models/playbook.model');
 
 
 // Constants used in the APIs.
-const f5_host_ip = '10.206.40.100';
+const f5_host_ip = '10.206.40.101';
+const DEFAULT_PLAYBOOK_NAME = 'avi_config';
+
+const savePlaybooksInDB = async (playbookName, fileCreationTime, res) => {
+    try{
+        const findQuery = { 'f5_host_ip': `${f5_host_ip}` };
+        const foundDoc = await PlaybookDetailsModel.findOne(findQuery).lean();
+        
+        const docPlaybooks = foundDoc ? foundDoc['playbooks'] : [];
+
+        docPlaybooks.push({
+            'playbook_name': `${playbookName}.yml`,
+            'playbook_creation_time': fileCreationTime,
+        });
+        docPlaybooks.push({
+            'playbook_name': `${playbookName}_delete.yml`,
+            'playbook_creation_time': fileCreationTime,
+        });
+
+        await PlaybookDetailsModel.findOneAndUpdate(findQuery, { 'playbooks': docPlaybooks }, {
+            upsert: true
+        });
+
+        res.status(200).json({ message: 'Playbooks are saved successfully.'});
+    } catch (err) {
+        console.log(err.message);
+        res.status(404).json({ message: 'Error in saving the generated Playbooks in DB. ' + err.message});
+    }
+};
 
 exports.generatePlaybook = asyncHandler(async (req, res, next) => {
-    const { playbookName } = req.body;
+    const { playbookName = DEFAULT_PLAYBOOK_NAME } = req.body;
 
-    // Read the updated JSON data from DB and write same into a new file.
     if (playbookName) {
+        // Read the updated JSON data from DB and write same into a new file.  
         const playbookBasePath = `./migration/${f5_host_ip}/playbook`;
         const newAviOutputFilePath = `${playbookBasePath}/${playbookName}.json`; 
 
         try {
             const aviOutputJson = await AviOutputModel.find({});
-    
-            fs.outputFileSync(newAviOutputFilePath, JSON.stringify(aviOutputJson));
+
+            fs.outputFileSync(newAviOutputFilePath, JSON.stringify(aviOutputJson, null, 4));
 
             if (fs.pathExistsSync(newAviOutputFilePath)) {
                 const pythonProcess = spawn('avi_config_to_ansible.py', [
@@ -27,35 +55,29 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
                     '-o', playbookBasePath,
                     // '-n', playbookName,
                 ]);
-    
+
                 pythonProcess.stderr.on('data', (data) => {
                     console.error(`stderr: ${data}`);
                 });
-    
+
                 // On close event, we are sure that stream from child process is closed.
                 pythonProcess.on('close', async (code) => {
                     console.log(`child process close all stdio with code ${code}`);
 
-                    const ymlFilePath = `${playbookBasePath}/avi_config.yml`; // Remove this line and enable below line
-                    // const ymlFilePath = `${playbookBasePath}/${playbookName}.yml`;
+                    // Remove these lines and enable below commented lines
+                    const playbookFilePath = `${playbookBasePath}/avi_config.yml`; 
+                    const deletePlaybookFilePath = `${playbookBasePath}/avi_config_delete.yml`;
+                    // const playbookFilePath = `${playbookBasePath}/${playbookName}.yml`;
+                    // const deletePlaybookFilePath = `${playbookBasePath}/${playbookName}_delete.yml`;
 
-                    if (fs.pathExistsSync(ymlFilePath)) {
-                        console.log('yml file created successfully');
+                    if (fs.pathExistsSync(playbookFilePath) && fs.pathExistsSync(deletePlaybookFilePath)) {
+                        console.log('Playbooks are created successfully by script.');
 
-                        const playbookDetail = {
-                            'playbook_name': playbookName || 'avi_config.yml',
-                            'playbook_creation_time': fs.statSync(ymlFilePath).birthtime,
-                        }
-
-                        try {
-                            await PlaybookDetailsModel.insertMany(playbookDetail);
-                            res.status(200).json({ message: 'Playbook is created successfully.'});
-                        } catch (err) {
-                            console.log(err.message);
-                            res.status(404).json({ message: 'Error in saving the generated Playbook in DB. ' + err.message});
-                        }
+                        const fileCreationTime = fs.statSync(playbookFilePath).birthtime;
+                        
+                        savePlaybooksInDB(playbookName, fileCreationTime, res);
                     } else {
-                        res.status(404).json({ error: 'Error in generating the Playbook.'});
+                        res.status(404).json({ error: 'Error in generating Playbooks.'});
                     }
                 });
             } else {
