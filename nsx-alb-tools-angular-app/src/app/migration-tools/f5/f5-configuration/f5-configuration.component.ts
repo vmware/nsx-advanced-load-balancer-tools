@@ -86,7 +86,7 @@ export class F5ConfigurationComponent implements OnInit {
 
   public async handleLabControllerCardFetch(): Promise<void> {
     const fetchFromController$ = this.configurationTabService.fetchFromController();
-    const allVSMigrationsData: incompleteVsMigrationsData = await lastValueFrom(fetchFromController$);
+    const incompleteVsMigrationsData: incompleteVsMigrationsData = await lastValueFrom(fetchFromController$);
 
     // this.incompleteMigrationsData = allVSMigrationsData.incompleteVSMigrationsData;
     // this.completedVSMigrationsCount = allVSMigrationsData.completedVSMigrationsCount;

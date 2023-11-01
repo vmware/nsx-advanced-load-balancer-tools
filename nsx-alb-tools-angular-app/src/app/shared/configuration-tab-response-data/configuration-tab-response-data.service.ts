@@ -39,7 +39,7 @@ export class ConfigurationTabService {
   }
 
   public fetchFromController(): Observable<incompleteVsMigrationsData> {
-    return this.http.get('configuration/fetchFromController');
+    return this.http.get('configuration/fetchConfiguration');
   }
 
   public setLabControllerDetails(data: labController): Observable<labController> {
