@@ -6,10 +6,10 @@ const { PlaybookDetailsModel } = require('../models/playbook.model');
 
 
 // Constants used in the APIs.
-const f5_host_ip = '10.206.40.101';
+const F5_HOST_IP = '10.206.40.100';
 const DEFAULT_PLAYBOOK_NAME = 'avi_config';
 
-const savePlaybooksInDB = async (playbookName, fileCreationTime, res) => {
+const savePlaybooksInDB = async (playbookName, fileCreationTime, f5_host_ip, res) => {
     try{
         const findQuery = { 'f5_host_ip': `${f5_host_ip}` };
         const foundDoc = await PlaybookDetailsModel.findOne(findQuery).lean();
@@ -37,7 +37,7 @@ const savePlaybooksInDB = async (playbookName, fileCreationTime, res) => {
 };
 
 exports.generatePlaybook = asyncHandler(async (req, res, next) => {
-    const { playbookName = DEFAULT_PLAYBOOK_NAME } = req.body;
+    const { playbookName = DEFAULT_PLAYBOOK_NAME, f5_host_ip = F5_HOST_IP } = req.body;
 
     if (playbookName) {
         // Read the updated JSON data from DB and write same into a new file.  
@@ -74,8 +74,8 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
                         console.log('Playbooks are created successfully by script.');
 
                         const fileCreationTime = fs.statSync(playbookFilePath).birthtime;
-                        
-                        savePlaybooksInDB(playbookName, fileCreationTime, res);
+
+                        savePlaybooksInDB(playbookName, fileCreationTime, f5_host_ip, res);
                     } else {
                         res.status(404).json({ error: 'Error in generating Playbooks.'});
                     }

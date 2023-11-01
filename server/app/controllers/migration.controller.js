@@ -2,20 +2,23 @@ const asyncHandler = require("express-async-handler");
 const { spawn } = require('child_process');
 const fs = require("fs");
 const data = require("../../data/mock/configuration.data");
+
+const { F5DetailsModel } = require('../models/core/f5.model');
+const { AviLabDetailsModel } = require('../models/core/lab.model');
+const { AviDestinationDetailsModel } = require('../models/core/destination.model');
 const {
-    AviLabDetailsModel,
-    AviDestinationDetailsModel,
     ConversionStatusModel,
     AviOutputModel,
 } = require('../models/migration.model');
 
+const F5_HOST_IP = '10.206.40.100';
 const SINGLE_OBJECT_TYPE = 'singleObject';
 const VS_OBJECT_TYPE = 'virtualService';
 const SUCCESSFUL_STATUS = 'SUCCESSFUL';
 
 exports.generateConfiguration = asyncHandler(async (req, res, next) => {
     const {
-        f5_host_ip = '10.206.40.100',
+        f5_host_ip = F5_HOST_IP,
         f5_ssh_user,
         f5_ssh_password,
         avi_lab_ip = '10.10.10.10',
@@ -34,26 +37,42 @@ exports.generateConfiguration = asyncHandler(async (req, res, next) => {
 
     // Save the User provided details in DB.
     try {
+        // Save the F5 Controller details. 
+        await F5DetailsModel.create({
+            f5_host_ip: F5_HOST_IP,
+            data: {
+                f5_host_ip,
+                f5_ssh_user,
+                f5_ssh_password,
+            }
+        });
+
         // Save the Avi Lab details.
-        await AviLabDetailsModel.insertMany({
-            avi_lab_ip,
-            avi_lab_user,
-            avi_lab_password,
+        await AviLabDetailsModel.create({
+            f5_host_ip: F5_HOST_IP,
+            data: {
+                avi_lab_ip,
+                avi_lab_user,
+                avi_lab_password,
+            },
         });
 
         // Save the Avi Desintion details & Mappings details.
         await AviDestinationDetailsModel.insertMany({
-            avi_destination_ip,
-            avi_destination_user,
-            avi_destination_password,
-            avi_destination_version,
-            avi_mapped_vrf,
-            avi_mapped_tenant,
-            avi_mapped_cloud,
-            avi_mapped_segroup,
+            f5_host_ip: F5_HOST_IP,
+            data: {
+                avi_destination_ip,
+                avi_destination_user,
+                avi_destination_password,
+                avi_destination_version,
+                avi_mapped_vrf,
+                avi_mapped_tenant,
+                avi_mapped_cloud,
+                avi_mapped_segroup,
+            },
         });
     } catch (err) {
-        res.status(500).json({ message: 'Error in saving the Avi Lab/Destination details(mappings), ' + err.message });
+        res.status(500).json({ message: 'Error in saving the F5/Lab/Destination details(mappings), ' + err.message });
     }
 
     /**
