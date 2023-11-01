@@ -190,7 +190,14 @@ RUN tdnf update && \
 WORKDIR /nsx-alb-tools-angular-app
 
 # Copy the Angular project files to the container
-COPY /nsx-alb-tools-angular-app/dist ./dist
+COPY /nsx-alb-tools-angular-app/ ./temp
+
+RUN cd temp && \
+    npm ci && \
+    npm run build && \
+    cp -r dist ../ && \
+    cd .. && \
+    rm -rf temp
 
 WORKDIR /server
 
