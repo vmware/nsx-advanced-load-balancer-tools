@@ -4,6 +4,7 @@ const router = express.Router();
 
 router.post('/getAviDestinationMappings', controller.getAviDestinationMappings);
 router.get('/getAviLabDetails', controller.getAviLabDetails);
+router.get('/getF5Details', controller.getF5Details);
 router.get('/getAviDestinationDetails', controller.getAviDestinationDetails);
 
 module.exports = router;
