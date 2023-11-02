@@ -96,6 +96,30 @@ exports.getAviDestinationMappings = asyncHandler(async (req, res, next) => {
     }
 });
 
+exports.saveAviLabDetails = asyncHandler(async (req, res, next) => {
+    try {
+        const {
+            avi_lab_ip,
+            avi_lab_user,
+            avi_lab_password,
+        } = req.body;
+
+        const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
+
+        await AviLabDetailsModel.findOneAndUpdate(findQuery, { 'data': { 
+            avi_lab_ip,
+            avi_lab_user,
+            avi_lab_password,
+        }}, {
+            upsert: true
+        });
+
+        res.status(200).json({ message: 'Avi Lab details are saved successfully.' });
+    } catch (err) {
+        res.status(500).json({ message: 'Error in saving Avi Lab controller details, ' + err.message });
+    }
+});
+
 exports.fetchAviLabDetails = async function () {
     try {
         const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
@@ -112,7 +136,7 @@ exports.fetchAviLabDetails = async function () {
     }
 }
 
-exports.getAviLabDetails = async (req, res, next) => {
+exports.getAviLabDetails = asyncHandler(async (req, res, next) => {
     const labDetails = await fetchAviLabDetails();
 
     if (labDetails) {
@@ -120,7 +144,7 @@ exports.getAviLabDetails = async (req, res, next) => {
     } else {
         res.status(404).json({ error: "Lab details not found." });
     }
-};
+});
 
 exports.getAviDestinationDetails = asyncHandler(async (req, res, next) => {
     try {
