@@ -12,11 +12,91 @@ const {
 } = require('../models/migration.model');
 const coreController = require('./core.controller');
 
+// Constants used in the file.
+const MIGRATION_FOLDER_NAME = 'migration';
 const F5_HOST_IP = '10.206.40.100';
 const SINGLE_OBJECT_TYPE = 'singleObject';
 const VS_OBJECT_TYPE = 'virtualService';
 const SUCCESSFUL_STATUS = 'SUCCESSFUL';
 
+
+/**
+ *  Run the migration tool with Certs & Keys from F5 and with fetched configuration from Lab Controller.
+ *  Save the JSON(s) produced by migration tool into DB.
+ */
+const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res) => {
+    const { f5_host_ip } = f5Details;
+    const conversionStatusFilePath = `./${MIGRATION_FOLDER_NAME}/${f5_host_ip}/output/bigip-conversionstatus.json`;
+    const aviOutputFilePath = `./${MIGRATION_FOLDER_NAME}/${f5_host_ip}/output/bigip-output.json`;
+
+    // let dataToSend;
+    // const pythonProcess = spawn('f5_converter.py', [
+    //     '--f5_host_ip', f5_host_ip, 
+    //     '--f5_ssh_user', f5Details.f5_ssh_user, 
+    //     '--f5_ssh_password', f5Details.f5_ssh_password,
+    //     '--lab_ssh_ip', labDetails.avi_lab_ip,
+    //     '--lab_ssh_user', labDetails.avi_lab_user,
+    //     '--lab_ssh_password', labDetails.avi_lab_password,  
+    //     '--vrf', destinationDetails.avi_mapped_vrf, 
+    //     '--tenant', destinationDetails.avi_mapped_tenant, 
+    //     '--cloud_name', destinationDetails.avi_mapped_cloud, 
+    //     '--controller_version', destinationDetails.avi_destination_version, 
+    //     '-o', MIGRATION_FOLDER_NAME
+    // ]);
+
+    // // Collect data from script.
+    // pythonProcess.stdout.on('data', function (data) {
+    //     console.log('Pipe data from python script ...');
+    //     dataToSend = data.toString();
+    // });
+
+    // pythonProcess.stderr.on('data', (data) => {
+    //     console.error(`stderr: ${data}`);
+    // });
+
+    // // On close event, we are sure that stream from child process is closed.
+    // pythonProcess.on('close', (code) => {
+    //     console.log(dataToSend);
+    //     console.log(`child process close all stdio with code ${code}`);
+
+
+        // Save the generated JSONs into DB.
+        if (fs.existsSync(conversionStatusFilePath) && fs.existsSync(aviOutputFilePath)) {
+            let count = 0;
+            const readFileHanlder = async (modelType, err, data) => {
+                count++;
+
+                if (err) {
+                    res.status(404).json({ message: `Error while reading the ${modelType} JSON in DB, ` + err.message });
+                } else {
+                    const outputJson = JSON.parse(data);
+
+                    try {
+                        if (modelType === 'ConversionStatus') {
+                            await ConversionStatusModel.create(outputJson);
+                        } else {
+                            await AviOutputModel.create(outputJson);
+                        }
+                    } catch (err) {
+                        res.status(404).json({ message: `Error while saving the ${modelType} JSON in DB, ` + err.message });
+                    }
+                }
+
+                if (count == 2) {
+                    res.status(200).json({ message: 'Configurations generated successfully and saved in DB.' });
+                }
+            };
+
+            fs.readFile(conversionStatusFilePath, readFileHanlder.bind(null, 'ConversionStatus'));
+            fs.readFile(aviOutputFilePath, readFileHanlder.bind(null, 'AviOutput'));
+        } else {
+            res.status(500).json({ message: 'Error while generating Configuration JSONs' });
+        }
+
+    // });
+};
+
+// Generate the configuraitons using migration tool.
 exports.generateConfiguration = asyncHandler(async (req, res, next) => {
     const {
         f5_host_ip = F5_HOST_IP,
@@ -36,116 +116,53 @@ exports.generateConfiguration = asyncHandler(async (req, res, next) => {
     } = req.body;
 
 
+    const f5Details = {
+        f5_host_ip,
+        f5_ssh_user,
+        f5_ssh_password,
+    }
+
+    const labDetails = {
+        avi_lab_ip,
+        avi_lab_user,
+        avi_lab_password,
+    }
+
+    const destinationDetails = {
+        avi_destination_ip,
+        avi_destination_user,
+        avi_destination_password,
+        avi_destination_version,
+        avi_mapped_vrf,
+        avi_mapped_tenant,
+        avi_mapped_cloud,
+        avi_mapped_segroup,
+    }
+
     // Save the User provided details in DB.
     try {
         // Save the F5 Controller details. 
         await F5DetailsModel.create({
             f5_host_ip: F5_HOST_IP,
-            data: {
-                f5_host_ip,
-                f5_ssh_user,
-                f5_ssh_password,
-            }
+            data: f5Details,
         });
 
         // Save the Avi Lab details.
         await AviLabDetailsModel.create({
             f5_host_ip: F5_HOST_IP,
-            data: {
-                avi_lab_ip,
-                avi_lab_user,
-                avi_lab_password,
-            },
+            data: labDetails,
         });
 
         // Save the Avi Desintion details & Mappings details.
         await AviDestinationDetailsModel.insertMany({
             f5_host_ip: F5_HOST_IP,
-            data: {
-                avi_destination_ip,
-                avi_destination_user,
-                avi_destination_password,
-                avi_destination_version,
-                avi_mapped_vrf,
-                avi_mapped_tenant,
-                avi_mapped_cloud,
-                avi_mapped_segroup,
-            },
+            data: destinationDetails,
         });
     } catch (err) {
         res.status(500).json({ message: 'Error in saving the F5/Lab/Destination details(mappings), ' + err.message });
     }
 
-    /**
-     *  Run the migration tool with downloaded Certs & Keys and with fetched configuration from Lab Controller. 
-     */
-    const conversionStatusFilePath = `./migration/${f5_host_ip}/output/bigip-conversionstatus.json`;
-    const aviOutputFilePath = `./migration/${f5_host_ip}/output/bigip-output.json`;
-
-    // let dataToSend;
-    // const pythonProcess = spawn('f5_converter.py', [
-    //     '--f5_host_ip', f5_host_ip, 
-    //     '--f5_ssh_user', f5_ssh_user, 
-    //     '--f5_ssh_password', f5_ssh_password, 
-    //     '--vrf', avi_mapped_vrf, 
-    //     '--tenant', avi_mapped_tenant, 
-    //     '--cloud_name', avi_mapped_cloud, 
-    //     '--controller_version', avi_destination_version, 
-    //     '-o', 'migration'
-    // ]);
-
-    // // Collect data from script.
-    // pythonProcess.stdout.on('data', function (data) {
-    //     console.log('Pipe data from python script ...');
-    //     dataToSend = data.toString();
-    // });
-
-    // pythonProcess.stderr.on('data', (data) => {
-    //     console.error(`stderr: ${data}`);
-    // });
-
-    // // On close event, we are sure that stream from child process is closed.
-    // pythonProcess.on('close', (code) => {
-    //     console.log(dataToSend);
-    //     console.log(`child process close all stdio with code ${code}`);
-
-    // Save the JSONs generated by migration tool.
-    const conversionStatusFileExists = fs.existsSync(conversionStatusFilePath);
-    const aviOutputFileExists = fs.existsSync(aviOutputFilePath);
-
-    if (conversionStatusFileExists && aviOutputFileExists) {
-        let count = 0;
-        const readFileHanlder = async (modelType, err, data) => {
-            count++;
-
-            if (err) {
-                res.status(500).json({ message: `Error while reading the ${modelType} JSON in DB, ` + err.message });
-            } else {
-                const outputJson = JSON.parse(data);
-
-                try {
-                    if (modelType === 'ConversionStatus') {
-                        await ConversionStatusModel.insertMany(outputJson);
-                    } else {
-                        await AviOutputModel.insertMany(outputJson);
-                    }
-                } catch (err) {
-                    res.status(500).json({ message: `Error while saving the ${modelType} JSON in DB, ` + err.message });
-                }
-            }
-
-            if (count == 2) {
-                res.status(200).json({ message: 'Configuration generated successfully and saved in DB.' });
-            }
-        };
-
-        fs.readFile(conversionStatusFilePath, readFileHanlder.bind(null, 'ConversionStatus'));
-        fs.readFile(aviOutputFilePath, readFileHanlder.bind(null, 'AviOutput'));
-    } else {
-        res.status(500).json({ message: 'Error while generating required Configuration JSONs' });
-    }
-
-    // });
+    runMigrationAndSaveJson(f5Details, labDetails, destinationDetails, res);
 });
 
 
