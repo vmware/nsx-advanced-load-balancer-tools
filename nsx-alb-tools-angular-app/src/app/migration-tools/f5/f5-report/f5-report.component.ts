@@ -264,4 +264,21 @@ export class F5ReportComponent implements OnInit {
         }
       );
     }
+
+    saveAviLabDetails(): void {
+      const reqBody = {
+        avi_lab_ip:'10.10.102.102',
+        avi_lab_user: 'admin',
+        avi_lab_password: 'admin',
+      };
+
+      this.http.post('core/saveAviLabDetails', reqBody).subscribe(
+        (data) => {
+          console.log('Data save to DB:', data);
+        },
+        (error) => {
+          console.error('Error in saving data:', error);
+        }
+      );
+    }
 }
