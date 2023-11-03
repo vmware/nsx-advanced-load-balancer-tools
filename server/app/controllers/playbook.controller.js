@@ -91,3 +91,18 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
         res.status(400).json({ error: 'Missing required Playbook name.' });
     }
 });
+
+exports.getPlaybooks = asyncHandler(async (req, res, next) => {
+    try{
+        const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
+        const foundDoc = await PlaybookDetailsModel.findOne(findQuery).lean();
+        
+        const docPlaybooks = foundDoc ? foundDoc['playbooks'] : [];
+
+        console.log(docPlaybooks);
+
+        res.status(200).json(docPlaybooks);
+    } catch (err) {
+        res.status(404).json({ message: 'Error in getting Playbooks from DB. ' + err.message});
+    }
+});

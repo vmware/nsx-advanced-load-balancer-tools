@@ -252,7 +252,6 @@ export class F5ReportComponent implements OnInit {
     generatePlaybook(): void {
       const reqBody = {
         playbookName: 'playbookTest_1',
-        f5_host_ip: '10.206.40.100',
       };
 
       this.http.post('playbook/generatePlaybook', reqBody).subscribe(
@@ -278,6 +277,18 @@ export class F5ReportComponent implements OnInit {
         },
         (error) => {
           console.error('Error in saving data:', error);
+        }
+      );
+    }
+
+    getPlaybooks(): void {
+      this.http.get('playbook/getPlaybooks').subscribe(
+        (data) => {
+          console.log('Data from DB:', data);
+          // console.log(new Date(data[0].playbook_creation_time));
+        },
+        (error) => {
+          console.error('Error in fetching data:', error);
         }
       );
     }
