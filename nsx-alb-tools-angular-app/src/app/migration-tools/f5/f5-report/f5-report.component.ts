@@ -46,7 +46,7 @@ export class F5ReportComponent implements OnInit {
     ) {}
 
     ngOnInit(): void {
-      this.http.get('f5report').subscribe((data)=> {
+      this.http.get('discovery/getReport').subscribe((data)=> {
         this.report = data;
         const chart = [];
         const keys = Object.keys(this.report.virtualService.types);
