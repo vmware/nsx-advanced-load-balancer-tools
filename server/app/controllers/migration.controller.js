@@ -62,12 +62,9 @@ const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res)
 
         // Save the generated JSONs into DB.
         if (fs.existsSync(conversionStatusFilePath) && fs.existsSync(aviOutputFilePath)) {
-            let count = 0;
             const readFileHanlder = async (modelType, err, data) => {
-                count++;
-
                 if (err) {
-                    res.status(404).json({ message: `Error while reading the ${modelType} JSON in DB, ` + err.message });
+                    res.status(404).json({ message: `Error while reading the ${modelType} JSON in DB, `+err.message });
                 } else {
                     const outputJson = JSON.parse(data);
 
@@ -78,17 +75,15 @@ const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res)
                             await AviOutputModel.create(outputJson);
                         }
                     } catch (err) {
-                        res.status(404).json({ message: `Error while saving the ${modelType} JSON in DB, ` + err.message });
+                        res.status(404).json({ message: `Error while saving the ${modelType} JSON in DB, `+err.message});
                     }
-                }
-
-                if (count == 2) {
-                    res.status(200).json({ message: 'Configurations generated successfully and saved in DB.' });
                 }
             };
 
-            fs.readFile(conversionStatusFilePath, readFileHanlder.bind(null, 'ConversionStatus'));
-            fs.readFile(aviOutputFilePath, readFileHanlder.bind(null, 'AviOutput'));
+            fs.readFileSync(conversionStatusFilePath, readFileHanlder.bind(null, 'ConversionStatus'));
+            fs.readFileSync(aviOutputFilePath, readFileHanlder.bind(null, 'AviOutput'));
+
+            res.status(200).json({ message: 'Configurations generated successfully and saved in DB.' });
         } else {
             res.status(500).json({ message: 'Error while generating Configuration JSONs' });
         }
