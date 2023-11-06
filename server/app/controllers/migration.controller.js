@@ -62,30 +62,38 @@ const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res)
 
         // Save the generated JSONs into DB.
         if (fs.existsSync(conversionStatusFilePath) && fs.existsSync(aviOutputFilePath)) {
-            const readFileHanlder = async (modelType, err, data) => {
-                if (err) {
-                    res.status(404).json({ message: `Error while reading the ${modelType} JSON in DB, `+err.message });
-                } else {
-                    const outputJson = JSON.parse(data);
-
-                    try {
-                        if (modelType === 'ConversionStatus') {
-                            await ConversionStatusModel.create(outputJson);
+            const readFromFile = (filePath) => {
+                return new Promise((resolve, reject) => {
+                    fs.readFile(filePath, (err, data) => {
+                        if (err) {
+                            console.log(err);
+                            reject(err);
                         } else {
-                            await AviOutputModel.create(outputJson);
+                            resolve(JSON.parse(data));
                         }
-                    } catch (err) {
-                        res.status(404).json({ message: `Error while saving the ${modelType} JSON in DB, `+err.message});
-                    }
-                }
+                    })
+                });
             };
 
-            fs.readFileSync(conversionStatusFilePath, readFileHanlder.bind(null, 'ConversionStatus'));
-            fs.readFileSync(aviOutputFilePath, readFileHanlder.bind(null, 'AviOutput'));
+            const generatedFilePromises = [
+                readFromFile(conversionStatusFilePath, 'ConversionStatus'),
+                readFromFile(aviOutputFilePath, 'AviOutput'),
+            ];
 
-            res.status(200).json({ message: 'Configurations generated successfully and saved in DB.' });
+            Promise.all(generatedFilePromises).then(async (jsonData) => {
+                try {
+                    await ConversionStatusModel.create(jsonData[0]);
+                    await AviOutputModel.create(jsonData[1]);
+
+                    res.status(200).json({ message: 'Configurations generated successfully and saved in DB.' });
+                } catch (err) {
+                    res.status(404).json({ message: `Error while saving the JSONs in DB, `+err.message});
+                }
+            }).catch((err) => {
+                res.status(404).json({ message: `Error while reading the generated files, `+err.message});
+            });
         } else {
-            res.status(500).json({ message: 'Error while generating Configuration JSONs' });
+            res.status(500).json({ message: 'Error while generating Configuration JSONs. Required JSONs are not found at location.' });
         }
 
     // });
