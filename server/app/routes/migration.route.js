@@ -12,6 +12,8 @@ router.get('/getConfiguration', controller.getConfiguration);
 
 router.get('/getReadyVirtuals', controller.getReadyVirtuals);
 
+router.get('/getMigrationOverview', controller.getMigrationOverview);
+
 /********************************************************************/
 //  Below is the list of APIs previously being added with mock data
 /********************************************************************/

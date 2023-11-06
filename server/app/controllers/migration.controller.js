@@ -408,57 +408,142 @@ exports.acceptConfiguration = asyncHandler(async (req, res, next) => {
 exports.getReadyVirtuals = asyncHandler(async (req, res, next) => {
     try {
         // TODO: Update query once we have a key to distinguish between multiple converstion objects.
-        
+
         // Aggregation to get the virtual, having status as SUCCESSFUL.
         const successfulAggregation = [
             {
-              $project:
+                $project:
                 {
-                  "status_sheet.virtual": 1,
+                    "status_sheet.virtual": 1,
                 },
             },
             {
-              $unwind:
+                $unwind:
                 {
-                  path: "$status_sheet.virtual",
+                    path: "$status_sheet.virtual",
                 },
             },
             {
-              $match:
+                $match:
                 {
-                  "status_sheet.virtual.Status":
-                    "SUCCESSFUL",
+                    "status_sheet.virtual.Status":
+                        "SUCCESSFUL",
                 },
             },
             {
-              $group:
+                $group:
                 {
-                  _id: null,
-                  ready: {
-                    $push: {
-                      F5_ID: "$status_sheet.virtual.F5_ID",
-                      isReviewed:
-                        "$status_sheet.virtual.isReviewed",
+                    _id: null,
+                    ready: {
+                        $push: {
+                            F5_ID: "$status_sheet.virtual.F5_ID",
+                            isReviewed:
+                                "$status_sheet.virtual.isReviewed",
+                        },
                     },
-                  },
-                  readyCount: {
-                    $sum: 1,
-                  },
+                    readyCount: {
+                        $sum: 1,
+                    },
                 },
             },
-          ]
+        ]
 
         const successfulVirtuals = await ConversionStatusModel.aggregate(successfulAggregation);
-        // const entity = entityF5SubType.trim() ? doc['status_sheet'][entityF5Type][entityF5SubType] : doc['status_sheet'][entityF5Type];
+        const [{ ready, readyCount }] = successfulVirtuals;
 
         if (successfulVirtuals) {
-            res.status(200).json({ result: successfulVirtuals });
+            res.status(200).json({ result: { ready, readyCount } });
         } else {
-            res.status(404).json({ error: "Conversion Status Profile you are trying to update does not exists" });
+            res.status(404).json({ error: "Data you trying to find does not exists on Conversion Status Profile." });
         }
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: error.message });
     }
 
+});
+
+exports.getMigrationOverview = asyncHandler(async (req, res, next) => {
+    try {
+        // TODO: Update query once we have a key to distinguish between multiple converstion objects.
+
+        // Aggregation to get the virtuals, having isReviewed as true.
+        const reviewedVirtualCountAggregation = [
+            {
+                $project:
+
+                {
+                    "status_sheet.virtual": 1,
+                },
+            },
+            {
+                $unwind:
+                {
+                    path: "$status_sheet.virtual",
+                },
+            },
+            {
+                $match:
+                {
+                    "status_sheet.virtual.isReviewed": true,
+                },
+            },
+            {
+                $group:
+                {
+                    _id: null,
+                    reviewedVirtualCount: {
+                        $sum: 1,
+                    },
+                },
+            },
+        ]
+
+        // Aggregation to get the incomplete virtuals, having Status as PARTIAL.
+        const incompleteVirtualsAggregation = [
+            {
+                $project:
+
+                {
+                    "status_sheet.virtual": 1,
+                },
+            },
+            {
+                $unwind:
+                {
+                    path: "$status_sheet.virtual",
+                },
+            },
+            {
+                $match:
+                {
+                    "status_sheet.virtual.Status": "PARTIAL",
+                },
+            },
+            {
+                $group:
+                {
+                    _id: null,
+                    incompleteVirtualCount: {
+                        $sum: 1,
+                    },
+                },
+            },
+        ]
+
+        let reviewedVirtualCount = await ConversionStatusModel.aggregate(reviewedVirtualCountAggregation);
+        let [{ reviewedVirtualCount: reviewedVirtuals }] = reviewedVirtualCount;
+
+        let incompleteVirtualCount = await ConversionStatusModel.aggregate(incompleteVirtualsAggregation);
+        let [{ incompleteVirtualCount: incompleteVirtuals }] = incompleteVirtualCount;
+
+        if (reviewedVirtualCount && incompleteVirtualCount) {
+            res.status(200).json({ result: { reviewedVirtuals, incompleteVirtuals } });
+        } else {
+            res.status(404).json({ error: "Data you trying to find does not exists on Conversion Status Profile." });
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: error.message });
+    }
 });
