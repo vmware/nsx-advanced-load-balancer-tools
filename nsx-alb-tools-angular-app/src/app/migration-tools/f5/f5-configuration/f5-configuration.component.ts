@@ -26,8 +26,6 @@ const { ENGLISH: dictionary } = l10n;
 export class F5ConfigurationComponent implements OnInit {
   public incompleteVSMigrationsData: incompleteVsMigration[] = [];
 
-  public labControllerDetails: labController;
-
   public selectedMigrationIndex = 0;
 
   public completedVSMigrationsCount = 0;
@@ -51,20 +49,11 @@ export class F5ConfigurationComponent implements OnInit {
   /** @override */
   public async ngOnInit(): Promise<void> {
     await this.getAllIncompleteVSMigrationsData();
-    await this.getLabControllerDetails();
     await this.getMigrationOverviewData();
   }
 
   public handleCloseVsConfigEditor(): void {
-     this.isOpenVsConfigEditorModal = false;
-  }
-
-  public async handleCloseLabControllerEditModal(getDetails: boolean): Promise<void> {
-    if (getDetails) {
-      await this.getLabControllerDetails();
-    }
-
-    this.openEditControllerConfig = false
+    this.isOpenVsConfigEditorModal = false;
   }
 
   public handleSkip(): void {
@@ -75,21 +64,20 @@ export class F5ConfigurationComponent implements OnInit {
     this.isOpenVsConfigEditorModal = true;
   }
 
-  public handleLabControllerCardEdit(): void {
-    this.openEditControllerConfig = true;
-  }
-
   public async getMigrationOverviewData(): Promise<void> {
     const migrationOverviewData$ = this.configurationTabService.getMigrationOverviewData();
     this.migrationOverviewData = await lastValueFrom(migrationOverviewData$);
   }
 
   public async handleLabControllerCardFetch(): Promise<void> {
-    const fetchFromController$ = this.configurationTabService.fetchFromController();
-    const incompleteVsMigrationsData: incompleteVsMigrationsData = await lastValueFrom(fetchFromController$);
+    this.incompleteVSMigrationsData = [];
+    this.completedVSMigrationsCount = 0;
 
-    // this.incompleteMigrationsData = allVSMigrationsData.incompleteVSMigrationsData;
-    // this.completedVSMigrationsCount = allVSMigrationsData.completedVSMigrationsCount;
+    const fetchFromController$ = this.configurationTabService.fetchFromController();
+    await lastValueFrom(fetchFromController$);
+
+    await this.getAllIncompleteVSMigrationsData();
+
     this.configurationTabService.showCompletedMigrationsCountAlert = true;
   }
 
@@ -103,10 +91,5 @@ export class F5ConfigurationComponent implements OnInit {
 
   public onAlertClose(): void {
     this.configurationTabService.showCompletedMigrationsCountAlert = false;
-  }
-
-  private async getLabControllerDetails(): Promise<void> {
-    const labControllerDetails$ = this.configurationTabService.getLabControllerDetails();
-    this.labControllerDetails = await lastValueFrom(labControllerDetails$);
   }
 }

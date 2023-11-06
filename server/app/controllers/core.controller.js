@@ -120,73 +120,80 @@ exports.saveAviLabDetails = asyncHandler(async (req, res, next) => {
     }
 });
 
-exports.fetchAviLabDetails = async function () {
+exports.getAviLabDetails = asyncHandler(async (req, res, next) => {
     try {
-        const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
-        const foundDoc = await AviLabDetailsModel.findOne(findQuery).lean();
+        const labDetails = await this.fetchAviLabDetails();
 
-        if (foundDoc) {
-            const labDetails = foundDoc.data;
-            console.log(labDetails);
-
-            return labDetails;
+        if (labDetails) {
+            res.status(200).json(labDetails);
+        } else {
+            res.status(404).json({ error: "Lab details not found." });
         }
     } catch (err) {
         res.status(500).json({ message: 'Error in fetching the Avi Lab controller details, ' + err.message });
     }
-}
-
-exports.getAviLabDetails = asyncHandler(async (req, res, next) => {
-    const labDetails = await fetchAviLabDetails();
-
-    if (labDetails) {
-        res.status(200).json(labDetails);
-    } else {
-        res.status(404).json({ error: "Lab details not found." });
-    }
 });
+
 
 exports.getAviDestinationDetails = asyncHandler(async (req, res, next) => {
     try {
-        const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
-        const foundDoc = await AviDestinationDetailsModel.findOne(findQuery).lean();
+        const destinationDetails = await this.fetchAviLabDetails();
 
-        if (foundDoc) {
-            const destinationDetails = foundDoc.data;
-            console.log(destinationDetails);
-
+        if (destinationDetails) {
             res.status(200).json(destinationDetails);
         } else {
             res.status(404).json({ error: "Avi Destination details not found." });
         }
-
     } catch (err) {
         res.status(500).json({ message: 'Error in fetching the Avi Destination controller & Mappings details, ' + err.message });
     }
 });
 
-exports.fetchF5Details = async function () {
-    try {
-        const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
-        const foundDoc = await F5DetailsModel.findOne(findQuery).lean();
-
-        if (foundDoc) {
-            const f5Details = foundDoc.data;
-            console.log(f5Details);
-
-            return f5Details;
-        }
-    } catch (err) {
-        res.status(500).json({ message: 'Error in fetching the Avi Lab controller details, ' + err.message });
-    }
-}
-
 exports.getF5Details = asyncHandler(async (req, res, next) => {
-        const f5Details = await fetchF5Details();
+    try {
+        const f5Details = await this.fetchF5Details();
 
         if (f5Details) {
             res.status(200).json(f5Details);
         } else {
             res.status(404).json({ error: "F5 details not found." });
         }
+    } catch (err) {
+        res.status(500).json({ message: 'Error in fetching the Avi Lab controller details, ' + err.message });
+    }
 });
+
+/*************************************************************************** Utility Functions *************************************************************/
+
+exports.fetchAviLabDetails = async function () {
+    const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
+    const foundDoc = await AviLabDetailsModel.findOne(findQuery).lean();
+
+    if (foundDoc) {
+        const labDetails = foundDoc.data;
+
+        return labDetails;
+    }
+}
+
+exports.fetchAviDestinationDetails = async function () {
+    const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
+    const foundDoc = await AviDestinationDetailsModel.findOne(findQuery).lean();
+
+    if (foundDoc) {
+        const destinationDetails = foundDoc.data;
+
+        return destinationDetails;
+    }
+}
+
+exports.fetchF5Details = async function () {
+    const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
+    const foundDoc = await F5DetailsModel.findOne(findQuery).lean();
+
+    if (foundDoc) {
+        const f5Details = foundDoc.data;
+
+        return f5Details;
+    }
+}

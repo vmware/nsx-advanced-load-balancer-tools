@@ -136,7 +136,7 @@ exports.generateConfiguration = asyncHandler(async (req, res, next) => {
 
     // Save the User provided details in DB.
     try {
-        // Save the F5 Controller details. 
+        // Save the F5 Controller details.
         await F5DetailsModel.create({
             f5_host_ip: F5_HOST_IP,
             data: f5Details,
@@ -182,7 +182,7 @@ exports.getConfiguration = asyncHandler(async (req, res, next) => {
 
             completedVSMigrationsCount = data.virtual.length - vsIncompleteMigrationData.length;
 
-            res.status(200).json({
+            return res.status(200).json({
                 incompleteVSMigrationsData: vsIncompleteMigrationData,
                 completedVSMigrationsCount: completedVSMigrationsCount,
             });
@@ -239,21 +239,19 @@ function getAviConfig(config, name) {
 
 exports.fetchConfiguration = asyncHandler(async (req, res, next) => {
     try {
-        // Get the F5 Controller details.
         const f5Details = await coreController.fetchF5Details();
-
-        // Get the Avi Lab details.
         const labDetails = await coreController.fetchAviLabDetails();
+        const destinationDetails = await coreController.fetchAviDestinationDetails();
 
-        // We should call the function which we call in generate API for running the script after getting the data.
-        const result = {}
-
-
+        if (f5Details && labDetails && destinationDetails) {
+            runMigrationAndSaveJson(f5Details, labDetails, destinationDetails, res);
+        }
+        else {
+            return res.status(500).json({ message: 'Required data for script is not present' });
+        }
     } catch (err) {
-        res.status(500).json({ message: 'Error in getting the F5/Lab details, ' + err.message });
+        return res.status(500).json({ message: 'Error in fetching the F5/Lab/destination details, ' + err.message });
     }
-
-    res.status(200).json(result);
 });
 
 exports.getLabControllerDetails = asyncHandler(async (req, res, next) => {

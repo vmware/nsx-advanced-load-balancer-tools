@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const conversionStatusSchema = mongoose.Schema({
-    status_sheet: [{
+    status_sheet: {
         "profile": Object,
         "monitor": Object,
         "pool": Object,
@@ -11,7 +11,7 @@ const conversionStatusSchema = mongoose.Schema({
         "data-group": Object,
         "virtual-address": Object,
         "node": Object,
-    }],
+    },
     pivot_sheet: [{
         Status: String,
         F5_type: String,
