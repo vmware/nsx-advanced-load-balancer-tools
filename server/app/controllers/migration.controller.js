@@ -330,14 +330,27 @@ const updateStatus = async (req, res) => {
             const parentIndexToUpdate = parentEntity.findIndex(item => item.F5_ID === parentF5Id);
             const childIndexToUpdate = parentEntity[parentIndexToUpdate]['Vs_Mappings'].findIndex(item => item.F5_ID === childF5Id);
             const subProfileIndexToUpdate = doc['status_sheet'][childF5Type][childF5SubType].findIndex(item => item.F5_ID === childF5Id);
-            console.log('subProfileIndexToUpdate', subProfileIndexToUpdate)
 
             const VsMappingUpdateQuery = parentF5SubType.trim() ?
                 `status_sheet.${parentF5Type}.${parentF5SubType}.${parentIndexToUpdate}.Vs_Mappings.Status` :
                 `status_sheet.${parentF5Type}.${parentIndexToUpdate}.Vs_Mappings.${childIndexToUpdate}.Status`;
             const profileTypeUpdateQuery = `status_sheet.${childF5Type}.${childF5SubType}.${subProfileIndexToUpdate}.Status`;
-
-            const update = await ConversionStatusModel.findOneAndUpdate(findQuery, { $set: { [VsMappingUpdateQuery]: mappingStatus, [profileTypeUpdateQuery]: mappingStatus } });
+            
+            // Add new key 'isManuallyReviewed' to the conversion collection, to track the manual reviewed status.
+            // Only Virtual to have this key.
+            const entityReviewedUpdateQuery = `status_sheet.virtual.${parentIndexToUpdate}.isManuallyReviewed`;
+            if (parentF5Type === 'virtual') {
+                const update = await ConversionStatusModel.findOneAndUpdate(findQuery, { $set:{
+                    [VsMappingUpdateQuery]: mappingStatus,
+                    [profileTypeUpdateQuery]: mappingStatus,
+                    [entityReviewedUpdateQuery]: true
+                }});
+            } else {
+                const update = await ConversionStatusModel.findOneAndUpdate(findQuery, { $set:{
+                    [VsMappingUpdateQuery]: mappingStatus,
+                    [profileTypeUpdateQuery]: mappingStatus,
+                }});
+            }
         } else {
             res.status(404).json({ error: "Conversion Status Profile you are trying to update does not exists" });
         }
@@ -361,8 +374,6 @@ const replaceEntityObject = async (req, res) => {
 
         if (entity) {
             const entityIndexToUpdate = entity.findIndex(item => item.F5_ID === entityF5Id);
-            console.log('entityIndexToUpdate', entityIndexToUpdate)
-
             const entityUpdateQuery = entityF5SubType.trim() ?
                 `status_sheet.${entityF5Type}.${entityF5SubType}.${entityIndexToUpdate}` :
                 `status_sheet.${entityF5Type}.${entityIndexToUpdate}`;
@@ -391,5 +402,148 @@ exports.acceptConfiguration = asyncHandler(async (req, res, next) => {
         res.status(200).json({ message: 'Successfully updated the VirtualService object' });
     } else {
         res.status(400).json({ error: "Invalid parameters please send either singleObject or virtualService as type query parameters" });
+    }
+});
+
+exports.getReadyVirtuals = asyncHandler(async (req, res, next) => {
+    try {
+        // TODO: Update query once we have a key to distinguish between multiple converstion objects.
+
+        // Aggregation to get the virtual, having status as SUCCESSFUL.
+        const successfulAggregation = [
+            {
+                $project:
+                {
+                    "status_sheet.virtual": 1,
+                },
+            },
+            {
+                $unwind:
+                {
+                    path: "$status_sheet.virtual",
+                },
+            },
+            {
+                $match:
+                {
+                    "status_sheet.virtual.Status":
+                        "SUCCESSFUL",
+                },
+            },
+            {
+                $group:
+                {
+                    _id: null,
+                    ready: {
+                        $push: {
+                            F5_ID: "$status_sheet.virtual.F5_ID",
+                            isReviewed:
+                                "$status_sheet.virtual.isReviewed",
+                        },
+                    },
+                    readyCount: {
+                        $sum: 1,
+                    },
+                },
+            },
+        ]
+
+        const successfulVirtuals = await ConversionStatusModel.aggregate(successfulAggregation);
+        const [{ ready, readyCount }] = successfulVirtuals;
+
+        if (successfulVirtuals) {
+            res.status(200).json({ result: { ready, readyCount } });
+        } else {
+            res.status(404).json({ error: "Data you trying to find does not exists on Conversion Status Profile." });
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: error.message });
+    }
+
+});
+
+exports.getMigrationOverview = asyncHandler(async (req, res, next) => {
+    try {
+        // TODO: Update query once we have a key to distinguish between multiple converstion objects.
+
+        // Aggregation to get the virtuals, having isReviewed as true.
+        const reviewedVirtualCountAggregation = [
+            {
+                $project:
+
+                {
+                    "status_sheet.virtual": 1,
+                },
+            },
+            {
+                $unwind:
+                {
+                    path: "$status_sheet.virtual",
+                },
+            },
+            {
+                $match:
+                {
+                    "status_sheet.virtual.isReviewed": true,
+                },
+            },
+            {
+                $group:
+                {
+                    _id: null,
+                    reviewedVirtualCount: {
+                        $sum: 1,
+                    },
+                },
+            },
+        ]
+
+        // Aggregation to get the incomplete virtuals, having Status as PARTIAL.
+        const incompleteVirtualsAggregation = [
+            {
+                $project:
+
+                {
+                    "status_sheet.virtual": 1,
+                },
+            },
+            {
+                $unwind:
+                {
+                    path: "$status_sheet.virtual",
+                },
+            },
+            {
+                $match:
+                {
+                    "status_sheet.virtual.Status": "PARTIAL",
+                },
+            },
+            {
+                $group:
+                {
+                    _id: null,
+                    incompleteVirtualCount: {
+                        $sum: 1,
+                    },
+                },
+            },
+        ]
+
+        let reviewedVirtualCount = await ConversionStatusModel.aggregate(reviewedVirtualCountAggregation);
+        let [{ reviewedVirtualCount: reviewedVirtuals }] = reviewedVirtualCount;
+
+        let incompleteVirtualCount = await ConversionStatusModel.aggregate(incompleteVirtualsAggregation);
+        let [{ incompleteVirtualCount: incompleteVirtuals }] = incompleteVirtualCount;
+
+        if (reviewedVirtualCount && incompleteVirtualCount) {
+            res.status(200).json({ result: { reviewedVirtuals, incompleteVirtuals } });
+        } else {
+            res.status(404).json({ error: "Data you trying to find does not exists on Conversion Status Profile." });
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: error.message });
     }
 });
