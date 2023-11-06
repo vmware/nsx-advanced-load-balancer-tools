@@ -1,7 +1,7 @@
 <div class="incomplete-migrations-grid">
     <h6> {{ dictionary.incompleteLabel }} ({{ incompleteMigrationsData.length }}) </h6>
 
-    <clr-datagrid>
+    <clr-datagrid [clrDgLoading]="isLoading">
         <clr-dg-column class="incomplete-migrations-grid__name" clrDgField="vsName">{{ dictionary.nameLabel }}</clr-dg-column>
         <clr-dg-column clrDgField="flaggedObjects.length">{{ dictionary.noOfFlagesLabel }}</clr-dg-column>
         <clr-dg-column clrDgField="status">{{ dictionary.statusLabel }}</clr-dg-column>

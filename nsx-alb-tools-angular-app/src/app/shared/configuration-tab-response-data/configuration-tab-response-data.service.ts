@@ -23,7 +23,7 @@ export class ConfigurationTabService {
   }
 
   public getLabControllerDetails(): Observable<labController> {
-    return this.http.get('configuration/getLabControllerDetails');
+    return this.http.get('core/getAviLabDetails');
   }
 
   public acceptConfiguration(data: any): Observable<void> {
@@ -43,7 +43,7 @@ export class ConfigurationTabService {
   }
 
   public setLabControllerDetails(data: labController): Observable<labController> {
-    return this.http.post('configTab/setLabControllerDetails', data);
+    return this.http.post('core/saveAviLabDetails', data);
   }
 
   public getMigrationOverviewData(): Observable<any> {

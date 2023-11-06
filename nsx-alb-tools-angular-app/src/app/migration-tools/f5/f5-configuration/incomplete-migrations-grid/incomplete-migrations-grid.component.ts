@@ -47,6 +47,10 @@ export class IncompleteMigrationsGridComponent {
     this.onCloseVsConfigEditor.emit();
   }
 
+  public get isLoading(): boolean {
+    return Boolean(!this.incompleteMigrationsData?.length);
+  }
+
   public trackByIndex(index: number): number {
     return index;
   }

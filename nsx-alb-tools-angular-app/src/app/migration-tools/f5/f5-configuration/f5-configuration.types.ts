@@ -37,7 +37,7 @@ export interface incompleteVsMigration {
   }
 
   export interface labController {
-    username: string,
-    password: string,
-    ipAddress: string
+    avi_lab_user: string,
+    avi_lab_password: string,
+    avi_lab_ip: string
   }
