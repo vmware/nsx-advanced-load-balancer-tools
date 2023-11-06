@@ -27,11 +27,7 @@
               ></next-conversion-card>
             </div>
             <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
-              <lab-controller-card
-                [labControllerDetails]="labControllerDetails"
-                (onEdit)="handleLabControllerCardEdit()"
-                (onFetch)="handleLabControllerCardFetch()"
-              ></lab-controller-card>
+              <lab-controller-card (onFetch)="handleLabControllerCardFetch()"></lab-controller-card>
             </div>
           </div>
     </div>
@@ -55,8 +51,3 @@
       </clr-alert>
   </div>
 </div>
-
-<edit-lab-controller-modal
-  *ngIf="openEditControllerConfig"
-  (onClose)="handleCloseLabControllerEditModal($event)"
-></edit-lab-controller-modal>

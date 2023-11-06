@@ -21,13 +21,15 @@ const { ENGLISH: dictionary } = l10n;
 })
 export class LabControllerCardComponent implements OnInit {
   @Output()
-  public onEdit = new EventEmitter<void>();
-
-  @Output()
   public onFetch = new EventEmitter<void>();
 
-  @Input()
-  public labControllerDetails: labController | undefined;
+  public labControllerDetails: labController = {
+    avi_lab_user: '',
+    avi_lab_password: '',
+    avi_lab_ip: ''
+  };
+
+  public openEditModal = false;
 
   public readonly verticalLayout = ClrFormLayout.VERTICAL;
 
@@ -41,8 +43,19 @@ export class LabControllerCardComponent implements OnInit {
     this.labControllerDetails = await lastValueFrom(labControllerDetails$);
   }
 
+  public async handleCloseEditModal(getDetails: boolean): Promise<void> {
+    if (getDetails) {
+      const labControllerDetails$ = this.configurationTabService.getLabControllerDetails();
+      this.labControllerDetails = await lastValueFrom(labControllerDetails$);
+    }
+
+    this.openEditModal = false;
+  }
+
   public handleEdit(): void {
-    this.onEdit.emit();
+    if (this.labControllerDetails) {
+      this.openEditModal = true;
+    }
   }
 
   public handleFetch(): void {

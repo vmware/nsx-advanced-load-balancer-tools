@@ -6,7 +6,7 @@ import {
   Output,
 } from '@angular/core';
 
-import { vsFlaggedObject } from '../f5-configuration.types';
+import { labController } from '../f5-configuration.types';
 import * as l10n from './edit-lab-controller-modal.l10n';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ClrFormLayout } from '@clr/angular';
@@ -22,7 +22,7 @@ const { ENGLISH: dictionary } = l10n;
 })
 export class EditLabControllerModalComponent implements OnInit {
   @Input()
-  public config: vsFlaggedObject | undefined;
+  public labControllerDetails: labController;
 
   @Output()
   public onClose = new EventEmitter<boolean>();
@@ -52,27 +52,36 @@ export class EditLabControllerModalComponent implements OnInit {
 
   /** @override */
   public async ngOnInit(): Promise<void> {
-    try {
-      const labControllerDetails$ = this.configurationTabService.getLabControllerDetails();
-      const labControllerDetails = await lastValueFrom(labControllerDetails$);
+    this.setFormValue(this.labControllerDetails);
+  }
 
-      this.labControllerForm.setValue(labControllerDetails);
-    } catch (error) {
-      this.errorMessage = dictionary.generalErrorMessage;
-    }
+  public setFormValue(config) {
+    const { avi_lab_user: username, avi_lab_password: password, avi_lab_ip: ipAddress } = config;
+
+    this.labControllerForm.setValue({
+      username,
+      password,
+      ipAddress,
+    });
   }
 
   public async closeModal(saveConfiguration: boolean): Promise<void> {
     try {
       if (saveConfiguration) {
-        const labControllerDetails$ = this.configurationTabService.setLabControllerDetails(this.labControllerForm.value);
+        const { username: avi_lab_user, password: avi_lab_password, ipAddress: avi_lab_ip } = this.labControllerForm.value;
+        const payload = {
+          avi_lab_user,
+          avi_lab_password,
+          avi_lab_ip,
+        }
+
+        const labControllerDetails$ = this.configurationTabService.setLabControllerDetails(payload);
         await lastValueFrom(labControllerDetails$);
       }
 
       this.onClose.emit(saveConfiguration);
-      this.isOpen = false;
     } catch (error) {
-      this.errorMessage = 'Try closing this alert';
+      this.errorMessage = 'Error while saving data';
     }
   }
 }
