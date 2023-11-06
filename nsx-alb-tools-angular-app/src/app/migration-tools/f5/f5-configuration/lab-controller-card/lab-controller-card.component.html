@@ -9,26 +9,32 @@
             <div class="lab-controller-card__row">
                 <clr-input-container class="lab-controller-card__no-margin-top">
                     <label>{{ dictionary.AddressLabel }}</label>
-                    <input placeholder="NA" clrInput [value]="labControllerDetails?.ipAddress" name="name"
+                    <input placeholder="NA" clrInput [value]="labControllerDetails.avi_lab_ip" name="username"
                         readonly />
                 </clr-input-container>
             </div>
             <div class="lab-controller-card__row">
                 <clr-input-container>
                     <label>{{ dictionary.usernameLabel }}</label>
-                    <input placeholder="NA" clrInput [value]="labControllerDetails?.username" name="name"
+                    <input placeholder="NA" clrInput [value]="labControllerDetails.avi_lab_user" name="ipAddress"
                         readonly />
                 </clr-input-container>
                 <clr-input-container>
                     <label>{{ dictionary.passwordLabel }}</label>
-                    <input placeholder="NA" clrInput type="password" [value]="labControllerDetails?.password"
-                        name="flaggedObjectsCount" readonly />
+                    <input placeholder="NA" clrInput type="password" [value]="labControllerDetails.avi_lab_password"
+                        name="password" readonly />
                 </clr-input-container>
             </div>
         </form>
     </div>
     <div class="card-footer">
         <button class="btn btn-primary" (click)="handleFetch()">{{ dictionary.fetchLabel }}</button>
-        <button class="btn btn-link" (click)="handleEdit()">{{ dictionary.editLabel }}</button>
+        <button class="btn btn-link" [disabled]="!labControllerDetails" (click)="handleEdit()">{{ dictionary.editLabel }}</button>
     </div>
 </div>
+
+<edit-lab-controller-modal
+  *ngIf="openEditModal"
+  [labControllerDetails]="labControllerDetails"
+  (onClose)="handleCloseEditModal($event)"
+></edit-lab-controller-modal>
