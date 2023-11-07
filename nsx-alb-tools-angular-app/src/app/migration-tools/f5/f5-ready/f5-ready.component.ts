@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { ClrFormLayout } from '@clr/angular';
 import * as l10n from './f5-ready.l10n';
+import * as FileSaver from 'file-saver';
 import { HttpService } from 'src/app/shared/http/http.service';
 import { ClrWizard } from "@clr/angular";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -120,10 +121,6 @@ export class F5ReadyComponent implements OnInit {
     });
   }
 
-  downloadPlaybook(): void {
-    console.log('downloaded');
-  }
-
   // markComplete(playbook): void {
   //   this.http.post('f5pbmarkcomplete', this.playbookForm.value).subscribe((data)=> {
   //     console.log('completed');
@@ -143,6 +140,17 @@ export class F5ReadyComponent implements OnInit {
           console.log('error');
           this.playbookModalOpened = false;
       });
+  }
+
+  public downloadPlaybook(): void {
+    const fileName = "avi_config.yml";
+
+    this.http.get(
+      `playbook/downloadPlaybook?fileName=${fileName}`,
+      { responseType: "blob" },
+    ).subscribe((data: Blob) => {
+      FileSaver.saveAs(data, fileName);
+    });
   }
 
   generateSinglePlaybook(vs): void {

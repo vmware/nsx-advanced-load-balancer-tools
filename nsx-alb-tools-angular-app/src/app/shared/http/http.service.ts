@@ -4,9 +4,29 @@
  * ========================================================================
  */
 
-import { HttpClient } from '@angular/common/http';
+import {
+    HttpClient,
+    HttpContext,
+    HttpHeaders,
+    HttpParams
+} from '@angular/common/http';
+
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+
+type Options = {
+    headers?: HttpHeaders | {
+        [header: string]: string | string[];
+    };
+    context?: HttpContext;
+    observe?: any;
+    params?: HttpParams | {
+        [param: string]: string | number | boolean | ReadonlyArray<string | number | boolean>;
+    };
+    reportProgress?: boolean;
+    responseType: any;
+    withCredentials?: boolean;
+}
 
 @Injectable()
 export class HttpService {
@@ -14,19 +34,19 @@ export class HttpService {
 
     devBaseUrl = 'http://localhost:3000/api';
 
-    public get(url: any, params?: any): Observable<any> {
-        return this.http.get(this.devBaseUrl + '/' + url, {params: params});
+    public get(url: any, options?: Options): Observable<any> {
+        return this.http.get(this.devBaseUrl + '/' + url, options );
     }
 
-    public post(url: any, data: any, params?: any): Observable<any> {
-        return this.http.post(this.devBaseUrl + '/' + url, data, {params: params});
+    public post(url: any, data: any, options?: Options): Observable<any> {
+        return this.http.post(this.devBaseUrl + '/' + url, data, options);
     }
 
-    public put(url: any, data: any, params?: any): Observable<any> {
-        return this.http.put(this.devBaseUrl + '/' + url, data, {params: params});
+    public put(url: any, data: any, options?: Options): Observable<any> {
+        return this.http.put(this.devBaseUrl + '/' + url, data, options);
     }
 
-    public delete(url: any, params?: any): Observable<any> {
-        return this.http.delete(this.devBaseUrl + '/' + url, {params: params});
+    public delete(url: any, options?: Options): Observable<any> {
+        return this.http.delete(this.devBaseUrl + '/' + url, options);
     }
 }

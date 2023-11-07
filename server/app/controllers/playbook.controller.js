@@ -1,5 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const { spawn } = require('child_process');
+const path = require('path');
 const fs = require('fs-extra');
 const { AviOutputModel } = require('../models/migration.model');
 const { PlaybookDetailsModel } = require('../models/playbook.model');
@@ -89,6 +90,23 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
         }
     } else {
         res.status(400).json({ error: 'Missing required Playbook name.' });
+    }
+});
+
+exports.downloadPlaybook = asyncHandler(async (req, res, next) => {
+    try {
+        const playbooksRelativePath = `../../migration/${F5_HOST_IP}/playbook`;
+        const filePath = path.join(__dirname, playbooksRelativePath, req.query.fileName)
+
+        res.download(filePath, (err) => {
+            if (err) {
+                if (!res.headersSent) {
+                    return res.status(500).json({ message: 'Error while file downloading. ' + err.message });
+                }
+            }
+        });
+    } catch (err) {
+        res.status(404).json({ message: 'Problem while creating file path value. ' + err.message });
     }
 });
 
