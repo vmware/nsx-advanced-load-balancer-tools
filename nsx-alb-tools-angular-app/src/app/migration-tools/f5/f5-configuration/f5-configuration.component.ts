@@ -8,13 +8,11 @@ import { ConfigurationTabService } from 'src/app/shared/configuration-tab-respon
 import {
   incompleteVsMigration,
   incompleteVsMigrationsData,
-  labController,
 } from './f5-configuration.types';
 
 import { ClrFormLayout } from '@clr/angular';
 import { lastValueFrom } from 'rxjs';
 import * as l10n from './f5-configuration.l10n';
-import { HttpService } from 'src/app/shared/http/http.service';
 
 const { ENGLISH: dictionary } = l10n;
 
@@ -40,10 +38,7 @@ export class F5ConfigurationComponent implements OnInit {
 
   public dictionary = dictionary;
 
-  constructor(
-    public readonly configurationTabService: ConfigurationTabService,
-    private http: HttpService,
-  ) { }
+  constructor(public readonly configurationTabService: ConfigurationTabService) { }
 
 
   /** @override */
