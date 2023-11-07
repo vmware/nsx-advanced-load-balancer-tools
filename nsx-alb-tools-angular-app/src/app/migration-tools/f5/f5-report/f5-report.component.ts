@@ -199,6 +199,17 @@ export class F5ReportComponent implements OnInit {
       );
     }
 
+    getReport(): void {
+      this.http.get('discovery/getReport').subscribe(
+        (data) => {
+          console.log('Data from API:', data);
+        },
+        (error) => {
+          console.error('Error from API:', error);
+        }
+      );
+    }
+
     generateConfiguration(): void {
       const reqBody = {
         f5_host_ip: '10.206.40.100',
