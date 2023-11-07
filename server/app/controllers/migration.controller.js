@@ -82,8 +82,8 @@ const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res)
 
             Promise.all(generatedFilePromises).then(async (jsonData) => {
                 try {
-                    await ConversionStatusModel.create(jsonData[0]);
-                    await AviOutputModel.create(jsonData[1]);
+                    await ConversionStatusModel.findOneAndUpdate({}, jsonData[0], { upsert: true });
+                    await AviOutputModel.findOneAndUpdate({}, jsonData[1], { upsert: true });
 
                     res.status(200).json({ message: 'Configurations generated successfully and saved in DB.' });
                 } catch (err) {
@@ -171,7 +171,7 @@ exports.generateConfiguration = asyncHandler(async (req, res, next) => {
 
 exports.getConfiguration = asyncHandler(async (req, res, next) => {
     try {
-        const conversionStatusResult = await ConversionStatusModel.aggregate([
+        const [conversionStatusResult] = await ConversionStatusModel.aggregate([
             {
                 $project: {
                     _id: 0,  // Exclude the _id field if you don't need it
@@ -179,15 +179,14 @@ exports.getConfiguration = asyncHandler(async (req, res, next) => {
                 }
             }
         ]);
+        const [aviOutputResult] = await AviOutputModel.find({}, { _id: 0 }).lean();
 
-        const aviOutputResult = await AviOutputModel.find({}, { _id: 0 });
-        const { data } = conversionStatusResult[0];
-        let vsIncompleteMigrationData = [];
-        let completedVSMigrationsCount = 0;
+        if (conversionStatusResult?.data?.virtual && aviOutputResult) {
+            let vsIncompleteMigrationData = [];
+            let completedVSMigrationsCount = 0;
+            const { data } = conversionStatusResult;
 
-        if (data.virtual) {
-            vsIncompleteMigrationData = getIncompleteMigrationData(data, aviOutputResult[0]) || [];
-
+            vsIncompleteMigrationData = getIncompleteMigrationData(data, aviOutputResult) || [];
             completedVSMigrationsCount = data.virtual.length - vsIncompleteMigrationData.length;
 
             return res.status(200).json({
