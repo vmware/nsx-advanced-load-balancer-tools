@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const reportSchema = mongoose.Schema({
+const discoverySchema = mongoose.Schema({
     downloadLink: String,
     pools: {
         total: Number,
@@ -22,7 +22,7 @@ const reportSchema = mongoose.Schema({
     unsupported: {
         total: Number
     },
-    virtualService: {
+    virtualServices: {
         total: Number,
         types: {
             L4: Number,
@@ -37,4 +37,4 @@ const reportSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('ReportSheet', reportSchema);
+module.exports = mongoose.model('DiscoveryModel', discoverySchema);
