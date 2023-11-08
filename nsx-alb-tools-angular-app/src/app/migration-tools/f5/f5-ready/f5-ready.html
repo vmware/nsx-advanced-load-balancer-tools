@@ -160,7 +160,7 @@
          <clr-dg-column> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
          <clr-dg-column> {{ dictionary.readyPageStatusTitle }} </clr-dg-column>
          <clr-dg-row *clrDgItems="let each of vsStatusGridData" [clrDgItem]="each">
-            <clr-dg-cell>{{each.name}}</clr-dg-cell>
+            <clr-dg-cell>{{each.F5_ID}}</clr-dg-cell>
             <clr-dg-cell>{{each.status}}</clr-dg-cell>
          </clr-dg-row>
          <clr-dg-footer></clr-dg-footer>
@@ -178,8 +178,8 @@
          <clr-dg-column> {{ dictionary.readyPageStatusTitle }} </clr-dg-column>
          <clr-dg-column> {{ dictionary.readyPageActionsTitle }} </clr-dg-column>
          <clr-dg-row *clrDgItems="let each of playbooksGridData" [clrDgItem]="each">
-            <clr-dg-cell>{{each.date |  date:'medium' }}</clr-dg-cell>
-            <clr-dg-cell>{{each.name}}</clr-dg-cell>
+            <clr-dg-cell>{{each.playbook_creation_time |  date:'medium' }}</clr-dg-cell>
+            <clr-dg-cell>{{each.playbook_name}}</clr-dg-cell>
             <clr-dg-cell>{{each.status}}</clr-dg-cell>
             <clr-dg-cell>
                <!-- <cds-icon (click)="markComplete(each)" shape="check"  class="cursor-pointer" status="info"></cds-icon> -->
@@ -373,7 +373,7 @@
             <clr-datagrid>
                <clr-dg-column> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
                <clr-dg-row *clrDgItems="let each of vsStatusGridData" [clrDgItem]="each">
-                  <clr-dg-cell>{{each.name}}</clr-dg-cell>
+                  <clr-dg-cell>{{each.F5_ID}}</clr-dg-cell>
                </clr-dg-row>
                <clr-dg-footer></clr-dg-footer>
             </clr-datagrid>
