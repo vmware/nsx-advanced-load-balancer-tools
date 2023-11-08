@@ -145,22 +145,15 @@ exports.generateConfiguration = asyncHandler(async (req, res, next) => {
     // Save the User provided details in DB.
     try {
         // Save the F5 Controller details.
-        await F5DetailsModel.create({
-            f5_host_ip: F5_HOST_IP,
-            data: f5Details,
-        });
+        const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
+        
+        await F5DetailsModel.findOneAndUpdate(findQuery, { data: f5Details }, { upsert: true });
 
         // Save the Avi Lab details.
-        await AviLabDetailsModel.create({
-            f5_host_ip: F5_HOST_IP,
-            data: labDetails,
-        });
+        await AviLabDetailsModel.findOneAndUpdate(findQuery, { data: labDetails }, { upsert: true });
 
         // Save the Avi Desintion details & Mappings details.
-        await AviDestinationDetailsModel.insertMany({
-            f5_host_ip: F5_HOST_IP,
-            data: destinationDetails,
-        });
+        await AviDestinationDetailsModel.findOneAndUpdate(findQuery, { data: destinationDetails }, { upsert: true });
     } catch (err) {
         res.status(500).json({ message: 'Error in saving the F5/Lab/Destination details(mappings), ' + err.message });
     }
