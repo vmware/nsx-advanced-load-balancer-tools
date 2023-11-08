@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { ClrFormLayout } from '@clr/angular';
+import * as FileSaver from 'file-saver';
 import * as l10n from './f5-report.l10n';
 import { HttpService } from 'src/app/shared/http/http.service';
 import { D3Service } from 'src/app/shared/d3.service';
@@ -209,6 +210,17 @@ export class F5ReportComponent implements OnInit {
         }
       );
     }
+
+  public downloadReport(): void {
+    const fileName = 'bigip_discovery_data.json';
+
+    this.http.get(
+      `discovery/downloadReport?fileName=${fileName}`,
+      { responseType: "blob" },
+    ).subscribe((data: Blob) => {
+      FileSaver.saveAs(data, fileName);
+    });
+  }
 
     generateConfiguration(): void {
       const reqBody = {
