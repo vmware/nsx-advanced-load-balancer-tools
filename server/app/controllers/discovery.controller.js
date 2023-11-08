@@ -1,4 +1,5 @@
 const { spawn } = require('child_process');
+const path = require("path")
 const fs = require("fs")
 const asyncHandler = require('express-async-handler');
 const DiscoveryModel = require('../models/discovery.model');
@@ -10,7 +11,6 @@ const TENANT_NAME = 'admin';
 const VRF_NAME = 'global';
 const CLOUD_NAME = 'Default-Cloud';
 const OUTPUT_FOLDER_NAME = 'migration';
-
 
 // Run f5_converter, generate output, save in DB.
 exports.generateReport = asyncHandler(async (req, res, next) => {
@@ -82,6 +82,26 @@ exports.getReport = asyncHandler(async (req, res, next) => {
         res.status(200).json(reportJson);
     } catch (err) {
         res.status(500).json({ message: 'Error in fetching report data'});
+    }
+});
+
+exports.downloadReport = asyncHandler(async (req, res, next) => {
+    try {
+        const fetchResult = await DiscoveryModel.findOne(
+            {},
+            { downloadLink: 1, _id: 0 }
+          ).lean();
+        const reportFileRelativePath = `./${fetchResult.downloadLink}`;
+
+        res.download(reportFileRelativePath, (err) => {
+            if (err) {
+                if (!res.headersSent) {
+                    return res.status(500).json({ message: 'Error while report file downloading. ' + err.message });
+                }
+            }
+        });
+    } catch (err) {
+        res.status(404).json({ message: 'Error while fetching report file path. ' + err.message });
     }
 });
 

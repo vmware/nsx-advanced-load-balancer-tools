@@ -95,18 +95,18 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
 
 exports.downloadPlaybook = asyncHandler(async (req, res, next) => {
     try {
-        const playbooksRelativePath = `../../migration/${F5_HOST_IP}/playbook`;
-        const filePath = path.join(__dirname, playbooksRelativePath, req.query.fileName)
+        const playbookRelativePath = `../../migration/${F5_HOST_IP}/playbook`;
+        const filePath = path.join(__dirname, playbookRelativePath, req.query.fileName)
 
         res.download(filePath, (err) => {
             if (err) {
                 if (!res.headersSent) {
-                    return res.status(500).json({ message: 'Error while file downloading. ' + err.message });
+                    return res.status(500).json({ message: 'Error while playbook downloading. ' + err.message });
                 }
             }
         });
     } catch (err) {
-        res.status(404).json({ message: 'Problem while creating file path value. ' + err.message });
+        res.status(404).json({ message: 'Error while creating playbook file path. ' + err.message });
     }
 });
 
@@ -114,7 +114,7 @@ exports.getPlaybooks = asyncHandler(async (req, res, next) => {
     try{
         const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
         const foundDoc = await PlaybookDetailsModel.findOne(findQuery).lean();
-        
+
         const docPlaybooks = foundDoc ? foundDoc['playbooks'] : [];
 
         console.log(docPlaybooks);
