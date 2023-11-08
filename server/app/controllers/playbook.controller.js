@@ -18,11 +18,11 @@ const savePlaybooksInDB = async (playbookName, fileCreationTime, f5_host_ip, res
         const docPlaybooks = foundDoc ? foundDoc['playbooks'] : [];
 
         docPlaybooks.push({
-            'playbook_name': `${playbookName}.yml`,
+            'playbook_name': 'avi_config.yml', // `${playbookName}.yml`, // Need to remove this commented code
             'playbook_creation_time': fileCreationTime,
         });
         docPlaybooks.push({
-            'playbook_name': `${playbookName}_delete.yml`,
+            'playbook_name': 'avi_config_delete.yml', // `${playbookName}_delete.yml`, // Need to remove this commented code
             'playbook_creation_time': fileCreationTime,
         });
 
@@ -119,7 +119,7 @@ exports.getPlaybooks = asyncHandler(async (req, res, next) => {
 
         console.log(docPlaybooks);
 
-        res.status(200).json(docPlaybooks);
+        res.status(200).json({ 'result': docPlaybooks });
     } catch (err) {
         res.status(404).json({ message: 'Error in getting Playbooks from DB. ' + err.message});
     }
