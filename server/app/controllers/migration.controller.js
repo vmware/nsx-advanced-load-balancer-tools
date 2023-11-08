@@ -539,13 +539,24 @@ exports.getMigrationOverview = asyncHandler(async (req, res, next) => {
         ]
 
         let reviewedVirtualCount = await ConversionStatusModel.aggregate(reviewedVirtualCountAggregation);
-        let [{ reviewedVirtualCount: reviewedVirtuals }] = reviewedVirtualCount;
-
         let incompleteVirtualCount = await ConversionStatusModel.aggregate(incompleteVirtualsAggregation);
-        let [{ incompleteVirtualCount: incompleteVirtuals }] = incompleteVirtualCount;
+        let reviewedVirtuals = 0;
+        let incompleteVirtuals = 0;
+        let migrationCompletedPercentage = 0;
 
         if (reviewedVirtualCount && incompleteVirtualCount) {
-            res.status(200).json({ result: { reviewedVirtuals, incompleteVirtuals } });
+            if (Array.isArray(reviewedVirtualCount) && reviewedVirtualCount.length) {
+                [{ reviewedVirtualCount: reviewedVirtuals }] = reviewedVirtualCount;
+            }
+            if (Array.isArray(incompleteVirtualCount) && incompleteVirtualCount.length) {
+                [{ incompleteVirtualCount: incompleteVirtuals }] = incompleteVirtualCount;
+            }
+            if (reviewedVirtuals && incompleteVirtuals) {
+                migrationCompletedPercentage = reviewedVirtuals / (reviewedVirtuals + incompleteVirtuals) * 100;
+                migrationCompletedPercentage = +migrationCompletedPercentage.toFixed(2);
+            }
+
+            res.status(200).json({ result: { reviewedVirtuals, incompleteVirtuals, migrationCompletedPercentage } });
         } else {
             res.status(404).json({ error: "Data you trying to find does not exists on Conversion Status Profile." });
         }
