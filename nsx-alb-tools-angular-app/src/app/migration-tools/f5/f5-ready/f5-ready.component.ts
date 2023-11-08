@@ -67,8 +67,6 @@ export class F5ReadyComponent implements OnInit {
     this.open = true;
     this.http.get('f5ready').subscribe((data)=> {
       this.data = data;
-      this.vsStatusGridData = data.vsStatusData;
-      this.playbooksGridData = data.playbooks;
     });
     this.http.get('f5destination').subscribe((data)=> {
       this.f5DestinationData = data;
@@ -77,6 +75,35 @@ export class F5ReadyComponent implements OnInit {
         cloud: this.f5DestinationData.cloud[0],
         vrf: this.f5DestinationData.vrf[0],
         seGroup: this.f5DestinationData.seGroup[0],
+      });
+    });
+
+    // Fetch the list of ready Virtuals.
+    this.http.get('configuration/getReadyVirtuals').subscribe((data) => {
+      const readyVirtuals = data.result.ready;
+
+      this.vsStatusGridData = readyVirtuals.map((virtualItem) => {
+        return {
+          ...virtualItem,
+          // 'name': virtualItem.F5_ID,
+          'status': virtualItem.isReviewed ? 'Reviewed' : 'Auto Converted',
+        };
+      });
+    });
+
+    this.fetchPlaybooks();
+  }
+
+  // Fetch the list of Playbooks.
+  fetchPlaybooks(): void {
+    this.http.get('playbook/getPlaybooks' ).subscribe((data) => {
+      const playbooks = data.result;
+
+      this.playbooksGridData = playbooks.map((playbookItem) => {
+        return {
+          ...playbookItem,
+          'status': 'Ready',
+        };
       });
     });
   }
@@ -132,10 +159,13 @@ export class F5ReadyComponent implements OnInit {
   // }
 
   generatePlaybook(): void {
-    this.http.post('f5generateplaybook', this.playbookForm.value).subscribe((data)=> {
+    this.http.post('playbook/generatePlaybook', this.playbookForm.value).subscribe((data)=> {
         this.playbookModalOpened = false;
         this.showToaster = true;
         this.toasterMessage = dictionary.readyPagePlaybookGeneratedSuccessMessage;
+
+        // Update the list of Playbooks.
+        this.fetchPlaybooks();
       }, (error) => {
           console.log('error');
           this.playbookModalOpened = false;
