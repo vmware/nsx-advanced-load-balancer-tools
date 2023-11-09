@@ -23,6 +23,7 @@ export class F5ReadyComponent implements OnInit {
   @ViewChild("wizard") wizard: ClrWizard;
 
   loadingFlag: boolean;
+  migrationOverviewData;
   data;
   vsStatusGridData;
   playbooksGridData;
@@ -64,6 +65,9 @@ export class F5ReadyComponent implements OnInit {
 
   ngOnInit(): void {
     this.open = true;
+    this.http.get('configuration/getMigrationOverview').subscribe((data)=> {
+      this.migrationOverviewData =  data;
+    });
     this.http.get('f5ready').subscribe((data)=> {
       this.data = data;
       this.vsStatusGridData = data.vsStatusData;

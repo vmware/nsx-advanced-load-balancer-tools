@@ -5,12 +5,12 @@
           <div class="card-block">
              <h5 class="card-title"> {{ dictionary.readyPageConfigMigrationTitle }} </h5>
              <div class="card-text card-progress-text">
-                <clr-progress-bar class="progress-bar" clrSuccess clrValue="{{ migrationOverviewData?.migration?.config?.completedPercent }}"></clr-progress-bar>
-                <div class="no-wrap ml-12"> {{ migrationOverviewData?.migration?.config?.completedPercent }} % completed</div>
+                <clr-progress-bar class="progress-bar" clrSuccess clrValue="{{ (migrationOverviewData?.result?.reviewedVirtuals * 100 / migrationOverviewData?.result?.incompleteVirtuals) | number:'1.0-0' }}"></clr-progress-bar>
+                <div class="no-wrap ml-12"> {{ (migrationOverviewData?.result?.reviewedVirtuals * 100 / migrationOverviewData?.result?.incompleteVirtuals) | number:'1.0-0' }} % completed</div>
              </div>
              <div>
-                <span class="badge badge-blue"></span> {{ dictionary.readyPageReviewedTitle }} {{ migrationOverviewData?.migration?.config?.reviewed }}
-                <span class="badge ml-12"></span> {{ dictionary.readyPageIncompleteTitle }}  {{ migrationOverviewData?.migration?.config?.incomplete }}
+                <span class="badge badge-blue"></span> {{ dictionary.readyPageReviewedTitle }} {{ migrationOverviewData?.result?.reviewedVirtuals }}
+                <span class="badge ml-12"></span> {{ dictionary.readyPageIncompleteTitle }}  {{ migrationOverviewData?.result?.incompleteVirtuals }}
              </div>
           </div>
        </div>

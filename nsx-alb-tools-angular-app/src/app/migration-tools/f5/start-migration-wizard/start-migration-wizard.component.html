@@ -4,6 +4,7 @@
 
         <clr-wizard-button [type]="'previous'">{{ dictionary.backLabel }}</clr-wizard-button>
         <clr-wizard-button [type]="'next'">{{ dictionary.nextLabel }}</clr-wizard-button>
+        <clr-wizard-button [type]="'finish'"> {{dictionary.startMigrationSubmitLabel}} </clr-wizard-button>
 
         <clr-wizard-page [clrWizardPageNextDisabled]="!certsAndKeysForm.valid">
             <ng-template clrPageTitle>{{ dictionary.certsAndKeysPageTitle }}</ng-template>
@@ -14,13 +15,13 @@
             <form clrForm [formGroup]="certsAndKeysForm" [clrLayout]="verticalLayout">
                 <clr-input-container>
                     <label>{{ dictionary.ipAddressLabel }}</label>
-                    <input clrInput placeholder="{{ dictionary.ipAddressPlaceholder }}" formControlName="ipAddress" size="100"/>
+                    <input clrInput placeholder="{{ dictionary.ipAddressPlaceholder }}" formControlName="f5_host_ip" size="100"/>
                     <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
                 </clr-input-container>
 
                 <clr-input-container>
                     <label>{{ dictionary.usernameLabel }}</label>
-                    <input clrInput placeholder="{{ dictionary.usernamePlaceholder }}" size="100" formControlName="username"/>
+                    <input clrInput placeholder="{{ dictionary.usernamePlaceholder }}" size="100" formControlName="f5_ssh_user"/>
                     <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
                 </clr-input-container>
 
@@ -29,7 +30,7 @@
                     <input
                         clrPassword
                         placeholder="{{ dictionary.passwordPlaceholder }}"
-                        formControlName="password"
+                        formControlName="f5_ssh_password"
                         size="95"
                     />
                     <clr-control-error>{{ dictionary.requiredErrorMessage }}</clr-control-error>
@@ -46,13 +47,13 @@
             <form clrForm [formGroup]="labControllerForm" [clrLayout]="verticalLayout">
                 <clr-input-container>
                     <label>{{ dictionary.ipAddressLabel }}</label>
-                    <input clrInput placeholder="{{ dictionary.ipAddressPlaceholder }}" size="100" formControlName="ipAddress"/>
+                    <input clrInput placeholder="{{ dictionary.ipAddressPlaceholder }}" size="100" formControlName="avi_lab_ip"/>
                     <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
                 </clr-input-container>
 
                 <clr-input-container>
                     <label>{{ dictionary.usernameLabel }}</label>
-                    <input clrInput placeholder="{{ dictionary.usernameLabel }}" size="100" formControlName="username"/>
+                    <input clrInput placeholder="{{ dictionary.usernameLabel }}" size="100" formControlName="avi_lab_user"/>
                     <clr-control-error>{{ dictionary.invalidErrorMessage }}</clr-control-error>
                 </clr-input-container>
 
@@ -61,7 +62,7 @@
                     <input
                         clrPassword
                         placeholder="{{ dictionary.passwordPlaceholder }}"
-                        formControlName="password"
+                        formControlName="avi_lab_password"
                         size="95"
                     />
                     <clr-control-error>{{ dictionary.requiredErrorMessage }}</clr-control-error>
@@ -69,7 +70,103 @@
             </form>
         </clr-wizard-page>
 
-        <clr-wizard-page (clrWizardPageOnLoad)="onFinalizeLoad()" (clrWizardPageCustomButton)="closeWizard()">
+        <clr-wizard-page
+            (clrWizardPageNext)="pageCustomNext()"
+            [clrWizardPagePreventDefaultNext]="true"
+            [clrWizardPageNextDisabled]="!destinationCtrlForm.valid"
+        >
+            <ng-template clrPageTitle> {{dictionary.startMigrationDestinationControllerTitle}} </ng-template>
+            <ng-template clrPageNavTitle> {{dictionary.startMigrationConnectDestControllerLabel}} </ng-template>
+            <div *ngIf="!loadingFlag">
+                <p>
+                {{ dictionary.startMigrationDestPageSubTitle }}
+                </p>
+                <div class="alert alert-danger" role="alert" *ngIf="f5LoginError">
+                <div class="alert-items">
+                        <div class="alert-item static">
+                            <div class="alert-icon-wrapper">
+                            <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+                            </div>
+                            <span class="alert-text">
+                            {{ f5LoginError }}
+                            </span>
+                        </div>
+                </div>
+                </div>
+                <form clrForm [formGroup]="destinationCtrlForm" clrLayout="vertical">
+                <clr-input-container>
+                    <label> {{dictionary.startMigrationIpAddressTitle}} </label>
+                    <input clrInput type="text" formControlName="avi_destination_ip" required size="100" />
+                </clr-input-container>
+                <clr-input-container>
+                        <label> {{dictionary.startMigrationUserNameTitle}} </label>
+                        <input clrInput type="text" formControlName="avi_destination_user" required size="100" />
+                </clr-input-container>
+                <clr-password-container>
+                        <label> {{dictionary.startMigrationPasswordTitle}} </label>
+                        <input
+                        clrPassword
+                        name="password"
+                        formControlName="avi_destination_password"
+                        size="95"
+                        required
+                        />
+                </clr-password-container>
+                </form>
+            </div>
+            <div *ngIf="loadingFlag">
+                <div class="center">
+                <img width="350" height="220"  src="assets/images/analyzing.png"/>
+                </div>
+                <div class="progress loop progress-bar"><progress></progress></div>
+            </div>
+        </clr-wizard-page>
+
+        <clr-wizard-page
+            [clrWizardPageNextDisabled]="!mapDestinationForm.valid"
+            (clrWizardPageNext)="submit()"
+            [clrWizardPagePreventDefaultNext]="true"
+        >
+            <ng-template clrPageTitle> {{ dictionary.startMigrationMapDestinationTitle }} </ng-template>
+            <ng-template clrPageNavTitle> {{ dictionary.startMigrationMapDestinationTitle }} </ng-template>
+
+            <form clrForm [formGroup]="mapDestinationForm" clrLayout="vertical">
+                <clr-select-container>
+                    <label> {{ dictionary.startMigrationTenantTitle }} </label>
+                    <select clrSelect name="options" class="select-input" formControlName="avi_mapped_tenant">
+                        <option disabled selected [value]="null" placeholder="select"> {{ dictionary.startMigrationSelectLabel }} </option>
+                        <option *ngFor="let tenant of f5DestinationData?.tenants" [value]="tenant?.tenant"> {{tenant?.tenant}} </option>
+                    </select>
+                </clr-select-container>
+                <clr-select-container>
+                    <label> {{ dictionary.startMigrationCloudTitle }} </label>
+                    <select clrSelect name="options" class="select-input" formControlName="avi_mapped_cloud">
+                        <option disabled selected [value]="null"> {{ dictionary.startMigrationSelectLabel }} </option>
+                        <option *ngFor="let cloud of currentTenant?.clouds" [value]="cloud?.cloud_name"> {{cloud?.cloud_name}} </option>
+                    </select>
+                </clr-select-container>
+                <clr-select-container>
+                    <label> {{ dictionary.startMigrationVrfTitle }} </label>
+                    <select clrSelect name="options" class="select-input" formControlName="avi_mapped_vrf">
+                        <option disabled selected [value]="null"> {{ dictionary.startMigrationSelectLabel }} </option>
+                        <option *ngFor="let vrf of currentCloud?.vrf" [value]="vrf?.name"> {{vrf?.name}} </option>
+                    </select>
+                </clr-select-container>
+                <clr-select-container>
+                    <label> {{ dictionary.startMigrationSeGroupTitle }} </label>
+                    <select clrSelect name="options" class="select-input" formControlName="avi_mapped_segroup">
+                        <option disabled selected [value]="null"> {{ dictionary.startMigrationSelectLabel }} </option>
+                        <option *ngFor="let seGroup of currentCloud?.seg" [value]="seGroup.name"> {{seGroup.name}} </option>
+                    </select>
+                </clr-select-container>
+            </form>
+            <!-- <ng-template clrPageButtons>
+                <clr-wizard-button [type]="'custom-finish'"> {{ dictionary.finishLabel }}</clr-wizard-button>
+            </ng-template> -->
+        </clr-wizard-page>
+
+        <clr-wizard-page (clrWizardPageCustomButton)="closeWizard()"> 
+             <!-- (clrWizardPageOnLoad)="onFinalizeLoad()"  -->
             <ng-template clrPageTitle>{{ dictionary.finalizingImportPageTitle }} </ng-template>
             <ng-template clrPageNavTitle>{{ dictionary.finalizingImportPageTitle }}</ng-template>
 
@@ -87,8 +184,8 @@
                 <div class="progress loop progress-bar" *ngIf="!finished"><progress></progress></div>
             </div>
             <ng-template clrPageButtons>
-                <clr-wizard-button [type]="'custom-finish'"> {{ finished ?  dictionary.doneLabel : dictionary.inProgressLabel }}</clr-wizard-button>
-              </ng-template>
+                <!-- <clr-wizard-button [type]="'custom-finish'"> {{ finished ?  dictionary.doneLabel : dictionary.inProgressLabel }}</clr-wizard-button> -->
+            </ng-template>
         </clr-wizard-page>
     </clr-wizard>
 </div>
