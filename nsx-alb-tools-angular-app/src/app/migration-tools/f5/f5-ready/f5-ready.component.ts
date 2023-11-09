@@ -9,6 +9,11 @@ import { ClrWizard } from "@clr/angular";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { 
+  DateFilter,
+  TDateFilter,
+} from './utils/date-filter.utils';
+
 
 const { ENGLISH: dictionary, ...l10nKeys } = l10n;
 
@@ -41,6 +46,7 @@ export class F5ReadyComponent implements OnInit {
   playbookModalOpened = false;
   openMappingEditModal = false;
   openDestinationEditModal = false;
+  public customDateFilter: TDateFilter;
 
   constructor(
       private http: HttpService,
@@ -61,6 +67,8 @@ export class F5ReadyComponent implements OnInit {
     this.playbookForm = new FormGroup({
       playbookName: new FormControl('', Validators.required),
     });
+
+    this.customDateFilter = new DateFilter();
   }
 
   ngOnInit(): void {
@@ -172,9 +180,7 @@ export class F5ReadyComponent implements OnInit {
       });
   }
 
-  public downloadPlaybook(): void {
-    const fileName = "avi_config.yml";
-
+  public downloadPlaybook(fileName: string): void {
     this.http.get(
       `playbook/downloadPlaybook?fileName=${fileName}`,
       { responseType: "blob" },

@@ -21,8 +21,9 @@
     "@cds/core": "^6.6.2",
     "@clr/angular": "^15.12.0",
     "@clr/ui": "^15.12.0",
-    "jsoneditor": "^9.10.2",
     "d3": "^7.8.5",
+    "file-saver": "^2.0.5",
+    "jsoneditor": "^9.10.2",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.13.0"
