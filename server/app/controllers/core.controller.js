@@ -106,7 +106,7 @@ exports.saveAviLabDetails = asyncHandler(async (req, res, next) => {
 
         const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
 
-        await AviLabDetailsModel.findOneAndUpdate(findQuery, { 'data': { 
+        await AviLabDetailsModel.findOneAndUpdate(findQuery, { 'data': {
             avi_lab_ip,
             avi_lab_user,
             avi_lab_password,
@@ -127,7 +127,7 @@ exports.getAviLabDetails = asyncHandler(async (req, res, next) => {
         if (labDetails) {
             res.status(200).json(labDetails);
         } else {
-            res.status(404).json({ error: "Lab details not found." });
+            res.status(404).json({ error: "Lab controller details not found." });
         }
     } catch (err) {
         res.status(500).json({ message: 'Error in fetching the Avi Lab controller details, ' + err.message });
@@ -137,7 +137,7 @@ exports.getAviLabDetails = asyncHandler(async (req, res, next) => {
 
 exports.getAviDestinationDetails = asyncHandler(async (req, res, next) => {
     try {
-        const destinationDetails = await this.fetchAviLabDetails();
+        const destinationDetails = await this.fetchAviDestinationDetails();
 
         if (destinationDetails) {
             res.status(200).json(destinationDetails);
@@ -159,7 +159,7 @@ exports.getF5Details = asyncHandler(async (req, res, next) => {
             res.status(404).json({ error: "F5 details not found." });
         }
     } catch (err) {
-        res.status(500).json({ message: 'Error in fetching the Avi Lab controller details, ' + err.message });
+        res.status(500).json({ message: 'Error in fetching the F5 details, ' + err.message });
     }
 });
 

@@ -157,8 +157,8 @@
       </button>
 
       <clr-datagrid [(clrDgSelected)]="selected">
-         <clr-dg-column> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
-         <clr-dg-column> {{ dictionary.readyPageStatusTitle }} </clr-dg-column>
+         <clr-dg-column clrDgField="F5_ID"> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
+         <clr-dg-column clrDgField="status"> {{ dictionary.readyPageStatusTitle }} </clr-dg-column>
          <clr-dg-row *clrDgItems="let each of vsStatusGridData" [clrDgItem]="each">
             <clr-dg-cell>{{each.F5_ID}}</clr-dg-cell>
             <clr-dg-cell>{{each.status}}</clr-dg-cell>
@@ -173,9 +173,11 @@
       </h6>
 
       <clr-datagrid>
-         <clr-dg-column> {{ dictionary.readyPageDateTitle }} </clr-dg-column>
-         <clr-dg-column> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
-         <clr-dg-column> {{ dictionary.readyPageStatusTitle }} </clr-dg-column>
+         <clr-dg-column clrDgField="playbook_creation_time"> {{ dictionary.readyPageDateTitle }}
+            <clr-dg-string-filter [clrDgStringFilter]="customDateFilter"></clr-dg-string-filter>
+         </clr-dg-column>
+         <clr-dg-column clrDgField="playbook_name"> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
+         <clr-dg-column clrDgField="status"> {{ dictionary.readyPageStatusTitle }} </clr-dg-column>
          <clr-dg-column> {{ dictionary.readyPageActionsTitle }} </clr-dg-column>
          <clr-dg-row *clrDgItems="let each of playbooksGridData" [clrDgItem]="each">
             <clr-dg-cell>{{each.playbook_creation_time |  date:'medium' }}</clr-dg-cell>
@@ -183,7 +185,7 @@
             <clr-dg-cell>{{each.status}}</clr-dg-cell>
             <clr-dg-cell>
                <!-- <cds-icon (click)="markComplete(each)" shape="check"  class="cursor-pointer" status="info"></cds-icon> -->
-               <cds-icon (click)="downloadPlaybook()" class="ml-12 cursor-pointer" shape="download" status="info"></cds-icon>
+               <cds-icon (click)="downloadPlaybook(each.playbook_name)" class="ml-12 cursor-pointer" shape="download" status="info"></cds-icon>
             </clr-dg-cell>
          </clr-dg-row>
          <clr-dg-footer></clr-dg-footer>
