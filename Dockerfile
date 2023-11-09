@@ -168,7 +168,10 @@ RUN touch list && \
     echo "echo "virtualservice_examples_api.py"" >> avitools-list && \
     echo "echo "config_patch.py"" >> avitools-list && \
     echo "echo "vs_filter.py"" >> avitools-list && \
-    echo "echo "nsxt_converter.py"" >> avitools-list \
+    echo "echo "nsxt_converter.py"" >> avitools-list && \
+    echo "echo "install_nsx_dependencies.py"" >> avitools-list && \
+    echo "echo "nsxt_cleanup.py"" >> avitools-list && \
+    echo "echo "nsxt_rollback.py"" >> avitools-list && \
     echo "echo "v2avi_converter.py"" >> avitools-list
 
 # Verify all script in avitools-list
