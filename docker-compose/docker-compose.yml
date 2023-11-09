@@ -11,7 +11,6 @@ services:
   migrationTools:
     image: avinetworks/avitools:22.1.4
     container_name: migrationTools
-    tty: true
     volumes:
       - ./avi:/opt/avi
     networks:
