@@ -137,7 +137,7 @@ exports.getAviLabDetails = asyncHandler(async (req, res, next) => {
 
 exports.getAviDestinationDetails = asyncHandler(async (req, res, next) => {
     try {
-        const destinationDetails = await this.fetchAviLabDetails();
+        const destinationDetails = await this.fetchAviDestinationDetails();
 
         if (destinationDetails) {
             res.status(200).json(destinationDetails);

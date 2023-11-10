@@ -8,6 +8,7 @@ import { ClrWizard } from "@clr/angular";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { EMPTY_VALUE } from '../../../shared/constants'
 
 const { ENGLISH: dictionary, ...l10nKeys } = l10n;
 
@@ -21,10 +22,13 @@ export class F5ReadyComponent implements OnInit {
   dictionary = dictionary;
   f5LoginError = '';
   @ViewChild("wizard") wizard: ClrWizard;
+  emptyValue = EMPTY_VALUE;
 
   loadingFlag: boolean;
   migrationOverviewData;
   data;
+  destinationControllerData;
+  mappingData;
   vsStatusGridData;
   playbooksGridData;
   destinationCtrlForm: FormGroup;
@@ -73,6 +77,34 @@ export class F5ReadyComponent implements OnInit {
       this.vsStatusGridData = data.vsStatusData;
       this.playbooksGridData = data.playbooks;
     });
+
+    this.http.get('core/getAviDestinationDetails').subscribe((response) => {
+
+      const { avi_destination_ip,
+        avi_destination_user,
+        avi_destination_password,
+        avi_destination_version,
+        avi_mapped_vrf,
+        avi_mapped_tenant,
+        avi_mapped_cloud,
+        avi_mapped_segroup,
+      } = response;
+
+      this.destinationControllerData = {
+        avi_destination_ip,
+        avi_destination_user,
+        avi_destination_password,
+        avi_destination_version,
+      }
+
+      this.mappingData = {
+        avi_mapped_vrf,
+        avi_mapped_tenant,
+        avi_mapped_cloud,
+        avi_mapped_segroup,
+      }
+    });
+
     this.http.get('f5destination').subscribe((data)=> {
       this.f5DestinationData = data;
       this.mapDestinationForm.patchValue({
