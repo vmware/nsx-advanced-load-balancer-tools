@@ -30,8 +30,8 @@ export class F5ReadyComponent implements OnInit {
 
   loadingFlag: boolean;
   data;
-  vsStatusGridData;
-  playbooksGridData;
+  vsStatusGridData: any[] = [];
+  playbooksGridData: any[] = [];
   destinationCtrlForm: FormGroup;
   mapDestinationForm: FormGroup;
   playbookForm: FormGroup;

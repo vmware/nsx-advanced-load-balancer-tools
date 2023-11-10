@@ -45,5 +45,7 @@ export const ENGLISH = {
   readyPageMarkCompleteTitle: 'Mark Complete',
   readyPageDateTitle: 'Date',
   readyPagePlaybookMarkedSuccessMessage: 'Playbook marked as completed.',
-  readyPagePlaybookGeneratedSuccessMessage: 'Playbook generated.'
+  readyPagePlaybookGeneratedSuccessMessage: 'Playbook generated.',
+  objectsPerPageLabel: 'Objects per page',
+  objectsLabel: 'objects',
 };
