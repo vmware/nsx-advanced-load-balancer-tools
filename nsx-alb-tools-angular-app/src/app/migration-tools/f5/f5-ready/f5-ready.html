@@ -148,7 +148,7 @@
 
    <div>
       <h6 class="grid-title">
-         {{ dictionary.readyPageReviewedTitle }} ({{ vsStatusGridData?.length || 0 }})
+         {{ dictionary.readyPageReviewedTitle }} ({{ vsStatusGridData.length }})
       </h6>
 
       <button type="button" class="btn btn-icon btn-primary" [disabled]="selected?.length" (click)="playbookModalOpened=true">
@@ -163,13 +163,21 @@
             <clr-dg-cell>{{each.F5_ID}}</clr-dg-cell>
             <clr-dg-cell>{{each.status}}</clr-dg-cell>
          </clr-dg-row>
-         <clr-dg-footer></clr-dg-footer>
-      </clr-datagrid>
+         <clr-dg-footer>
+            <clr-dg-pagination
+               #vsStatusGridPagination [clrDgPageSize]="5"
+               [clrDgTotalItems]="vsStatusGridData.length"
+            >
+               <clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20, 50, 100]">{{ dictionary.objectsPerPageLabel }}</clr-dg-page-size>
+               {{ vsStatusGridData.length }} {{ dictionary.objectsLabel }}
+            </clr-dg-pagination>
+         </clr-dg-footer>
+   </clr-datagrid>
    </div>
 
    <div>
       <h6 class="grid-title">
-         {{ dictionary.readyPagePlaybooksTitle }} ({{ vsStatusGridData?.length || 0 }})
+         {{ dictionary.readyPagePlaybooksTitle }} ({{ playbooksGridData.length }})
       </h6>
 
       <clr-datagrid>
@@ -188,7 +196,15 @@
                <cds-icon (click)="downloadPlaybook(each.playbook_name)" class="ml-12 cursor-pointer" shape="download" status="info"></cds-icon>
             </clr-dg-cell>
          </clr-dg-row>
-         <clr-dg-footer></clr-dg-footer>
+         <clr-dg-footer>
+            <clr-dg-pagination
+                #playbooksGridPagination [clrDgPageSize]="5"
+                [clrDgTotalItems]="playbooksGridData.length"
+            >
+                <clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20, 50, 100]">{{ dictionary.objectsPerPageLabel }}</clr-dg-page-size>
+                {{ playbooksGridData.length }} {{ dictionary.objectsLabel }}
+            </clr-dg-pagination>
+        </clr-dg-footer>
       </clr-datagrid>
 
    </div>
@@ -361,7 +377,7 @@
 
 
    <!-- Modal for generating playbooks -->
-   <clr-modal [(clrModalOpen)]="playbookModalOpened" [clrModalClosable]="true">
+   <clr-modal [(clrModalOpen)]="playbookModalOpened" [clrModalClosable]="true" *ngIf="playbookModalOpened">
       <h3 class="modal-title"> {{ dictionary.readyPageGeneratePlaybookTitle }} </h3>
       <div class="modal-body">
          <form clrForm [formGroup]="playbookForm" clrLayout="vertical">
@@ -370,14 +386,22 @@
                <input clrInput type="text" formControlName="playbookName" required size="100" />
             </clr-input-container>
             <h6 class="grid-title">
-               {{ dictionary.readyPagePlaybookContentsTitle }}({{ vsStatusGridData?.length }})
+               {{ dictionary.readyPagePlaybookContentsTitle }}({{ vsStatusGridData.length }})
             </h6>
             <clr-datagrid>
-               <clr-dg-column> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
+               <clr-dg-column  clrDgField="F5_ID"> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
                <clr-dg-row *clrDgItems="let each of vsStatusGridData" [clrDgItem]="each">
                   <clr-dg-cell>{{each.F5_ID}}</clr-dg-cell>
                </clr-dg-row>
-               <clr-dg-footer></clr-dg-footer>
+               <clr-dg-footer>
+                  <clr-dg-pagination
+                      #generatePlaybookGridPagination [clrDgPageSize]="5"
+                      [clrDgTotalItems]="vsStatusGridData.length"
+                  >
+                      <clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20, 50, 100]">{{ dictionary.objectsPerPageLabel }}</clr-dg-page-size>
+                      {{ vsStatusGridData.length }} {{ dictionary.objectsLabel }}
+                  </clr-dg-pagination>
+              </clr-dg-footer>
             </clr-datagrid>
          </form>
       </div>
