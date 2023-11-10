@@ -33,18 +33,18 @@
         <form clrForm [formGroup]="form" clrLayout="vertical">
             <clr-input-container>
               <label> {{dictionary.startWizardIpAddressLabel}} </label>
-              <input clrInput type="text" formControlName="ipAddr" required size="100" />
+              <input clrInput type="text" formControlName="f5_host_ip" required size="100" />
             </clr-input-container>
             <clr-input-container>
                 <label> {{dictionary.startWizardUsernameLabel}} </label>
-                <input clrInput type="text" formControlName="username" required size="100" />
+                <input clrInput type="text" formControlName="f5_ssh_user" required size="100" />
             </clr-input-container>
             <clr-password-container>
                 <label> {{dictionary.startWizardPasswordLabel}} </label>
                 <input
                   clrPassword
                   name="password"
-                  formControlName="password"
+                  formControlName="f5_ssh_password"
                   size="95"
                   required
                 />
