@@ -79,7 +79,7 @@ exports.getReport = asyncHandler(async (req, res, next) => {
         const fetchResult = await DiscoveryModel.findOne();
         console.log(fetchResult);
 
-        res.status(200).json(reportJson);
+        res.status(200).json(fetchResult);
     } catch (err) {
         res.status(500).json({ message: 'Error in fetching report data'});
     }
@@ -104,31 +104,3 @@ exports.downloadReport = asyncHandler(async (req, res, next) => {
         res.status(404).json({ message: 'Error while fetching report file path. ' + err.message });
     }
 });
-
-const reportJson = {
-    "downloadLink": "migration/10.206.40.100/output/bigip_discovery_data.json",
-    "pools": {
-        "total": 125,
-        "enabledCount": 10,
-        "deactivatedCount": 5
-    },
-    "iRules": {
-        "total": 123,
-    },
-    "tenants": {
-        "total": 22
-    },
-    "virtualServices": {
-        "total": 116,
-        "types": {
-            "L4": 0,
-            "L7": 95,
-            "DNS": 0,
-            "UDP": 0,
-            "SSL": 0,
-            "WAF": 0
-        },
-        "enabledCount": 116,
-        "deactivatedCount": 0
-    }
-};
