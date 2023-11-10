@@ -203,7 +203,7 @@ export class F5ReportComponent implements OnInit {
       const reqBody = {
         f5_host_ip: '10.206.40.100',
         f5_ssh_user: 'admin',
-        f5_ssh_password: 'admin',
+        f5_ssh_password: 'AviNetworks123!',
         avi_lab_ip:'10.10.10.10',
         avi_lab_user: 'admin',
         avi_lab_password: 'admin',
