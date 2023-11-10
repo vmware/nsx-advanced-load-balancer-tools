@@ -39,6 +39,8 @@ export class F5ReadyComponent implements OnInit {
   f5DestinationData: any;
   selected;
 
+  migrationOverviewData;
+
   showToaster = false;
   toasterMessage: string;
 
@@ -73,6 +75,9 @@ export class F5ReadyComponent implements OnInit {
 
   ngOnInit(): void {
     this.open = true;
+    this.http.get('configuration/getMigrationOverview').subscribe((data)=> {
+      this.migrationOverviewData =  data;
+    });
     this.http.get('f5ready').subscribe((data)=> {
       this.data = data;
     });

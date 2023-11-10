@@ -1,7 +1,7 @@
 <clr-wizard #wizard [(clrWizardOpen)]="open" (clrWizardOnCancel)="doCancel()" [clrWizardPreventDefaultNext]="true">
     <clr-wizard-title> {{dictionary.startWizardF5Migration}} </clr-wizard-title>
 
-    <clr-wizard-button [type]="'next'"> {{dictionary.startWizardNextLabel}} </clr-wizard-button>
+    <clr-wizard-button [type]="'next'"> {{dictionary.startWizardFinishLabel}} </clr-wizard-button>
 
     <clr-wizard-page
         (clrWizardPageNext)="pageCustomNext()"

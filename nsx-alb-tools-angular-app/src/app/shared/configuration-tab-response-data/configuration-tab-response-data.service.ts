@@ -47,7 +47,7 @@ export class ConfigurationTabService {
   }
 
   public getMigrationOverviewData(): Observable<any> {
-    return this.http.get('f5ready');
+    return this.http.get('configuration/getMigrationOverview');
   }
 }
 
