@@ -15,6 +15,7 @@ export const ENGLISH = {
   readyPagePasswordTitle: 'Password',
   readyPageCloudTitle: 'Cloud',
   readyPageVrfTitle: 'VRF',
+  readyPageVersionTitle: 'Version',
   readyPageTenantTitle: 'Tenant',
   readyPageSeGroupTitle: 'Service Engine Group',
   readyPageReviewedTitle: 'Reviewed',

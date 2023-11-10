@@ -30,7 +30,7 @@
       </div>
    </div>
 
-   <div class="clr-row">
+   <div class="clr-row ready-cards-wrapper">
       <div class="clr-col-lg-6 clr-col-md-6 clr-col-12">
          <div class="card">
             <div class="card-header">
@@ -40,12 +40,22 @@
             <div class="card-block">
                <div class="card-text">
 
-                  <div>
-                     <h6>
-                        {{ dictionary.readyPageIpAddressTitle }}
-                     </h6>
+                  <div class="card-row">
+                     <div class="first-item">
+                        <h6>
+                           {{ dictionary.readyPageIpAddressTitle }}
+                        </h6>
+                        <div>
+                           {{ destinationControllerData?.avi_destination_ip || emptyValue }}
+                        </div>
+                     </div>
                      <div>
-                        {{ data?.destinationController?.ipAddr }}
+                        <h6>
+                           {{ dictionary.readyPageVersionTitle }}
+                        </h6>
+                        <div>
+                           {{ destinationControllerData?.avi_destination_version || emptyValue }}
+                        </div>
                      </div>
                   </div>
 
@@ -55,7 +65,7 @@
                            {{ dictionary.readyPageUserNameTitle }}
                         </h6>
                         <div>
-                           {{ data?.destinationController?.username }}
+                           {{ destinationControllerData?.avi_destination_user || emptyValue }}
                         </div>
                      </div>
                      <div>
@@ -63,18 +73,18 @@
                            {{ dictionary.readyPagePasswordTitle }}
                         </h6>
                         <div>
-                           {{ data?.destinationController?.password }}
+                           {{ destinationControllerData?.avi_destination_password || emptyValue }}
                         </div>
                      </div>
                   </div>
 
                </div>
             </div>
-            <div class="card-footer">
+            <!-- <div class="card-footer">
                <div class="footer">
                   <button class="btn btn-link" (click)="editDestinationControllerDetails()"> {{ dictionary.readyPageEditButtonText }} </button>
                </div>
-            </div>
+            </div> -->
          </div>
       </div>
 
@@ -91,7 +101,7 @@
                         {{ dictionary.readyPageCloudTitle }}
                      </h6>
                      <div>
-                        {{ data?.mapping?.cloud }}
+                        {{ mappingData?.avi_mapped_cloud || emptyValue }}
                      </div>
                   </div>
                   <div>
@@ -99,7 +109,7 @@
                         {{ dictionary.readyPageVrfTitle }}
                      </h6>
                      <div>
-                        {{ data?.mapping?.vrf }}
+                        {{ mappingData?.avi_mapped_vrf || emptyValue }}
                      </div>
                   </div>
                </div>
@@ -109,7 +119,7 @@
                         {{ dictionary.readyPageTenantTitle }}
                      </h6>
                      <div>
-                        {{ data?.mapping?.tenant }}
+                        {{ mappingData?.avi_mapped_tenant || emptyValue }}
                      </div>
                   </div>
                   <div>
@@ -117,16 +127,16 @@
                         {{ dictionary.readyPageSeGroupTitle }}
                      </h6>
                      <div>
-                        {{ data?.mapping?.seGroup }}
+                        {{ mappingData?.avi_mapped_segroup || emptyValue }}
                      </div>
                   </div>
                </div>
             </div>
-            <div class="card-footer">
+            <!-- <div class="card-footer">
                <div class="footer">
                   <button class="btn btn-link" (click)="editMappingDetails()"> {{ dictionary.readyPageEditButtonText }} </button>
                </div>
-            </div>
+            </div> -->
          </div>
       </div>
 
