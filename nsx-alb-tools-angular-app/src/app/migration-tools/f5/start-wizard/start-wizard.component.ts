@@ -37,10 +37,10 @@ export class StartWizardComponent implements OnInit {
         private router: Router,
     ) {
         this.form = new FormGroup({
-            ipAddr: new FormControl('', [Validators.required,
+            f5_host_ip: new FormControl('', [Validators.required,
                 Validators.pattern('^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')]),
-            username: new FormControl('', Validators.required),
-            password: new FormControl('', Validators.required),
+            f5_ssh_user: new FormControl('', Validators.required),
+            f5_ssh_password: new FormControl('', Validators.required),
         });
     }
 
@@ -48,15 +48,16 @@ export class StartWizardComponent implements OnInit {
 
     pageCustomNext(): void {
         this.loadingFlag = true;
-        this.http.post('f5login', this.form.value).subscribe((data)=> {
+
+        this.http.post('discovery/generateReport', this.form.value).subscribe((data)=> {
             this.loadingFlag = false;
             this.wizard.forceNext();
             setTimeout(()=> {
                 this.router.navigate(['f5-migration'])
-            }, 4000)
+            }, 1000)
         }, (error) => {
             this.loadingFlag = false;
-            this.f5LoginError = error.error.message;
+            this.f5LoginError = error.message;
         });
     }
 
