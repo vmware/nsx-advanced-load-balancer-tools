@@ -426,8 +426,7 @@ exports.getReadyVirtuals = asyncHandler(async (req, res, next) => {
             {
                 $match:
                 {
-                    "status_sheet.virtual.Status":
-                        "SUCCESSFUL",
+                    "status_sheet.virtual.Status":"SUCCESSFUL",
                 },
             },
             {
@@ -449,9 +448,9 @@ exports.getReadyVirtuals = asyncHandler(async (req, res, next) => {
         ]
 
         const successfulVirtuals = await ConversionStatusModel.aggregate(successfulAggregation);
-        const [{ ready, readyCount }] = successfulVirtuals;
 
-        if (successfulVirtuals) {
+        if (successfulVirtuals && successfulVirtuals[0].ready) {
+            const [{ ready, readyCount }] = successfulVirtuals;
             res.status(200).json({ result: { ready, readyCount } });
         } else {
             res.status(404).json({ error: "Data you trying to find does not exists on Conversion Status Profile." });

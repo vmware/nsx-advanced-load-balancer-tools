@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { EMPTY_VALUE } from '../../../shared/constants'
 
 import { ClrFormLayout } from '@clr/angular';
 import * as l10n from './f5-ready.l10n';
@@ -27,9 +28,12 @@ export class F5ReadyComponent implements OnInit {
   dictionary = dictionary;
   f5LoginError = '';
   @ViewChild("wizard") wizard: ClrWizard;
+  emptyValue = EMPTY_VALUE;
 
   loadingFlag: boolean;
   data;
+  destinationControllerData;
+  mappingData;
   vsStatusGridData: any[] = [];
   playbooksGridData: any[] = [];
   destinationCtrlForm: FormGroup;
@@ -88,6 +92,34 @@ export class F5ReadyComponent implements OnInit {
         cloud: this.f5DestinationData.cloud[0],
         vrf: this.f5DestinationData.vrf[0],
         seGroup: this.f5DestinationData.seGroup[0],
+      });
+      
+      this.http.get('core/getAviDestinationDetails').subscribe((response) => {
+
+        const {
+          avi_destination_ip,
+          avi_destination_user,
+          avi_destination_password,
+          avi_destination_version,
+          avi_mapped_vrf,
+          avi_mapped_tenant,
+          avi_mapped_cloud,
+          avi_mapped_segroup,
+        } = response;
+
+        this.destinationControllerData = {
+          avi_destination_ip,
+          avi_destination_user,
+          avi_destination_password,
+          avi_destination_version,
+        }
+
+        this.mappingData = {
+          avi_mapped_vrf,
+          avi_mapped_tenant,
+          avi_mapped_cloud,
+          avi_mapped_segroup,
+        }
       });
     });
 
