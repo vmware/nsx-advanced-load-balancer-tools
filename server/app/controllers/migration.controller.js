@@ -449,7 +449,7 @@ exports.getReadyVirtuals = asyncHandler(async (req, res, next) => {
 
         const successfulVirtuals = await ConversionStatusModel.aggregate(successfulAggregation);
 
-        if (successfulVirtuals && successfulVirtuals[0].ready) {
+        if (Array.isArray(successfulVirtuals) && successfulVirtuals.length && successfulVirtuals[0].ready) {
             const [{ ready, readyCount }] = successfulVirtuals;
             res.status(200).json({ result: { ready, readyCount } });
         } else {

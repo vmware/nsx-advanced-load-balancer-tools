@@ -124,19 +124,22 @@ export class F5ReadyComponent implements OnInit {
     });
 
     // Fetch the list of ready Virtuals.
-    this.http.get('configuration/getReadyVirtuals').subscribe((data) => {
-      const readyVirtuals = data.result.ready;
+    this.http.get('configuration/getReadyVirtuals').subscribe(
+      (data) => {
+        const readyVirtuals = data.result.ready;
 
-      this.vsStatusGridData = readyVirtuals.map((virtualItem) => {
-        return {
-          ...virtualItem,
-          // 'name': virtualItem.F5_ID,
-          'status': virtualItem.isReviewed ? 'Reviewed' : 'Auto Converted',
-        };
-      });
-    });
-
-    this.fetchPlaybooks();
+        this.vsStatusGridData = readyVirtuals.map((virtualItem) => {
+          return {
+            ...virtualItem,
+            // 'name': virtualItem.F5_ID,
+            'status': virtualItem?.isReviewed ? 'Reviewed' : 'Auto Converted',
+          };
+        });
+        this.fetchPlaybooks();
+      },
+      (err) => {
+        console.error('Something went wrong', err);
+      })
   }
 
   // Fetch the list of Playbooks.
