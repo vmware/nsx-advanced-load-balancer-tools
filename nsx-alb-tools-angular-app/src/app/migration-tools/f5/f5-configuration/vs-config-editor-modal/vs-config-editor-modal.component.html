@@ -1,17 +1,26 @@
 <div class="vs-config-editor-modal">
-    <clr-modal [(clrModalOpen)]="isOpen" [clrModalSize]="'xl'" *ngIf="vsConfig">
+    <clr-modal [(clrModalOpen)]="isOpen" [clrModalSize]="'xl'" *ngIf="vsConfig" [clrModalClosable]="false">
         <h3 class="modal-title">{{ vsConfig.F5_ID }} {{ dictionary.editorLabel }}</h3>
 
         <div class="modal-body">
-            <div class="alert-section" *ngIf="vsConfig.flaggedObjects.length">
-                <clr-alert [clrAlertType]="'warning'" *ngFor="let config of vsConfig.flaggedObjects; trackBy: trackByIndex; let i = index">
+            <div class="alert-section">
+                <clr-alert *ngIf="vsConfigEditorError" [clrAlertType]="'danger'">
                     <clr-alert-item>
-                        <span class="alert-text">{{ config.F5_ID }} {{ dictionary.editorAlertMessage }}</span>
-                        <div class="alert-actions">
-                            <span class="alert-action" (click)="openChildConfigEditorModal(i)">{{ dictionary.reviewNowLabel }}</span>
-                        </div>
+                        <span class="alert-text">
+                            {{ vsConfigEditorError }}
+                        </span>
                     </clr-alert-item>
                 </clr-alert>
+                <ng-container *ngIf="vsConfig.flaggedObjects.length">
+                    <clr-alert [clrAlertType]="'warning'" [clrAlertClosable]="false" *ngFor="let config of vsConfig.flaggedObjects; trackBy: trackByIndex; let i = index">
+                        <clr-alert-item>
+                            <span class="alert-text">{{ config.F5_ID }} {{ dictionary.editorAlertMessage }}</span>
+                            <div class="alert-actions">
+                                <span class="alert-action" (click)="openChildConfigEditorModal(i)">{{ dictionary.reviewNowLabel }}</span>
+                            </div>
+                        </clr-alert-item>
+                    </clr-alert>
+                </ng-container>
             </div>
             <config-editor
                 [leftSectionConfig]="vsConfig.F5_Object"
@@ -25,7 +34,7 @@
 
 <generic-config-editor-modal
     *ngIf="isOpenChildConfigEditorModal"
-    [vsName]="vsConfig.F5_ID"
+    [error]="childConfigEditorError"
     [config]="vsConfig.flaggedObjects[childConfigEditorConfigIndex]"
     (onCloseGeneralConfigEditorModal)="handleCloseChildConfigEditorModal($event)"
 ></generic-config-editor-modal>

@@ -9,19 +9,19 @@
             <div class="next-conversion-card__row">
                 <clr-input-container class="next-conversion-card__no-margin-top">
                     <label>{{ dictionary.nameLabel }}</label>
-                    <input placeholder="NA" clrInput [value]="selectedMigrationData?.F5_ID" name="name"
+                    <input placeholder="{{ emptyValue }}" clrInput [value]="selectedMigrationData?.F5_ID" name="name"
                         readonly />
                 </clr-input-container>
                 <clr-input-container class="next-conversion-card__no-margin-top">
                     <label>{{ dictionary.noOfFlagesLabel }}</label>
-                    <input placeholder="NA" clrInput [value]="selectedMigrationData?.flaggedObjects?.length"
+                    <input placeholder="{{ emptyValue }}" clrInput [value]="selectedMigrationData?.flaggedObjects?.length"
                         name="flaggedObjectsCount" readonly />
                 </clr-input-container>
             </div>
         </form>
     </div>
     <div class="card-footer">
-        <button class="btn btn-primary" (click)="handleStart()">{{ dictionary.startLabel }}</button>
-        <button class="btn btn-link" (click)="handleSkip()">{{ dictionary.skipLabel }}</button>
+        <button class="btn btn-primary" (click)="handleStart()" [disabled]="!selectedMigrationData || isFetchInProgress">{{ dictionary.startLabel }}</button>
+        <button class="btn btn-link" (click)="handleSkip()" [disabled]="!selectedMigrationData || isFetchInProgress">{{ dictionary.skipLabel }}</button>
     </div>
 </div>
