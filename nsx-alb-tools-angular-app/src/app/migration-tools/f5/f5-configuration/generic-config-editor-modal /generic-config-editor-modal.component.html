@@ -1,9 +1,16 @@
 <div class="general-config-editor-modal ">
-    <clr-modal [(clrModalOpen)]="isOpen" [clrModalSize]="'xl'">
+    <clr-modal [(clrModalOpen)]="isOpen" [clrModalSize]="'xl'" [clrModalClosable]="false">
         <h3 class="modal-title">{{ config.F5_ID}} {{ dictionary.editorLabel }}</h3>
 
         <div class="modal-body">
             <div class="alerts-section">
+                <clr-alert *ngIf="error" [clrAlertType]="'danger'">
+                    <clr-alert-item>
+                        <span class="alert-text">
+                            {{ error }}
+                        </span>
+                    </clr-alert-item>
+                </clr-alert>
                 <clr-alert [clrAlertType]="'warning'">
                     <clr-alert-item>
                         <span class="alert-text">

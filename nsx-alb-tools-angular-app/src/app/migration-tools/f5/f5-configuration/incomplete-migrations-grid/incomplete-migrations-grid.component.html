@@ -12,7 +12,7 @@
             <clr-dg-cell>{{ incompleteMigration.flaggedObjects.length }}</clr-dg-cell>
             <clr-dg-cell>{{ incompleteMigration.Status }}</clr-dg-cell>
             <clr-dg-cell>
-                    <cds-icon shape="checkbox-list"  status="info" (click)="handleOpenVsConfigEditorModal(i)"></cds-icon>
+                    <cds-icon shape="checkbox-list"  status="info" (click)="handleOpenVsConfigEditorModal(incompleteMigration)"></cds-icon>
             </clr-dg-cell>
         </clr-dg-row>
 
@@ -29,7 +29,7 @@
 </div>
 
 <vs-config-editor-modal
-    *ngIf="isOpenVsConfigEditorModal"
-    [vsConfig]="incompleteMigrationsData[selectedMigrationIndex]"
+    *ngIf="isOpenVsConfigEditorModal && selectedMigrationData"
+    [vsConfig]="selectedMigrationData"
     (onCloseVsConfigEditorModal)="handleCloseVsConfigEditorModal($event)"
 ></vs-config-editor-modal>
