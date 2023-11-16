@@ -11,6 +11,8 @@ services:
   migrationTools:
     image: avinetworks/avitools:22.1.4
     container_name: migrationTools
+    volumes:
+      - ./avi:/opt/avi
     networks:
       - migrationToolsNetwork
     ports:
