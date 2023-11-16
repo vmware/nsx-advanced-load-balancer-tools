@@ -20,6 +20,9 @@ export class GenericConfigEditorModalComponent implements OnInit {
   @Input()
   public config: vsFlaggedObject;
 
+  @Input()
+  public error: string;
+
   @Output()
   public onCloseGeneralConfigEditorModal = new EventEmitter<vsFlaggedObject>();
 

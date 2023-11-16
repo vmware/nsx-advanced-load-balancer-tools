@@ -1,4 +1,14 @@
 <div class="f5-configuration">
+  <div class="alert-section">
+    <clr-alert *ngIf="hasError" [clrAlertType]="'danger'" (clrAlertClosedChange)="onErrorAlertClose()">
+      <clr-alert-item>
+          <span class="alert-text">
+            {{ dictionary.genericErrorMessage }}
+          </span>
+      </clr-alert-item>
+    </clr-alert>
+  </div>
+
   <div class="clr-row">
     <div class="clr-col-lg-12 clr-col-12">
        <div class="card top-row">
@@ -22,26 +32,29 @@
             <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
               <next-conversion-card
                 [selectedMigrationData]="incompleteVSMigrationsData[selectedMigrationIndex]"
+                [isFetchInProgress]="isLoadingMigrationsData"
                 (onSkip)="handleSkip()"
                 (onStart)="handleStart()"
               ></next-conversion-card>
             </div>
             <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
-              <lab-controller-card (onFetch)="handleLabControllerCardFetch()"></lab-controller-card>
+              <lab-controller-card
+                [isFetchInProgress]="isLoadingMigrationsData"
+                (onFetch)="handleFetch()"
+              ></lab-controller-card>
             </div>
           </div>
     </div>
     <div class="f5-configuration__grid">
         <incomplete-migrations-grid
             [incompleteMigrationsData]="incompleteVSMigrationsData"
-            [isOpenVsConfigEditorModal]="isOpenVsConfigEditorModal"
-            [selectedMigrationIndex]="selectedMigrationIndex"
-            (onCloseVsConfigEditor)="handleCloseVsConfigEditor()"
+            [isLoading]="isLoadingMigrationsData"
+            (onAcceptVsConfig)="removeVsMigrationData($event)"
         ></incomplete-migrations-grid>
     </div>
 
     <div class="f5-configuration__alert-section" *ngIf="configurationTabService.showCompletedMigrationsCountAlert">
-      <clr-alert [clrAlertType]="'success'" (clrAlertClosedChange)="onAlertClose()">
+      <clr-alert [clrAlertType]="'success'" (clrAlertClosedChange)="onSuccessAlertClose()">
           <clr-alert-item>
               <span class="alert-text">
                 <span class="f5-configuration__alert-header">{{ dictionary.convertedLabel }} {{ completedVSMigrationsCount }} {{ dictionary.completedMigrationsAlertHeader }}</span>
@@ -50,4 +63,10 @@
           </clr-alert-item>
       </clr-alert>
   </div>
+
+  <vs-config-editor-modal
+    *ngIf="isOpenVsConfigEditorModal"
+    [vsConfig]="incompleteVSMigrationsData[selectedMigrationIndex]"
+    (onCloseVsConfigEditorModal)="handleCloseVsConfigEditor($event)"
+  ></vs-config-editor-modal>
 </div>

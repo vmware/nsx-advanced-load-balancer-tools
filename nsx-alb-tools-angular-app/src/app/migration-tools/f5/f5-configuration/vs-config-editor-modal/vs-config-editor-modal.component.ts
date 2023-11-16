@@ -13,10 +13,15 @@ import {
 import { ConfigurationTabService } from 'src/app/shared/configuration-tab-response-data/configuration-tab-response-data.service';
 import { lastValueFrom } from 'rxjs';
 import * as l10n from './vs-config-editor-modal.l10n';
-import { Unary } from '@angular/compiler';
 
 const { ENGLISH: dictionary } = l10n;
 
+const SUCCESSFUL_STATUS = 'SUCCESSFUL';
+
+const enum ConfigurationTypes {
+  SINGLE_OBJECT = 'singleObject',
+  VIRTUAL_SERVICE = 'virtualService',
+};
 @Component({
   selector: 'vs-config-editor-modal',
   templateUrl: './vs-config-editor-modal.component.html',
@@ -29,13 +34,17 @@ export class VsConfigEditorModalComponent {
   @Output()
   public onCloseVsConfigEditorModal = new EventEmitter<boolean>();
 
+  public childConfigEditorError = '';
+
+  public vsConfigEditorError = '';
+
   public isOpen = true;
 
   public isOpenChildConfigEditorModal = false;
 
   public isVsConfigEditorValid = true;
 
-  public childConfigEditorConfigIndex: number;
+  public childConfigEditorConfigIndex: number = 0;
 
   public dictionary = dictionary;
 
@@ -44,11 +53,13 @@ export class VsConfigEditorModalComponent {
   ) { }
 
   public async handleCloseChildConfigEditorModal(acceptedConfiguration: vsFlaggedObject): Promise<void> {
+    this.childConfigEditorError = '';
+
     if (acceptedConfiguration) {
       const { F5_type: vsType, F5_SubType: vsSubType, F5_ID: vsId } = this.vsConfig;
 
       const result = {
-        type: 'singleObject',
+        type: ConfigurationTypes.SINGLE_OBJECT,
         config: {
           F5_type: vsType,
           F5_SubType: vsSubType,
@@ -63,6 +74,7 @@ export class VsConfigEditorModalComponent {
 
         if (this.childConfigEditorConfigIndex !== -1) {
           this.vsConfig.flaggedObjects.splice(this.childConfigEditorConfigIndex, 1);
+          this.childConfigEditorConfigIndex = 0;
         }
 
         const mappingObjectIndex = this.vsConfig.Vs_Mappings.findIndex(object => {
@@ -70,22 +82,17 @@ export class VsConfigEditorModalComponent {
         });
 
         if (mappingObjectIndex !== -1) {
-          this.vsConfig.Vs_Mappings[mappingObjectIndex].Status = 'SUCCESSFUL';
+          this.vsConfig.Vs_Mappings[mappingObjectIndex].Status = SUCCESSFUL_STATUS;
         }
-
 
         this.isOpenChildConfigEditorModal = false;
       } catch (errors) {
-        console.log("Accepted flagged object configuration was not saved");
+        this.childConfigEditorError =  dictionary.childConfigEditorErrorMessage;
       }
     }
     else {
       this.isOpenChildConfigEditorModal = false;
     }
-  }
-
-  public handleVsConfigEditorValidationChange(isConfigEditorValid: boolean) {
-    this.isVsConfigEditorValid = isConfigEditorValid;
   }
 
   public openChildConfigEditorModal(index: number): void {
@@ -100,31 +107,31 @@ export class VsConfigEditorModalComponent {
 
   public async closeModal(acceptedConfiguration): Promise<void> {
     const isAcceptedConfiguration = Boolean(acceptedConfiguration);
+    this.vsConfigEditorError = '';
 
     if (isAcceptedConfiguration) {
-      const tempConfig = { ...this.vsConfig };
-
-      tempConfig.Status = 'SUCCESSFUL';
-      tempConfig.Avi_Object = acceptedConfiguration;
-
-      tempConfig.flaggedObjects.forEach(object => {
-        delete object.F5_Object;
-
-        object.avi_objects.forEach(object => delete object.Avi_Object);
-      });
-
-      const result = {
-        type: 'virtualService',
-        config: tempConfig,
-      }
-
       try {
+        const tempConfig = { ...this.vsConfig };
+
+        tempConfig.Status = SUCCESSFUL_STATUS;
+        tempConfig.Avi_Object = acceptedConfiguration;
+
+        tempConfig.flaggedObjects.forEach(object => {
+          delete object.F5_Object;
+
+          object.avi_objects.forEach(object => delete object.Avi_Object);
+        });
+
+        const result = {
+          type: ConfigurationTypes.VIRTUAL_SERVICE,
+          config: tempConfig,
+        }
         const updateMigrationData$ = this.configurationTabService.acceptConfiguration(result);
         await lastValueFrom(updateMigrationData$);
 
         this.onCloseVsConfigEditorModal.emit(isAcceptedConfiguration);
       } catch (errors) {
-        console.log("Accepted VS configuration was not saved");
+        this.vsConfigEditorError = dictionary.vsConfigEditorErrorMessage;
       }
     }
     else {

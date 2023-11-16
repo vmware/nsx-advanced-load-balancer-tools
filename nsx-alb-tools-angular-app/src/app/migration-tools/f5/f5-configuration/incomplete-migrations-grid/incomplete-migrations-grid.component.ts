@@ -19,36 +19,36 @@ export class IncompleteMigrationsGridComponent {
   @Input()
   public incompleteMigrationsData: incompleteVsMigration[] = [];
 
-  @Output()
-  public onCloseVsConfigEditor = new EventEmitter<void>();
-
   @Input()
+  public isLoading = false;
+
+  @Output()
+  public onAcceptVsConfig = new EventEmitter<number>();
+
   public isOpenVsConfigEditorModal = false;
 
-  @Input()
-  public selectedMigrationIndex: number;
+  public selectedMigrationData: incompleteVsMigration | undefined;
 
   public dictionary = dictionary;
 
-  public handleOpenVsConfigEditorModal(index: number): void {
-    this.selectedMigrationIndex = index;
+  public handleOpenVsConfigEditorModal(data: incompleteVsMigration): void {
+    this.selectedMigrationData = data;
     this.isOpenVsConfigEditorModal = true;
   }
 
   public handleCloseVsConfigEditorModal(isConfigurationAccepted: boolean): void {
     if (isConfigurationAccepted) {
-      if (this.selectedMigrationIndex !== -1) {
-        this.incompleteMigrationsData.splice(this.selectedMigrationIndex, 1);
-      }
+      const { F5_ID: id, F5_SubType: subtype, F5_type: type } = this.selectedMigrationData || {};
+
+      const index = this.incompleteMigrationsData.findIndex(data => {
+        return data.F5_ID === id && data.F5_SubType === subtype && data.F5_type === type;
+      });
+
+      this.onAcceptVsConfig.emit(index);
     }
 
+    delete this.selectedMigrationData;
     this.isOpenVsConfigEditorModal = false;
-
-    this.onCloseVsConfigEditor.emit();
-  }
-
-  public get isLoading(): boolean {
-    return Boolean(!this.incompleteMigrationsData?.length);
   }
 
   public trackByIndex(index: number): number {
