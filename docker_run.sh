@@ -29,7 +29,7 @@
         exit 1
     else
         echo "Using Avitools docker container: $CONTAINER_HOSTNAME with args: ${@}"
-        docker exec -it -w /opt/avi "$CONTAINER_HOSTNAME" bash -c "$CMD"
+        docker exec -it "$CONTAINER_HOSTNAME" bash -c "$CMD"
         exit 0
     fi
 }
