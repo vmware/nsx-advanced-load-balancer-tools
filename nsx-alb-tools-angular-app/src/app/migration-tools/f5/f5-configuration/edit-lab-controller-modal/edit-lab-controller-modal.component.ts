@@ -11,7 +11,7 @@ import * as l10n from './edit-lab-controller-modal.l10n';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ClrFormLayout } from '@clr/angular';
 import { lastValueFrom } from 'rxjs';
-import { ConfigurationTabService } from 'src/app/shared/configuration-tab-response-data/configuration-tab-response-data.service';
+import { ConfigurationService } from 'src/app/shared/configuration.service';
 
 const { ENGLISH: dictionary } = l10n;
 
@@ -39,7 +39,7 @@ export class EditLabControllerModalComponent implements OnInit {
 
   constructor(
     private formBuilder: FormBuilder,
-    private readonly configurationTabService: ConfigurationTabService,
+    private readonly configurationService: ConfigurationService,
   ) {
     const groupMembers = {
       username: ['', [Validators.required, Validators.email]],
@@ -75,7 +75,7 @@ export class EditLabControllerModalComponent implements OnInit {
           avi_lab_ip,
         }
 
-        const labControllerDetails$ = this.configurationTabService.setLabControllerDetails(payload);
+        const labControllerDetails$ = this.configurationService.setLabControllerDetails(payload);
         await lastValueFrom(labControllerDetails$);
       }
 

@@ -7,18 +7,28 @@
     <div class="card-block">
         <form clrForm [clrLayout]="verticalLayout">
             <div class="lab-controller-card__row">
-                <clr-input-container class="lab-controller-card__no-margin-top">
-                    <label>{{ dictionary.AddressLabel }}</label>
-                    <input placeholder="{{ emptyValue }}" clrInput [value]="labControllerDetails.avi_lab_ip" name="username"
-                        readonly />
-                </clr-input-container>
+                <clr-tooltip>
+                    <clr-input-container class="lab-controller-card__no-margin-top">
+                        <label>{{ dictionary.AddressLabel }}</label>
+                            <input placeholder="{{ emptyValue }}" clrInput clrTooltipTrigger [value]="labControllerDetails.avi_lab_ip" name="username"
+                            readonly />
+                    </clr-input-container>
+                    <clr-tooltip-content clrPosition="left">
+                        <span>{{ labControllerDetails.avi_lab_ip }} </span>
+                      </clr-tooltip-content>
+                </clr-tooltip>
             </div>
             <div class="lab-controller-card__row">
+                <clr-tooltip>
                 <clr-input-container>
                     <label>{{ dictionary.usernameLabel }}</label>
-                    <input placeholder="{{ emptyValue }}" clrInput [value]="labControllerDetails.avi_lab_user" name="ipAddress"
+                    <input placeholder="{{ emptyValue }}" clrInput clrTooltipTrigger [value]="labControllerDetails.avi_lab_user" name="ipAddress"
                         readonly />
                 </clr-input-container>
+                <clr-tooltip-content clrPosition="left">
+                    <span>{{ labControllerDetails.avi_lab_user }} </span>
+                  </clr-tooltip-content>
+                </clr-tooltip>
                 <clr-input-container>
                     <label>{{ dictionary.passwordLabel }}</label>
                     <input placeholder="{{ emptyValue }}" clrInput type="password" [value]="labControllerDetails.avi_lab_password"

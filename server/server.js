@@ -47,7 +47,7 @@ app.post('/api/f5pbmarkcomplete', (req, res, next) => {
 })
 
 // MongoDB connection URL
-const connUri = 'mongodb://localhost:27017/';
+const connUri = (process.env.NODE_ENV === 'production') ? 'mongodb://mongodb:27017/' : 'mongodb://localhost:27017/';
 
 // Database name
 const dbName = 'nsxAlbMigrationTools';

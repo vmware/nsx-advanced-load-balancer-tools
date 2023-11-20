@@ -7,11 +7,16 @@
     <div class="card-block">
         <form clrForm [clrLayout]="verticalLayout">
             <div class="next-conversion-card__row">
-                <clr-input-container class="next-conversion-card__no-margin-top">
-                    <label>{{ dictionary.nameLabel }}</label>
-                    <input placeholder="{{ emptyValue }}" clrInput [value]="selectedMigrationData?.F5_ID" name="name"
-                        readonly />
-                </clr-input-container>
+                <clr-tooltip>
+                    <clr-input-container class="next-conversion-card__no-margin-top">
+                        <label>{{ dictionary.nameLabel }}</label>
+                        <input placeholder="{{ emptyValue }}" clrInput clrTooltipTrigger [value]="selectedMigrationData?.F5_ID" name="name"
+                            readonly />
+                    </clr-input-container>
+                    <clr-tooltip-content clrPosition="top-right">
+                        <span>{{ selectedMigrationData?.F5_ID }} </span>
+                    </clr-tooltip-content>
+                </clr-tooltip>
                 <clr-input-container class="next-conversion-card__no-margin-top">
                     <label>{{ dictionary.noOfFlagesLabel }}</label>
                     <input placeholder="{{ emptyValue }}" clrInput [value]="selectedMigrationData?.flaggedObjects?.length"

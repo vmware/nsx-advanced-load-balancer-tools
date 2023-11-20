@@ -36,6 +36,7 @@ import { NextConversionCardComponent } from './migration-tools/f5/f5-configurati
 import { LabControllerCardComponent } from './migration-tools/f5/f5-configuration/lab-controller-card/lab-controller-card.component';
 import { StartMigrationWizardComponent } from './migration-tools/f5/start-migration-wizard/start-migration-wizard.component';
 import { EditLabControllerModalComponent } from './migration-tools/f5/f5-configuration/edit-lab-controller-modal/edit-lab-controller-modal.component';
+import { ConfigurationService } from './shared/configuration.service';
 
 
 @NgModule({
@@ -68,6 +69,7 @@ import { EditLabControllerModalComponent } from './migration-tools/f5/f5-configu
   ],
   providers: [
     HttpService,
+    ConfigurationService,
   ],
   schemas: [
     CUSTOM_ELEMENTS_SCHEMA,
