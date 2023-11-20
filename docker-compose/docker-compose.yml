@@ -11,6 +11,12 @@ services:
   migrationTools:
     image: avinetworks/avitools:22.1.4
     container_name: migrationTools
+    privileged: true
+    restart: always
+    hostname: migrationTools
+    volumes:
+      - ./avi:/opt/avi
+    working_dir: /opt/avi
     networks:
       - migrationToolsNetwork
     ports:
