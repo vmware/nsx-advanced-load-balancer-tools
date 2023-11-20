@@ -11,14 +11,14 @@
     </clr-tab>
 
     <clr-tab>
-        <button clrTabLink routerLink="./configuration">{{ dictionary.migrationPageConfigurationTitle }}({{migrationCountData?.configuration}})</button>
+        <button clrTabLink routerLink="./configuration">{{ dictionary.migrationPageConfigurationTitle }}</button>
         <clr-tab-content *clrIfActive="isActive('/configuration')">
             <router-outlet></router-outlet>
         </clr-tab-content>
     </clr-tab>
 
     <clr-tab>
-        <button clrTabLink routerLink="./ready">{{ dictionary.migrationPageReadyTitle }}({{migrationCountData?.ready}})</button>
+        <button clrTabLink routerLink="./ready">{{ dictionary.migrationPageReadyTitle }}</button>
         <clr-tab-content *clrIfActive="isActive('/ready')">
             <router-outlet></router-outlet>
         </clr-tab-content>

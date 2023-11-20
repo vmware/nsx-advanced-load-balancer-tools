@@ -18,6 +18,7 @@ const F5_HOST_IP = '10.206.40.100';
 const SINGLE_OBJECT_TYPE = 'singleObject';
 const VS_OBJECT_TYPE = 'virtualService';
 const SUCCESSFUL_STATUS = 'SUCCESSFUL';
+const PARTIAL_STATUS = 'PARTIAL';
 
 
 /**
@@ -405,53 +406,113 @@ exports.acceptConfiguration = asyncHandler(async (req, res, next) => {
     }
 });
 
+/**
+ * Aggregation to get the virtual and nested Vs_Mappings having status as SUCCESSFUL.
+ */
+const aggregateSuccessfulMigration = async (req, res) => {
+    try {
+        const successfulAggregation = [
+            [
+                {
+                    $project: {
+                        "status_sheet.virtual": 1,
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$status_sheet.virtual",
+                    },
+                },
+                {
+                    $match: {
+                        "status_sheet.virtual.Status":
+                            SUCCESSFUL_STATUS,
+                        "status_sheet.virtual.Vs_Mappings.Status":
+                            SUCCESSFUL_STATUS,
+                    },
+                },
+            ]
+        ]
+
+        const matchedVirtuals = await ConversionStatusModel.aggregate(successfulAggregation);
+
+        if (Array.isArray(matchedVirtuals) && matchedVirtuals.length) {
+            const ready = [];
+            // Check if every Vs_Mappings Status is SUCCESSFUL. If not consider the migration(virtuals) as incomplete.
+            matchedVirtuals.map((matchedVirtual) => {
+                const vsMappings = matchedVirtual.status_sheet?.virtual?.Vs_Mappings;
+                const areAllVSMappingsSuccessful = vsMappings.every(item => item.Status === SUCCESSFUL_STATUS);
+                matchedVirtual['areAllVSMappingsSuccessful'] = areAllVSMappingsSuccessful;
+                if (areAllVSMappingsSuccessful) {
+                    ready.push({
+                        'F5_ID': matchedVirtual.status_sheet?.virtual?.F5_ID,
+                        'isReviewed': matchedVirtual.status_sheet?.virtual?.isReviewed || false
+                    });
+                }
+
+                return matchedVirtual;
+            });
+            const successfulVirtuals = matchedVirtuals.filter(item => item.areAllVSMappingsSuccessful);
+
+            return { successfulVirtuals, ready };
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: error.message });
+    }
+};
+
+/**
+ * Aggregation to get the virtual and nested Vs_Mappings which have status PARTIAL.
+ */
+const aggregateIncompleteMigration = async (req, res) => {
+    try {
+        const incompleteMigrationAggregation = [
+            [
+                {
+                    $project: {
+                        "status_sheet.virtual": 1,
+                    },
+                },
+                {
+                    $unwind: {
+                        path: "$status_sheet.virtual",
+                    },
+                },
+                {
+                    $match: {
+                        $or: [
+                            {
+                                "status_sheet.virtual.Vs_Mappings.Status": PARTIAL_STATUS
+                            },
+                            {
+                                "status_sheet.virtual.Status": PARTIAL_STATUS
+                            }
+                        ]
+                    },
+                },
+            ]
+        ]
+
+        const incompleteVirtuals = await ConversionStatusModel.aggregate(incompleteMigrationAggregation) || [];
+        if (Array.isArray(incompleteVirtuals) && incompleteVirtuals.length) {
+            return { incompleteVirtuals };
+        }
+    } catch (error) {
+        console.error(error)
+        res.status(500).json({ error: error.message });
+    }
+};
+
 exports.getReadyVirtuals = asyncHandler(async (req, res, next) => {
     try {
         // TODO: Update query once we have a key to distinguish between multiple converstion objects.
 
-        // Aggregation to get the virtual, having status as SUCCESSFUL.
-        const successfulAggregation = [
-            {
-                $project:
-                {
-                    "status_sheet.virtual": 1,
-                },
-            },
-            {
-                $unwind:
-                {
-                    path: "$status_sheet.virtual",
-                },
-            },
-            {
-                $match:
-                {
-                    "status_sheet.virtual.Status":"SUCCESSFUL",
-                },
-            },
-            {
-                $group:
-                {
-                    _id: null,
-                    ready: {
-                        $push: {
-                            F5_ID: "$status_sheet.virtual.F5_ID",
-                            isReviewed:
-                                "$status_sheet.virtual.isReviewed",
-                        },
-                    },
-                    readyCount: {
-                        $sum: 1,
-                    },
-                },
-            },
-        ]
+        // Get Aggregation of the virtual and nested Vs_Mappings having status as SUCCESSFUL.
+        const { ready } = await aggregateSuccessfulMigration(req, res);
 
-        const successfulVirtuals = await ConversionStatusModel.aggregate(successfulAggregation);
-
-        if (Array.isArray(successfulVirtuals) && successfulVirtuals.length && successfulVirtuals[0].ready) {
-            const [{ ready, readyCount }] = successfulVirtuals;
-            res.status(200).json({ result: { ready, readyCount } });
+        if (Array.isArray(ready)) {
+            res.status(200).json({ result: { ready, readyCount: ready.length } });
         } else {
             res.status(404).json({ error: "Data you trying to find does not exists on Conversion Status Profile." });
         }
@@ -465,90 +526,34 @@ exports.getReadyVirtuals = asyncHandler(async (req, res, next) => {
 exports.getMigrationOverview = asyncHandler(async (req, res, next) => {
     try {
         // TODO: Update query once we have a key to distinguish between multiple converstion objects.
-
-        // Aggregation to get the virtuals, having isReviewed as true.
-        const reviewedVirtualCountAggregation = [
-            {
-                $project:
-
-                {
-                    "status_sheet.virtual": 1,
-                },
-            },
-            {
-                $unwind:
-                {
-                    path: "$status_sheet.virtual",
-                },
-            },
-            {
-                $match:
-                {
-                    "status_sheet.virtual.isReviewed": true,
-                },
-            },
-            {
-                $group:
-                {
-                    _id: null,
-                    reviewedVirtualCount: {
-                        $sum: 1,
-                    },
-                },
-            },
-        ]
-
-        // Aggregation to get the incomplete virtuals, having Status as PARTIAL.
-        const incompleteVirtualsAggregation = [
-            {
-                $project:
-
-                {
-                    "status_sheet.virtual": 1,
-                },
-            },
-            {
-                $unwind:
-                {
-                    path: "$status_sheet.virtual",
-                },
-            },
-            {
-                $match:
-                {
-                    "status_sheet.virtual.Status": "PARTIAL",
-                },
-            },
-            {
-                $group:
-                {
-                    _id: null,
-                    incompleteVirtualCount: {
-                        $sum: 1,
-                    },
-                },
-            },
-        ]
-
-        let reviewedVirtualCount = await ConversionStatusModel.aggregate(reviewedVirtualCountAggregation);
-        let incompleteVirtualCount = await ConversionStatusModel.aggregate(incompleteVirtualsAggregation);
-        let reviewedVirtuals = 0;
-        let incompleteVirtuals = 0;
+        
+        // Get Aggregation of the virtual and nested Vs_Mappings having status as SUCCESSFUL.
+        const { successfulVirtuals } = await aggregateSuccessfulMigration(req, res);
+        const { incompleteVirtuals } = await aggregateIncompleteMigration(req, res)
+        
         let migrationCompletedPercentage = 0;
+        let successfulVirtualsCount = 0;
+        let incompleteVirtualCount = 0;
 
-        if (reviewedVirtualCount && incompleteVirtualCount) {
-            if (Array.isArray(reviewedVirtualCount) && reviewedVirtualCount.length) {
-                [{ reviewedVirtualCount: reviewedVirtuals }] = reviewedVirtualCount;
+        if (successfulVirtuals && incompleteVirtuals) {
+            if (Array.isArray(successfulVirtuals)) {
+                successfulVirtualsCount = successfulVirtuals.length
             }
-            if (Array.isArray(incompleteVirtualCount) && incompleteVirtualCount.length) {
-                [{ incompleteVirtualCount: incompleteVirtuals }] = incompleteVirtualCount;
+            if (Array.isArray(incompleteVirtuals)) {
+                incompleteVirtualCount = incompleteVirtuals.length;
             }
-            if (reviewedVirtuals && incompleteVirtuals) {
-                migrationCompletedPercentage = reviewedVirtuals / (reviewedVirtuals + incompleteVirtuals) * 100;
+            if (successfulVirtualsCount && incompleteVirtualCount) {
+                migrationCompletedPercentage = successfulVirtualsCount / (successfulVirtualsCount + incompleteVirtualCount) * 100;
                 migrationCompletedPercentage = +migrationCompletedPercentage.toFixed(2);
             }
 
-            res.status(200).json({ result: { reviewedVirtuals, incompleteVirtuals, migrationCompletedPercentage } });
+            res.status(200).json({
+                result: {
+                    reviewedVirtuals: successfulVirtualsCount,
+                    incompleteVirtuals: incompleteVirtualCount,
+                    migrationCompletedPercentage
+                }
+            });
         } else {
             res.status(404).json({ error: "Data you trying to find does not exists on Conversion Status Profile." });
         }
