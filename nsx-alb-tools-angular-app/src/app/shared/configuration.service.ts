@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpService } from '../http/http.service';
+import { HttpService } from './http/http.service';
 import { Observable } from 'rxjs/internal/Observable';
 
 import {
@@ -8,10 +8,8 @@ import {
   labController,
 } from 'src/app/migration-tools/f5/f5-configuration/f5-configuration.types';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class ConfigurationTabService {
+@Injectable({providedIn: 'root'})
+export class ConfigurationService {
   public showCompletedMigrationsCountAlert = false;
 
   constructor(

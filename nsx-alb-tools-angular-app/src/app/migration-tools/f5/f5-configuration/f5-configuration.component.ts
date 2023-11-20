@@ -4,7 +4,7 @@ import {
   OnInit
 } from '@angular/core';
 
-import { ConfigurationTabService } from 'src/app/shared/configuration-tab-response-data/configuration-tab-response-data.service';
+import { ConfigurationService } from 'src/app/shared/configuration.service';
 
 import {
   incompleteVsMigration,
@@ -43,7 +43,7 @@ export class F5ConfigurationComponent implements OnInit, OnDestroy {
 
   public dictionary = dictionary;
 
-  constructor(public readonly configurationTabService: ConfigurationTabService) { }
+  constructor(public readonly configurationService: ConfigurationService) { }
 
 
   /** @override */
@@ -60,9 +60,11 @@ export class F5ConfigurationComponent implements OnInit, OnDestroy {
     this.isOpenVsConfigEditorModal = false;
   }
 
-  public removeVsMigrationData(selectedMigrationIndex: number): void {
+  public async removeVsMigrationData(selectedMigrationIndex: number): Promise<void> {
     if (selectedMigrationIndex !== -1) {
       this.incompleteVSMigrationsData.splice(selectedMigrationIndex, 1);
+
+      await this.getMigrationOverviewData();
     }
   }
 
@@ -78,12 +80,13 @@ export class F5ConfigurationComponent implements OnInit, OnDestroy {
     try {
       this.isLoadingMigrationsData = true;
 
-      const fetchFromController$ = this.configurationTabService.fetchFromController();
+      const fetchFromController$ = this.configurationService.fetchFromController();
 
       await lastValueFrom(fetchFromController$);
       await this.getAllIncompleteVSMigrationsData();
+      await this.getMigrationOverviewData();
 
-      this.configurationTabService.showCompletedMigrationsCountAlert = true;
+      this.configurationService.showCompletedMigrationsCountAlert = true;
     } catch (error) {
       this.hasError = true;
     } finally {
@@ -96,16 +99,16 @@ export class F5ConfigurationComponent implements OnInit, OnDestroy {
   }
 
   public onSuccessAlertClose(): void {
-    this.configurationTabService.showCompletedMigrationsCountAlert = false;
+    this.configurationService.showCompletedMigrationsCountAlert = false;
   }
 
   /** * @override */
   public ngOnDestroy(): void {
-    this.configurationTabService.showCompletedMigrationsCountAlert = false;
+    this.configurationService.showCompletedMigrationsCountAlert = false;
   }
 
   private async getMigrationOverviewData(): Promise<void> {
-    const migrationOverviewData$ = this.configurationTabService.getMigrationOverviewData();
+    const migrationOverviewData$ = this.configurationService.getMigrationOverviewData();
     this.migrationOverviewData = await lastValueFrom(migrationOverviewData$);
   }
 
@@ -113,7 +116,7 @@ export class F5ConfigurationComponent implements OnInit, OnDestroy {
     try {
       this.isLoadingMigrationsData = true;
 
-      const data$ = this.configurationTabService.getAllIncompleteVSMigrationsData();
+      const data$ = this.configurationService.getAllIncompleteVSMigrationsData();
       const data: incompleteVsMigrationsData = await lastValueFrom(data$);
 
       this.incompleteVSMigrationsData = data.incompleteVSMigrationsData || [];

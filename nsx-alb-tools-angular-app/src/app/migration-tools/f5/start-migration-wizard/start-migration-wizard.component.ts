@@ -17,7 +17,7 @@ import {
   Validators
 } from '@angular/forms';
 
-import { ConfigurationTabService } from '../../../shared/configuration-tab-response-data/configuration-tab-response-data.service';
+import { ConfigurationService } from '../../../shared/configuration.service';
 import { lastValueFrom } from 'rxjs';
 import * as l10n from './start-migration-wizard.l10n';
 import { Router } from '@angular/router';
@@ -58,7 +58,7 @@ export class StartMigrationWizardComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private readonly configurationTabService: ConfigurationTabService,
+    private readonly configurationService: ConfigurationService,
     private router: Router,
     private http: HttpService,
   ) {
@@ -95,11 +95,11 @@ export class StartMigrationWizardComponent {
 
   public async onFinalizeLoad(): Promise<void> {
     try {
-      const data$ = this.configurationTabService.startMigration({});
+      const data$ = this.configurationService.startMigration({});
       await lastValueFrom(data$);
 
       this.finished = true;
-      this.configurationTabService.showCompletedMigrationsCountAlert = true;
+      this.configurationService.showCompletedMigrationsCountAlert = true;
 
       this.closeWizard();
       this.router.navigate(['f5-migration', 'configuration'])
