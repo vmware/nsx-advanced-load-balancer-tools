@@ -13,6 +13,7 @@ import {
 
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 type Options = {
     headers?: HttpHeaders | {
@@ -32,7 +33,7 @@ type Options = {
 export class HttpService {
     constructor(private readonly http: HttpClient) {}
 
-    devBaseUrl = 'http://localhost:3000/api';
+    devBaseUrl = environment.apiUrl;
 
     public get(url: any, options?: Options): Observable<any> {
         return this.http.get(this.devBaseUrl + '/' + url, options );

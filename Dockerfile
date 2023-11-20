@@ -183,9 +183,8 @@ RUN chmod +x avitools-list && \
 RUN tdnf clean all && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* $HOME/.cache $HOME/go/src $HOME/src ${GOPATH}/pkg
 
-# Angular app code
-RUN tdnf update && \
-    tdnf install -y nodejs
+# Set up env variable for angular
+ENV NODE_ENV production
 
 WORKDIR /nsx-alb-tools-angular-app
 
@@ -194,7 +193,7 @@ COPY /nsx-alb-tools-angular-app/ ./temp
 
 RUN cd temp && \
     npm ci && \
-    npm run build && \
+    npm run prod && \
     cp -r dist ../ && \
     cd .. && \
     rm -rf temp

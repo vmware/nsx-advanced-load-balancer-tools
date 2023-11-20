@@ -10,7 +10,7 @@ import {
   vsFlaggedObject
 } from '../f5-configuration.types';
 
-import { ConfigurationTabService } from 'src/app/shared/configuration-tab-response-data/configuration-tab-response-data.service';
+import { ConfigurationService } from 'src/app/shared/configuration.service';
 import { lastValueFrom } from 'rxjs';
 import * as l10n from './vs-config-editor-modal.l10n';
 
@@ -49,7 +49,7 @@ export class VsConfigEditorModalComponent {
   public dictionary = dictionary;
 
   constructor(
-    private readonly configurationTabService: ConfigurationTabService,
+    private readonly configurationService: ConfigurationService,
   ) { }
 
   public async handleCloseChildConfigEditorModal(acceptedConfiguration: vsFlaggedObject): Promise<void> {
@@ -69,7 +69,7 @@ export class VsConfigEditorModalComponent {
       }
 
       try {
-        const updateMigrationData$ = this.configurationTabService.acceptConfiguration(result);
+        const updateMigrationData$ = this.configurationService.acceptConfiguration(result);
         await lastValueFrom(updateMigrationData$);
 
         if (this.childConfigEditorConfigIndex !== -1) {
@@ -126,7 +126,7 @@ export class VsConfigEditorModalComponent {
           type: ConfigurationTypes.VIRTUAL_SERVICE,
           config: tempConfig,
         }
-        const updateMigrationData$ = this.configurationTabService.acceptConfiguration(result);
+        const updateMigrationData$ = this.configurationService.acceptConfiguration(result);
         await lastValueFrom(updateMigrationData$);
 
         this.onCloseVsConfigEditorModal.emit(isAcceptedConfiguration);

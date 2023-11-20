@@ -53,7 +53,7 @@
         ></incomplete-migrations-grid>
     </div>
 
-    <div class="f5-configuration__alert-section" *ngIf="configurationTabService.showCompletedMigrationsCountAlert">
+    <div class="f5-configuration__alert-section" *ngIf="configurationService.showCompletedMigrationsCountAlert">
       <clr-alert [clrAlertType]="'success'" (clrAlertClosedChange)="onSuccessAlertClose()">
           <clr-alert-item>
               <span class="alert-text">

@@ -8,7 +8,7 @@ import {
 
 import { labController } from '../f5-configuration.types';
 import { ClrFormLayout } from '@clr/angular';
-import { ConfigurationTabService } from 'src/app/shared/configuration-tab-response-data/configuration-tab-response-data.service';
+import { ConfigurationService } from 'src/app/shared/configuration.service';
 import { lastValueFrom } from 'rxjs';
 import * as l10n from './lab-controller-card.l10n';
 import { EMPTY_VALUE } from 'src/app/shared/constants';
@@ -43,7 +43,7 @@ export class LabControllerCardComponent implements OnInit {
 
   public dictionary = dictionary;
 
-  constructor(private readonly configurationTabService: ConfigurationTabService) { }
+  constructor(private readonly configurationService: ConfigurationService) { }
 
   /** @override */
   public async ngOnInit(): Promise<void> {
@@ -61,7 +61,7 @@ export class LabControllerCardComponent implements OnInit {
   }
 
   public async fetchLabControllerDetails(): Promise<void> {
-    const labControllerDetails$ = this.configurationTabService.getLabControllerDetails();
+    const labControllerDetails$ = this.configurationService.getLabControllerDetails();
 
     this.labControllerDetails = await lastValueFrom(labControllerDetails$);
   }
