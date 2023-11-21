@@ -6,25 +6,33 @@
 
    <div class="clr-row">
       <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
-         <div class="card top-row-card">
+         <div class="card top-row-card donut-chart-card">
             <div class="card-header">
                <cds-icon size="30" shape="vmw-app" status="success"></cds-icon>
                {{ dictionary.reportPageVirtualServicesLabel }}
             </div>
             <div class="card-block">
                <div class="card-text">
-                  <figure id="donut"></figure>
+                  <div id="donut"></div>
+                  <div id="legendContainer">
+                     <div class="legend-header">
+                        <span>%</span>
+                     </div>
+                  </div>
+                  <!-- <div id="tooltip" class="hidden">
+                     <span id="value"></span>
+                 </div> -->
                </div>
             </div>
             <div class="card-footer">
                <div class="footer">
                   <div class="footer-row">
                      <div><span class="badge badge-success"></span> {{ dictionary.reportPageEnabledText }} </div>
-                     <div> {{ report?.virtualService?.enabledCount }} </div>
+                     <div> {{ report?.virtualServices?.enabledCount }} </div>
                   </div>
                   <div class="footer-row">
                      <div><span class="badge"></span> {{ dictionary.reportPageDeactivatedText }} </div>
-                     <div> {{ report?.virtualService?.deactivatedCount }} </div>
+                     <div> {{ report?.virtualServices?.deactivatedCount }} </div>
                   </div>
                </div>
             </div>
