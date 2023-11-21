@@ -21,16 +21,70 @@
     margin-bottom: 12px;
     margin-top: 12px;
 }
-.legend {
-    font-size: 12px;
-    font-family: sans-serif;
-    rect {
-      stroke-width: 2;
-    }
-    text {
-      fill: lightcyan;
+
+.donut-chart-card {
+    .card-block {
+        overflow: auto;
+    
+        .card-text {
+            position: relative;
+            width: 420px;
+            height: 230px;
+    
+            #donut {
+                width: 420px;
+                height: 230px;
+                margin: auto;
+            }
+    
+            #legendContainer {
+                position: absolute;
+                top: 40px;
+                right: 10px;
+                width: 105px;
+    
+                .legend-header {
+                    position: relative;
+                    border-bottom: 1px solid #e5e0e0;
+                    margin-bottom: 8px;
+    
+                    span {
+                        position: absolute;
+                        top: -22px;
+                        right: 0;
+                        display: inline-block;
+                    }
+                } 
+            }
+            
+            #tooltip {
+                position: absolute;
+                min-width: 85px;
+                width: auto;
+                height: auto;
+                padding: 10px;
+                background-color: white;
+                border-radius: 10px;
+                box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4);
+                pointer-events: none;
+                z-index: 999;
+                border: 1px solid rgb(221, 214, 214);
+            }
+            
+            #tooltip.hidden {
+                opacity: 0;
+            }
+            
+            #tooltip div {
+                margin: 0;
+                font-family: sans-serif;
+                font-size: 16px;
+                line-height: 20px;
+            }
+        }
     }
 }
+
 .traffic-card {
     display: flex;
     justify-content: space-around;
