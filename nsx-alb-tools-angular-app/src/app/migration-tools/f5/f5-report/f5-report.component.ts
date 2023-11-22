@@ -183,6 +183,10 @@ export class F5ReportComponent implements OnInit {
           .append('div')
           .text((d: any) => d.value);
 
+        
+        d3.select('#totalContainer')
+          .select('.total-value')
+          .text(this.report.virtualServices?.total);  
     }
 
     public handleOpenStartMigrationWizard(): void {

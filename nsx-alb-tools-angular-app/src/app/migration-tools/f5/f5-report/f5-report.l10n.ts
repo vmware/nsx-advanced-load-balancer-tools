@@ -24,4 +24,5 @@ export const ENGLISH = {
     reportPageRequestText: 'Request',
     reportPageBytesText: 'Bytes',
     reportPageMaxConnectionsText: 'Max Connections',
+    totalText: 'Total',
 };
