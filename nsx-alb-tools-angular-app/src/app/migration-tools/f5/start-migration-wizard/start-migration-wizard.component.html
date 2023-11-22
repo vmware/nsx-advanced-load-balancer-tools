@@ -134,28 +134,28 @@
                 <clr-select-container>
                     <label> {{ dictionary.startMigrationTenantTitle }} </label>
                     <select clrSelect name="options" class="select-input" formControlName="avi_mapped_tenant">
-                        <option disabled selected [value]="null" placeholder="select"> {{ dictionary.startMigrationSelectLabel }} </option>
+                        <option disabled selected value="" hidden> {{ dictionary.startMigrationSelectLabel }} </option>
                         <option *ngFor="let tenant of f5DestinationData?.tenants" [value]="tenant?.tenant"> {{tenant?.tenant}} </option>
                     </select>
                 </clr-select-container>
                 <clr-select-container>
                     <label> {{ dictionary.startMigrationCloudTitle }} </label>
                     <select clrSelect name="options" class="select-input" formControlName="avi_mapped_cloud">
-                        <option disabled selected [value]="null"> {{ dictionary.startMigrationSelectLabel }} </option>
+                        <option disabled selected value="" hidden> {{ dictionary.startMigrationSelectLabel }} </option>
                         <option *ngFor="let cloud of currentTenant?.clouds" [value]="cloud?.cloud_name"> {{cloud?.cloud_name}} </option>
                     </select>
                 </clr-select-container>
                 <clr-select-container>
                     <label> {{ dictionary.startMigrationVrfTitle }} </label>
                     <select clrSelect name="options" class="select-input" formControlName="avi_mapped_vrf">
-                        <option disabled selected [value]="null"> {{ dictionary.startMigrationSelectLabel }} </option>
+                        <option disabled selected value="" hidden> {{ dictionary.startMigrationSelectLabel }} </option>
                         <option *ngFor="let vrf of currentCloud?.vrf" [value]="vrf?.name"> {{vrf?.name}} </option>
                     </select>
                 </clr-select-container>
                 <clr-select-container>
                     <label> {{ dictionary.startMigrationSeGroupTitle }} </label>
                     <select clrSelect name="options" class="select-input" formControlName="avi_mapped_segroup">
-                        <option disabled selected [value]="null"> {{ dictionary.startMigrationSelectLabel }} </option>
+                        <option disabled selected value="" hidden> {{ dictionary.startMigrationSelectLabel }} </option>
                         <option *ngFor="let seGroup of currentCloud?.seg" [value]="seGroup.name"> {{seGroup.name}} </option>
                     </select>
                 </clr-select-container>
