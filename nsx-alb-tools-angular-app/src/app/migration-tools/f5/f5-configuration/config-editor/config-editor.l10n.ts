@@ -8,4 +8,5 @@ export const ENGLISH = {
     nsxAlbConfigLabel: 'NSX-ALB Config',
     cancelLabel: 'Cancel',
     acceptLabel: 'Accept',
+    msxAlbConfigMessage: 'Flags need to be addressed prior to editing object configuraiton.',
 };

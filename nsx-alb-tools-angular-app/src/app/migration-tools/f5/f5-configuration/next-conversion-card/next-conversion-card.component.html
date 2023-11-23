@@ -13,7 +13,7 @@
                         <input placeholder="{{ emptyValue }}" clrInput clrTooltipTrigger [value]="selectedMigrationData?.F5_ID" name="name"
                             readonly />
                     </clr-input-container>
-                    <clr-tooltip-content clrPosition="top-right">
+                    <clr-tooltip-content *ngIf="selectedMigrationData?.F5_ID" clrPosition="top-right">
                         <span>{{ selectedMigrationData?.F5_ID }} </span>
                     </clr-tooltip-content>
                 </clr-tooltip>
