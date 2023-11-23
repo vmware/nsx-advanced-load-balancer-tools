@@ -1,0 +1,36 @@
+.migration-metrics {
+    &__wrapper {
+        background-color: var(--clr-card-bg-color, hsl(198, 0%, 100%));
+        border-bottom: 1px solid var(--clr-color-neutral-400);
+        padding: 10px 20px;
+    }
+
+    &__metric-container:not(:first-child) {
+        border-left: 1px solid var(--clr-color-neutral-400);
+    }
+
+    &__legends-wrapper cds-icon {
+        margin-right: 5px;
+    }
+
+    &__incomplete-icon {
+        margin-left: 12px;
+    }
+
+    &__progress-container {
+        display: flex;
+    }
+
+    &__progress-bar {
+        position: relative;
+        margin-top: 10px;
+        font-size: 1px;
+    }
+
+
+    &__progress-bar-label {
+        text-wrap: nowrap;
+        margin-left: 12px;
+    }
+
+}
