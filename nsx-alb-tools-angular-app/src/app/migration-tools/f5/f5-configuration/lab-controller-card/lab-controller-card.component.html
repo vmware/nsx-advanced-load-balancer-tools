@@ -13,7 +13,7 @@
                             <input placeholder="{{ emptyValue }}" clrInput clrTooltipTrigger [value]="labControllerDetails.avi_lab_ip" name="username"
                             readonly />
                     </clr-input-container>
-                    <clr-tooltip-content clrPosition="left">
+                    <clr-tooltip-content *ngIf="labControllerDetails.avi_lab_ip" clrPosition="left">
                         <span>{{ labControllerDetails.avi_lab_ip }} </span>
                       </clr-tooltip-content>
                 </clr-tooltip>
@@ -25,7 +25,7 @@
                     <input placeholder="{{ emptyValue }}" clrInput clrTooltipTrigger [value]="labControllerDetails.avi_lab_user" name="ipAddress"
                         readonly />
                 </clr-input-container>
-                <clr-tooltip-content clrPosition="left">
+                <clr-tooltip-content *ngIf="labControllerDetails.avi_lab_user" clrPosition="left">
                     <span>{{ labControllerDetails.avi_lab_user }} </span>
                   </clr-tooltip-content>
                 </clr-tooltip>

@@ -2,9 +2,11 @@
   .config-editor-section {
     display: flex;
     border: 2px solid #CCCCCC;
+    height: 450px;
 
     .header {
       margin-top: 0px;
+      border-bottom: 2px solid #CCCCCC;
       background-color: #FAFAFA;
       padding: 6px 12px;
       font-weight: bold;
@@ -18,11 +20,12 @@
       font-weight: bold;
 
       & .left-text-area {
-        border: 2px solid #CCCCCC;
-        height: 350px;
-        max-height: 350px;
+        height: calc(100% - 35px);
+        border: none;
+        border-right: 2px solid #CCCCCC;
         width: 100%;
         display: block;
+        outline: none;
         padding: 7px;
         background-color: #FAFAFA;
       }
@@ -31,6 +34,15 @@
     & .right-section {
       flex-grow: 1;
       max-width: 50%;
+
+      & .right-editor-wrapper {
+        height: calc(100% - 35px);
+
+        & .right-editor {
+          height: calc(100% - 50px);
+          margin-top: 9px;
+        }
+      }
     }
   }
 
@@ -41,9 +53,8 @@
 }
 
 :host ::ng-deep .jsoneditor {
-  border: 2px solid #CCCCCC;
-  height: 350px;
-  max-height: 350px;
+  border: none;
+  margin-top: 5px;
 
   .jsoneditor-menu {
     display: none;
@@ -62,5 +73,13 @@
     .jsoneditor-additional-errors {
       display: none !important;
     }
+  }
+}
+
+.clarity-overrides();
+
+.clarity-overrides() {
+  :host ::ng-deep .alert {
+    margin-top: 0;
   }
 }

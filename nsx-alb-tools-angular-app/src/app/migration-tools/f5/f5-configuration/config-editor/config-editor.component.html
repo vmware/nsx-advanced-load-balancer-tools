@@ -6,7 +6,16 @@
         </div>
         <div class="right-section">
             <h6 class="header">{{ dictionary.nsxAlbConfigLabel }}</h6>
-            <div #jsonEditorContainerNsxAlbConfig class="right-editor"></div>
+            <div class="right-editor-wrapper">
+                <clr-alert [clrAlertType]="'warning'" [clrAlertClosable]="false">
+                    <clr-alert-item>
+                        <span class="alert-text">
+                          <span>{{ dictionary.msxAlbConfigMessage }}</span>
+                        </span>
+                    </clr-alert-item>
+                </clr-alert>
+                <div #jsonEditorContainerNsxAlbConfig class="right-editor"></div>
+            </div>
         </div>
     </div>
 
