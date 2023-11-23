@@ -16,7 +16,6 @@ services:
     hostname: migrationTools
     volumes:
       - ./avi:/opt/avi
-    working_dir: /opt/avi
     networks:
       - migrationToolsNetwork
     ports:
