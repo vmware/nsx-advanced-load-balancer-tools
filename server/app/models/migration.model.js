@@ -17,6 +17,12 @@ const conversionStatusSchema = mongoose.Schema({
         F5_type: String,
         F5_SubType: String,
         len: Number,
+    }],
+    Irule_discovery: [{
+        Irule: String,
+        Vs: [String],
+        vs_count: Number,
+        Status: String,
     }]
 });
 

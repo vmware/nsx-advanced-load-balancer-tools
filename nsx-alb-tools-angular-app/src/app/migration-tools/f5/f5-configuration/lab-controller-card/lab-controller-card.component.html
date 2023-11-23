@@ -37,7 +37,8 @@
             </div>
         </form>
     </div>
-    <div class="card-footer">
+
+    <div class="card-footer" *ngIf="!hideActions">
         <button class="btn btn-primary" [disabled]="!isLabControllerDetailsValid || isFetchInProgress" (click)="handleFetch()">{{ dictionary.fetchLabel }}</button>
         <button class="btn btn-link" [disabled]="!isLabControllerDetailsValid || isFetchInProgress" (click)="handleEdit()">{{ dictionary.editLabel }}</button>
     </div>

@@ -24,6 +24,9 @@ export class LabControllerCardComponent implements OnInit {
   @Input()
   public isFetchInProgress = false;
 
+  @Input()
+  public hideActions = false;
+
   @Output()
   public onFetch = new EventEmitter<void>();
 

@@ -18,6 +18,13 @@
     </clr-tab>
 
     <clr-tab>
+        <button clrTabLink routerLink="./irule">{{ dictionary.migrationPageiRuleTitle }}</button>
+        <clr-tab-content *clrIfActive="isActive('/irule')">
+            <router-outlet></router-outlet>
+        </clr-tab-content>
+    </clr-tab>
+
+    <clr-tab>
         <button clrTabLink routerLink="./ready">{{ dictionary.migrationPageReadyTitle }}</button>
         <clr-tab-content *clrIfActive="isActive('/ready')">
             <router-outlet></router-outlet>

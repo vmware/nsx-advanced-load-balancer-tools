@@ -9,4 +9,5 @@ export const ENGLISH = {
     'migrationPageConfigurationTitle': 'Configuration',
     'migrationPageReadyTitle': 'Ready',
     'migrationPageCompletedTitle': 'Completed',
+    'migrationPageiRuleTitle': 'iRule',
 };

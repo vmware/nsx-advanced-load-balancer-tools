@@ -30,8 +30,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.less",
-              "node_modules/@clr/ui/clr-ui.min.css"
+              "node_modules/@clr/ui/clr-ui.min.css",
+              "node_modules/@cds/core/global.min.css",
+              "src/styles.less"
             ],
             "scripts": []
           },
@@ -100,6 +101,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/@cds/core/global.min.css",
               "src/styles.less"
             ],
             "scripts": []

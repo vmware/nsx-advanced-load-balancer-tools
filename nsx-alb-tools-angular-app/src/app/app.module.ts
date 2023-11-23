@@ -18,6 +18,7 @@ import {
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ClarityModule } from "@clr/angular";
+import { SharedModule } from './shared/shared.module';
 
 import './shared/clarity-icons';
 import { LandingPageComponent } from './migration-tools/landing-page/landing-page.component';
@@ -27,6 +28,7 @@ import { F5MigrationComponent } from './migration-tools/f5/f5-migration/f5-migra
 import { F5ReportComponent } from './migration-tools/f5/f5-report/f5-report.component';
 import { F5ConfigurationComponent } from './migration-tools/f5/f5-configuration/f5-configuration.component';
 import { F5ReadyComponent } from './migration-tools/f5/f5-ready/f5-ready.component';
+import { F5IRuleComponent } from './migration-tools/f5/f5-irule/f5-irule.component';
 import { F5CompletedComponent } from './migration-tools/f5/f5-completed/f5-completed.component';
 import { ConfigEditorComponent } from './migration-tools/f5/f5-configuration/config-editor/config-editor.component';
 import { VsConfigEditorModalComponent } from './migration-tools/f5/f5-configuration/vs-config-editor-modal/vs-config-editor-modal.component';
@@ -39,6 +41,7 @@ import { EditLabControllerModalComponent } from './migration-tools/f5/f5-configu
 import { ConfigurationService } from './shared/configuration.service';
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -49,6 +52,7 @@ import { ConfigurationService } from './shared/configuration.service';
     F5CompletedComponent,
     F5ReadyComponent,
     F5ReportComponent,
+    F5IRuleComponent,
     GenericConfigEditorModalComponent,
     IncompleteMigrationsGridComponent,
     LabControllerCardComponent,
@@ -66,6 +70,7 @@ import { ConfigurationService } from './shared/configuration.service';
     ClarityModule,
     ReactiveFormsModule,
     FormsModule ,
+    SharedModule
   ],
   providers: [
     HttpService,

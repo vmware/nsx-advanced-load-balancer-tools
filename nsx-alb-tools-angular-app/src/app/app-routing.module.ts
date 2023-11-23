@@ -5,6 +5,7 @@ import { F5MigrationComponent } from './migration-tools/f5/f5-migration/f5-migra
 import { F5ReportComponent } from './migration-tools/f5/f5-report/f5-report.component';
 import { F5ConfigurationComponent } from './migration-tools/f5/f5-configuration/f5-configuration.component';
 import { F5ReadyComponent } from './migration-tools/f5/f5-ready/f5-ready.component';
+import { F5IRuleComponent } from './migration-tools/f5/f5-irule/f5-irule.component';
 import { F5CompletedComponent } from './migration-tools/f5/f5-completed/f5-completed.component';
 
 const routes: Routes = [
@@ -26,6 +27,10 @@ const routes: Routes = [
       {
         path: 'configuration',
         component: F5ConfigurationComponent,
+      },
+      {
+        path: 'irule',
+        component: F5IRuleComponent,
       },
       {
         path: 'ready',
