@@ -42,7 +42,7 @@ export const ENGLISH = {
     startMigrationConnectDestControllerLabel: 'Connect Destination Controller',
     startMigrationDestPageSubTitle: 'By providing destination controller will be able to fetch pre populated fields and push playbooks.',
     startMigrationSubmitLabel: 'Submit',
-    startMigrationSelectLabel: 'Select',
+    startMigrationSelectLabel: '-Select-',
     startMigrationErrorMessage: 'Something went wrong. Please try again.',
 
 };

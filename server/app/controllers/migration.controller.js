@@ -30,74 +30,77 @@ const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res)
     const conversionStatusFilePath = `./${MIGRATION_FOLDER_NAME}/${f5_host_ip}/output/bigip-conversionstatus.json`;
     const aviOutputFilePath = `./${MIGRATION_FOLDER_NAME}/${f5_host_ip}/output/bigip-output.json`;
 
-    // let dataToSend;
-    // const pythonProcess = spawn('f5_converter.py', [
-    //     '--f5_host_ip', f5_host_ip, 
-    //     '--f5_ssh_user', f5Details.f5_ssh_user, 
-    //     '--f5_ssh_password', f5Details.f5_ssh_password,
-    //     '--lab_ssh_ip', labDetails.avi_lab_ip,
-    //     '--lab_ssh_user', labDetails.avi_lab_user,
-    //     '--lab_ssh_password', labDetails.avi_lab_password,  
-    //     '--vrf', destinationDetails.avi_mapped_vrf, 
-    //     '--tenant', destinationDetails.avi_mapped_tenant, 
-    //     '--cloud_name', destinationDetails.avi_mapped_cloud, 
-    //     '--controller_version', destinationDetails.avi_destination_version, 
-    //     '-o', MIGRATION_FOLDER_NAME
-    // ]);
+    let dataToSend;
+    const pythonProcess = spawn('f5_converter.py', [
+        '--f5_host_ip', f5_host_ip, 
+        '--f5_ssh_user', f5Details.f5_ssh_user, 
+        '--f5_ssh_password', f5Details.f5_ssh_password,
+        '-c', labDetails.avi_lab_ip,
+        '-u', labDetails.avi_lab_user,
+        '-p', labDetails.avi_lab_password,  
+        '--vrf', destinationDetails.avi_mapped_vrf, 
+        '--tenant', destinationDetails.avi_mapped_tenant, 
+        '--cloud_name', destinationDetails.avi_mapped_cloud, 
+        '--controller_version', destinationDetails.avi_destination_version, 
+        '-o', MIGRATION_FOLDER_NAME
+    ], {
+        shell: true,
+    });
 
-    // // Collect data from script.
-    // pythonProcess.stdout.on('data', function (data) {
-    //     console.log('Pipe data from python script ...');
-    //     dataToSend = data.toString();
-    // });
+    // Collect data from script.
+    pythonProcess.stdout.on('data', function (data) {
+        console.log('Pipe data from python script ...');
+        dataToSend = data.toString();
+    });
 
-    // pythonProcess.stderr.on('data', (data) => {
-    //     console.error(`stderr: ${data}`);
-    // });
+    pythonProcess.stderr.on('data', (data) => {
+        console.log('1' + data.toString());
+        res.status(500).json({ message: data.toString() });
+    });
 
-    // // On close event, we are sure that stream from child process is closed.
-    // pythonProcess.on('close', (code) => {
-    //     console.log(dataToSend);
-    //     console.log(`child process close all stdio with code ${code}`);
+    // On close event, we are sure that stream from child process is closed.
+    pythonProcess.on('close', (code) => {
+        console.log(dataToSend);
+        console.log(`child process close all stdio with code ${code}`);
 
+        if (code !== 1) {
+            // Save the generated JSONs into DB.
+            if (fs.existsSync(conversionStatusFilePath) && fs.existsSync(aviOutputFilePath)) {
+                const readFromFile = (filePath) => {
+                    return new Promise((resolve, reject) => {
+                        fs.readFile(filePath, (err, data) => {
+                            if (err) {
+                                console.log(err);
+                                reject(err);
+                            } else {
+                                resolve(JSON.parse(data));
+                            }
+                        })
+                    });
+                };
 
-        // Save the generated JSONs into DB.
-        if (fs.existsSync(conversionStatusFilePath) && fs.existsSync(aviOutputFilePath)) {
-            const readFromFile = (filePath) => {
-                return new Promise((resolve, reject) => {
-                    fs.readFile(filePath, (err, data) => {
-                        if (err) {
-                            console.log(err);
-                            reject(err);
-                        } else {
-                            resolve(JSON.parse(data));
-                        }
-                    })
+                const generatedFilePromises = [
+                    readFromFile(conversionStatusFilePath, 'ConversionStatus'),
+                    readFromFile(aviOutputFilePath, 'AviOutput'),
+                ];
+
+                Promise.all(generatedFilePromises).then(async (jsonData) => {
+                    try {
+                        await ConversionStatusModel.findOneAndUpdate({}, jsonData[0], { upsert: true });
+                        await AviOutputModel.findOneAndUpdate({}, jsonData[1], { upsert: true });
+
+                        res.status(200).json({ message: 'Configurations generated successfully.' });
+                    } catch (err) {
+                        res.status(500).json({ message: `Error in saving the configurations into DB, `+err.message});
+                    }
+                }).catch((err) => {
+                    res.status(500).json({ message: `Error in reading the configurations, `+err.message});
                 });
-            };
-
-            const generatedFilePromises = [
-                readFromFile(conversionStatusFilePath, 'ConversionStatus'),
-                readFromFile(aviOutputFilePath, 'AviOutput'),
-            ];
-
-            Promise.all(generatedFilePromises).then(async (jsonData) => {
-                try {
-                    await ConversionStatusModel.findOneAndUpdate({}, jsonData[0], { upsert: true });
-                    await AviOutputModel.findOneAndUpdate({}, jsonData[1], { upsert: true });
-
-                    res.status(200).json({ message: 'Configurations generated successfully and saved in DB.' });
-                } catch (err) {
-                    res.status(404).json({ message: `Error while saving the JSONs in DB, `+err.message});
-                }
-            }).catch((err) => {
-                res.status(404).json({ message: `Error while reading the generated files, `+err.message});
-            });
+            }
         } else {
-            res.status(500).json({ message: 'Error while generating Configuration JSONs. Required JSONs are not found at location.' });
+            res.status(500).json({ message: 'Error in generating the configurations.' });
         }
-
-    // });
+    });
 };
 
 // Generate the configuraitons using migration tool.
