@@ -1,0 +1,26 @@
+<div class="migration-metrics">
+  <div class="clr-row migration-metrics__wrapper">
+    <div
+      *ngFor="let metric of metricsData"
+      class="clr-col migration-metrics__metric-container">
+        <div>
+          <span cds-text="medium"> {{ metric?.title | uppercase}} </span>
+          <div class="migration-metrics__progress-container">
+            <clr-progress-bar class="migration-metrics__progress-bar" clrSuccess
+            clrValue="{{ metric?.reviewed }}"
+            [clrMax]="(metric.reviewed + metric.incomplete) || 0"
+            ></clr-progress-bar>
+            <div class="migration-metrics__progress-bar-label">{{ metric?.percentCompleted}}% {{ dictionary.completedLabel }}</div>
+          </div>
+        
+          <div class="migration-metrics__legends-wrapper">
+            <cds-icon shape="circle" solid='true' size='sm' status="info"></cds-icon>
+            <span cds-text="medium">{{ dictionary.reviewedLabel }}</span> {{ metric?.reviewed}}
+    
+            <cds-icon class="migration-metrics__incomplete-icon" shape="circle" solid='true' size='sm' status="neutral"></cds-icon>
+            <span cds-text="medium">{{ dictionary.incompleteLabel }}</span> {{ metric?.incomplete}}
+          </div>
+        </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,22 @@
+.f5-irule {
+    height: calc(100vh - 200px);
+    display: flex;
+    flex-direction: column;
+    overflow: auto;
+
+    & &__alert-section {
+        position: fixed;
+        bottom: 0px;
+        right: 0px;
+        padding: 20px;
+        z-index: 3;
+    }
+
+    & &__alert-header {
+        font-weight: bold;
+    }
+
+    & &__alert-body {
+        display: block;
+    }
+}

@@ -6,6 +6,7 @@ const discoveryRouter = require('./app/routes/discovery.route');
 const migrationRouter = require("./app/routes/migration.route");
 const coreRouter = require("./app/routes/core.route");
 const playbookRouter = require("./app/routes/playbook.route");
+const iRuleRouter = require("./app/routes/irule.route");
 
 var mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -82,6 +83,9 @@ app.use("/api/core", coreRouter);
 
 // Router for Playbook related APIs
 app.use("/api/playbook", playbookRouter);
+
+// Router for IRule related APIs
+app.use("/api/irule", iRuleRouter);
 
 // Route for serving the Angular application.
 app.get('*', (req, res) => {

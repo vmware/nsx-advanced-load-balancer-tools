@@ -496,7 +496,7 @@ const aggregateIncompleteMigration = async (req, res) => {
 
         const incompleteVirtuals = await ConversionStatusModel.aggregate(incompleteMigrationAggregation) || [];
         if (Array.isArray(incompleteVirtuals) && incompleteVirtuals.length) {
-            return { incompleteVirtuals };
+            return incompleteVirtuals;
         }
     } catch (error) {
         console.error(error)
@@ -509,7 +509,8 @@ exports.getReadyVirtuals = asyncHandler(async (req, res, next) => {
         // TODO: Update query once we have a key to distinguish between multiple converstion objects.
 
         // Get Aggregation of the virtual and nested Vs_Mappings having status as SUCCESSFUL.
-        const { ready } = await aggregateSuccessfulMigration(req, res);
+        const successfulVirtualsResponse =  await aggregateSuccessfulMigration(req, res);
+        const ready = successfulVirtualsResponse?.ready;
 
         if (Array.isArray(ready)) {
             res.status(200).json({ result: { ready, readyCount: ready.length } });
@@ -526,14 +527,18 @@ exports.getReadyVirtuals = asyncHandler(async (req, res, next) => {
 exports.getMigrationOverview = asyncHandler(async (req, res, next) => {
     try {
         // TODO: Update query once we have a key to distinguish between multiple converstion objects.
-        
-        // Get Aggregation of the virtual and nested Vs_Mappings having status as SUCCESSFUL.
-        const { successfulVirtuals } = await aggregateSuccessfulMigration(req, res);
-        const { incompleteVirtuals } = await aggregateIncompleteMigration(req, res)
-        
+
+        let incompleteVirtuals;
+        let successfulVirtuals;
         let migrationCompletedPercentage = 0;
         let successfulVirtualsCount = 0;
         let incompleteVirtualCount = 0;
+
+        // Get Aggregation of the virtual and nested Vs_Mappings having status as SUCCESSFUL.
+        const successfulVirtualsResponse =  await aggregateSuccessfulMigration(req, res);
+        incompleteVirtuals  = await aggregateIncompleteMigration(req, res)
+
+        successfulVirtuals = successfulVirtualsResponse?.successfulVirtuals;
 
         if (successfulVirtuals && incompleteVirtuals) {
             if (Array.isArray(successfulVirtuals)) {
