@@ -32,6 +32,8 @@ export class F5ReportComponent implements OnInit {
 
     report: any;
 
+    public hasError = false;
+
     public openStartMigrationWizard: boolean = false;
 
     private margin = { top: 10, right: 10, bottom: 10, left: 10 };
@@ -62,6 +64,9 @@ export class F5ReportComponent implements OnInit {
         this.createSvg();
         this.createColors(chart);
         this.drawChart(chart);
+      }, (error) => {
+        console.log(error.error.message);
+        this.hasError = true;
       });
     }
 
@@ -195,7 +200,11 @@ export class F5ReportComponent implements OnInit {
 
     public handleCloseStartMigrationWizard(): void {
       this.openStartMigrationWizard = false;
-  }
+    }
+
+    public onErrorAlertClose(): void {
+      this.hasError = false;
+    }
 
     getLevelText(): string {
       if(this.levelOfComplexity == 'low') {
@@ -209,34 +218,6 @@ export class F5ReportComponent implements OnInit {
       }
     }
 
-    generateReport(): void {
-      const reqBody = {
-        f5_host_ip: '10.206.40.100',
-        f5_ssh_user: 'admin',
-        f5_ssh_password: 'AviNetworks123!'
-      };
-
-      this.http.post('discovery/generateReport', reqBody).subscribe(
-        (data) => {
-          console.log('Data from API:', data);
-        },
-        (error) => {
-          console.error('Error from API:', error);
-        }
-      );
-    }
-
-    getReport(): void {
-      this.http.get('discovery/getReport').subscribe(
-        (data) => {
-          console.log('Data from API:', data);
-        },
-        (error) => {
-          console.error('Error from API:', error);
-        }
-      );
-    }
-
   public downloadReport(): void {
     const fileName = 'bigip_discovery_data.json';
 
@@ -248,97 +229,4 @@ export class F5ReportComponent implements OnInit {
     });
   }
 
-    generateConfiguration(): void {
-      const reqBody = {
-        f5_host_ip: '10.206.40.100',
-        f5_ssh_user: 'admin',
-        f5_ssh_password: 'admin',
-        avi_lab_ip:'10.10.10.10',
-        avi_lab_user: 'admin',
-        avi_lab_password: 'admin',
-        avi_destination_ip: '10.10.10.10',
-        avi_destination_user: 'admin',
-        avi_destination_password: 'admin',
-        avi_destination_version: '30.2.1',
-        avi_mapped_vrf: 'global', 
-        avi_mapped_tenant: 'admin', 
-        avi_mapped_cloud: 'Default-Cloud',
-        avi_mapped_segroup: 'Default-Group',
-      };
-
-      this.http.post('configuration/generateConfiguration', reqBody).subscribe(
-        (data) => {
-          console.log('Data from API:', data);
-        },
-        (error) => {
-          console.error('Error from API:', error);
-        }
-      );
-    }
-
-    getAviLabDetails(): void {
-      this.http.get('core/getAviLabDetails').subscribe(
-        (data) => {
-          console.log('Data from getAviLabDetails API:', data)
-        },
-        (error) => {
-          console.error('Error from getAviLabDetails API:', error);
-        }
-      );
-    }
-
-    getAviDestinationDetails(): void {
-      this.http.get('core/getAviDestinationDetails').subscribe(
-        (data) => {
-          console.log('Data from getAviDestinationDetails API:', data)
-        },
-        (error) => {
-          console.error('Error from getAviDestinationDetails API:', error);
-        }
-      );
-    }
-
-    generatePlaybook(): void {
-      const reqBody = {
-        playbookName: 'playbookTest_1',
-      };
-
-      this.http.post('playbook/generatePlaybook', reqBody).subscribe(
-        (data) => {
-          console.log('Data from generatePlaybook API:', data)
-        },
-        (error) => {
-          console.error('Error from generatePlaybook API:', error);
-        }
-      );
-    }
-
-    saveAviLabDetails(): void {
-      const reqBody = {
-        avi_lab_ip:'10.10.102.102',
-        avi_lab_user: 'admin',
-        avi_lab_password: 'admin',
-      };
-
-      this.http.post('core/saveAviLabDetails', reqBody).subscribe(
-        (data) => {
-          console.log('Data save to DB:', data);
-        },
-        (error) => {
-          console.error('Error in saving data:', error);
-        }
-      );
-    }
-
-    getPlaybooks(): void {
-      this.http.get('playbook/getPlaybooks').subscribe(
-        (data) => {
-          console.log('Data from DB:', data);
-          // console.log(new Date(data[0].playbook_creation_time));
-        },
-        (error) => {
-          console.error('Error in fetching data:', error);
-        }
-      );
-    }
 }

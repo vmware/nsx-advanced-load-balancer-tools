@@ -54,6 +54,8 @@ export class F5ReadyComponent implements OnInit {
   openDestinationEditModal = false;
   public customDateFilter: TDateFilter;
 
+  public hasError = false;
+
   constructor(
       private http: HttpService,
       private router: Router,
@@ -94,33 +96,37 @@ export class F5ReadyComponent implements OnInit {
         seGroup: this.f5DestinationData.seGroup[0],
       });
       
-      this.http.get('core/getAviDestinationDetails').subscribe((response) => {
+      this.http.get('core/getAviDestinationDetails').subscribe(
+        (response) => {
+          const {
+            avi_destination_ip,
+            avi_destination_user,
+            avi_destination_password,
+            avi_destination_version,
+            avi_mapped_vrf,
+            avi_mapped_tenant,
+            avi_mapped_cloud,
+            avi_mapped_segroup,
+          } = response;
 
-        const {
-          avi_destination_ip,
-          avi_destination_user,
-          avi_destination_password,
-          avi_destination_version,
-          avi_mapped_vrf,
-          avi_mapped_tenant,
-          avi_mapped_cloud,
-          avi_mapped_segroup,
-        } = response;
+          this.destinationControllerData = {
+            avi_destination_ip,
+            avi_destination_user,
+            avi_destination_password,
+            avi_destination_version,
+          }
 
-        this.destinationControllerData = {
-          avi_destination_ip,
-          avi_destination_user,
-          avi_destination_password,
-          avi_destination_version,
-        }
-
-        this.mappingData = {
-          avi_mapped_vrf,
-          avi_mapped_tenant,
-          avi_mapped_cloud,
-          avi_mapped_segroup,
-        }
-      });
+          this.mappingData = {
+            avi_mapped_vrf,
+            avi_mapped_tenant,
+            avi_mapped_cloud,
+            avi_mapped_segroup,
+          }
+        }, 
+        (err) => {
+          console.log(err.error.message);
+          this.hasError = true;
+        });
     });
 
     // Fetch the list of ready Virtuals.
@@ -135,25 +141,36 @@ export class F5ReadyComponent implements OnInit {
             'status': virtualItem?.isReviewed ? 'Reviewed' : 'Auto Converted',
           };
         });
-        this.fetchPlaybooks();
       },
       (err) => {
         console.error('Something went wrong', err);
-      })
+        this.hasError = true;
+      });
+
+    this.fetchPlaybooks();
   }
 
   // Fetch the list of Playbooks.
   fetchPlaybooks(): void {
-    this.http.get('playbook/getPlaybooks' ).subscribe((data) => {
-      const playbooks = data.result;
+    this.http.get('playbook/getPlaybooks' ).subscribe(
+      (data) => {
+        const playbooks = data.result;
 
-      this.playbooksGridData = playbooks.map((playbookItem) => {
-        return {
-          ...playbookItem,
-          'status': 'Ready',
-        };
+        this.playbooksGridData = playbooks.map((playbookItem) => {
+          return {
+            ...playbookItem,
+            'status': 'Ready',
+          };
+        });
+      },
+      (err) => {
+        console.log(err.error.message);
+        this.hasError = true;
       });
-    });
+  }
+
+  public onErrorAlertClose(): void {
+    this.hasError = false;
   }
 
   doCancel(): void {
