@@ -1,51 +1,52 @@
 <div class="f5-irule">
-  <migration-metrics></migration-metrics>
-
-    <div class="f5-irule__cards">
-      <div class="clr-row">
-          <!-- <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
+  <div class="f5-irule__cards">
+    <div class="clr-row">
+      <!-- <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
             <next-conversion-card
               [selectedMigrationData]="incompleteVSMigrationsData[selectedMigrationIndex]"
               (onSkip)="handleSkip()"
               (onStart)="handleStart()"
             ></next-conversion-card>
           </div> -->
-          <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
-            <lab-controller-card
-              [isFetchInProgress]="isLoadingLabControllerData"
-              [hideActions]="true"
-              (onFetch)="fetchLabControllerDetails()"
-            ></lab-controller-card>
-          </div>
-        </div>
+      <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
+        <lab-controller-card [isFetchInProgress]="isLoadingLabControllerData" [hideActions]="true"
+          (onFetch)="fetchLabControllerDetails()"></lab-controller-card>
+      </div>
     </div>
-    <div class="f5-irule__grid">
-      <h6> {{ dictionary.incompleteTitle }} ({{ iRuleOverviewData?.length }}) </h6>
+  </div>
+  <div class="f5-irule__grid">
+    <h6> {{ dictionary.incompleteTitle }} ({{ iRuleOverviewData?.length }}) </h6>
 
-      <clr-datagrid [clrDgLoading]="isLoading">
-        <clr-dg-column class="incomplete-migrations-grid__name" clrDgField="F5_ID">{{ dictionary.nameCoulmnHeader }}</clr-dg-column>
-        <clr-dg-column clrDgField="refrenceObjects">{{ dictionary.refrencedObjectsCoulmnHeader }}</clr-dg-column>
-        <clr-dg-column clrDgField="status">{{ dictionary.statusColumnHeader }}</clr-dg-column>
+    <clr-datagrid [clrDgLoading]="isLoading">
+      <clr-dg-column
+        class="incomplete-migrations-grid__name"
+        clrDgField="F5_ID"
+      >
+        {{ dictionary.nameCoulmnHeader}}
+      </clr-dg-column>
+      <clr-dg-column clrDgField="refrenceObjects">{{ dictionary.refrencedObjectsCoulmnHeader }}</clr-dg-column>
+      <clr-dg-column clrDgField="status">{{ dictionary.statusColumnHeader }}</clr-dg-column>
 
 
-        <clr-dg-row *clrDgItems="let iRuleData of iRuleOverviewData; trackBy: trackByIndex; let i = index">
-          <clr-dg-cell class="incomplete-migrations-grid__name">{{ iRuleData?.Irule }}</clr-dg-cell>
-          <clr-dg-cell>{{ iRuleData?.vs_count }}</clr-dg-cell>
-          <clr-dg-cell>{{ iRuleData?.Status }}</clr-dg-cell>
-        </clr-dg-row>
+      <clr-dg-row *clrDgItems="let iRuleData of iRuleOverviewData; trackBy: trackByIndex; let i = index">
+        <clr-dg-cell class="incomplete-migrations-grid__name">{{ iRuleData?.Irule }}</clr-dg-cell>
+        <clr-dg-cell>{{ iRuleData?.vs_count }}</clr-dg-cell>
+        <clr-dg-cell>{{ iRuleData?.Status }}</clr-dg-cell>
+      </clr-dg-row>
 
-        <clr-dg-footer>
-            <clr-dg-pagination
-              #pagination [clrDgPageSize]="5"
-              [clrDgTotalItems]="iRuleOverviewData?.length"
-            >
-              <clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20, 50, 100]">{{ dictionary.objectsPerPageLabel }}</clr-dg-page-size>
-                {{ iRuleOverviewData?.length }} {{ dictionary.objectsLabel }}
-            </clr-dg-pagination>
-        </clr-dg-footer>
-      </clr-datagrid>
-    </div>
- 
+      <clr-dg-footer>
+        <clr-dg-pagination #pagination [clrDgPageSize]="5" [clrDgTotalItems]="iRuleOverviewData?.length">
+          <clr-dg-page-size
+            [clrPageSizeOptions]="[5, 10, 20, 50, 100]"
+          >
+            {{ dictionary.objectsPerPageLabel }}
+          </clr-dg-page-size>
+          {{ iRuleOverviewData?.length }} {{ dictionary.objectsLabel }}
+        </clr-dg-pagination>
+      </clr-dg-footer>
+    </clr-datagrid>
+  </div>
+
   <!-- <div class="f5-irule__alert-section" *ngIf="configurationTabService.showCompletedMigrationsCountAlert">
     <clr-alert [clrAlertType]="'success'" (clrAlertClosedChange)="onAlertClose()">
         <clr-alert-item>

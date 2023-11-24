@@ -1,146 +1,114 @@
-<div>
+<div class="clr-row ready-cards-wrapper">
+	<div class="clr-col-lg-6 clr-col-md-6 clr-col-12">
+		<div class="card">
+			<div class="card-header">
+				<cds-icon size="30" shape="map-marker" status="success"></cds-icon>
+				{{ dictionary.readyPageDestinationControllerTitle }}
+			</div>
+			<div class="card-block">
+				<div class="card-text">
 
-   <div class="clr-row">
-      <div class="clr-col-lg-12 clr-col-12">
-         <div class="card top-row">
-            <div class="card-block">
-               <h5 class="card-title"> {{ dictionary.readyPageConfigMigrationTitle }} </h5>
-               <div class="card-text card-progress-text">
-                  <clr-progress-bar class="progress-bar" clrSuccess clrValue="{{ (migrationOverviewData?.result?.reviewedVirtuals * 100 / migrationOverviewData?.result?.incompleteVirtuals) | number:'1.0-0' }}"></clr-progress-bar>
-                  <div class="no-wrap ml-12"> {{ (migrationOverviewData?.result?.reviewedVirtuals * 100 / migrationOverviewData?.result?.incompleteVirtuals) | number:'1.0-0' }} % completed</div>
-               </div>
-               <div>
-                  <span class="badge badge-blue"></span> {{ dictionary.readyPageReviewedTitle }} {{ migrationOverviewData?.result?.reviewedVirtuals }}
-                  <span class="badge ml-12"></span> {{ dictionary.readyPageIncompleteTitle }}  {{ migrationOverviewData?.result?.incompleteVirtuals }}
-               </div>
-            </div>
+					<div class="card-row">
+						<div class="first-item">
+							<h6>
+								{{ dictionary.readyPageIpAddressTitle }}
+							</h6>
+							<div>
+								{{ destinationControllerData?.avi_destination_ip || emptyValue }}
+							</div>
+						</div>
+						<div>
+							<h6>
+								{{ dictionary.readyPageVersionTitle }}
+							</h6>
+							<div>
+								{{ destinationControllerData?.avi_destination_version || emptyValue }}
+							</div>
+						</div>
+					</div>
 
-            <!-- <div class="card-block">
-               <h5 class="card-title"> {{ dictionary.readyPageFullyMigratedTitle }} </h5>
-               <div class="card-text card-progress-text">
-                  <clr-progress-bar class="progress-bar" clrWarning clrValue="{{ data?.migration?.fully?.completedPercent }}"></clr-progress-bar>
-                  <div class="no-wrap ml-12"> {{ data?.migration?.fully?.completedPercent }}% completed</div>
-               </div>
-               <div>
-                  <span class="badge badge-success"></span> {{ dictionary.readyPageCompletedTitle }} {{ data?.migration?.fully?.completed }}
-                  <span class="badge ml-12"></span> {{ dictionary.readyPageIncompleteTitle }} {{ data?.migration?.fully?.incomplete }}
-               </div>
-            </div> -->
-         </div>
-      </div>
-   </div>
+					<div class="card-row">
+						<div class="first-item">
+							<h6>
+								{{ dictionary.readyPageUserNameTitle }}
+							</h6>
+							<div>
+								{{ destinationControllerData?.avi_destination_user || emptyValue }}
+							</div>
+						</div>
+						<div>
+							<h6>
+								{{ dictionary.readyPagePasswordTitle }}
+							</h6>
+							<div>
+								{{ destinationControllerData?.avi_destination_password || emptyValue }}
+							</div>
+						</div>
+					</div>
 
-   <div class="clr-row ready-cards-wrapper">
-      <div class="clr-col-lg-6 clr-col-md-6 clr-col-12">
-         <div class="card">
-            <div class="card-header">
-               <cds-icon size="30" shape="map-marker" status="success"></cds-icon>
-               {{ dictionary.readyPageDestinationControllerTitle }}
-            </div>
-            <div class="card-block">
-               <div class="card-text">
-
-                  <div class="card-row">
-                     <div class="first-item">
-                        <h6>
-                           {{ dictionary.readyPageIpAddressTitle }}
-                        </h6>
-                        <div>
-                           {{ destinationControllerData?.avi_destination_ip || emptyValue }}
-                        </div>
-                     </div>
-                     <div>
-                        <h6>
-                           {{ dictionary.readyPageVersionTitle }}
-                        </h6>
-                        <div>
-                           {{ destinationControllerData?.avi_destination_version || emptyValue }}
-                        </div>
-                     </div>
-                  </div>
-
-                  <div class="card-row">
-                     <div class="first-item">
-                        <h6>
-                           {{ dictionary.readyPageUserNameTitle }}
-                        </h6>
-                        <div>
-                           {{ destinationControllerData?.avi_destination_user || emptyValue }}
-                        </div>
-                     </div>
-                     <div>
-                        <h6>
-                           {{ dictionary.readyPagePasswordTitle }}
-                        </h6>
-                        <div>
-                           {{ destinationControllerData?.avi_destination_password || emptyValue }}
-                        </div>
-                     </div>
-                  </div>
-
-               </div>
-            </div>
-            <!-- <div class="card-footer">
+				</div>
+			</div>
+			<!-- <div class="card-footer">
                <div class="footer">
                   <button class="btn btn-link" (click)="editDestinationControllerDetails()"> {{ dictionary.readyPageEditButtonText }} </button>
                </div>
             </div> -->
-         </div>
-      </div>
+		</div>
+	</div>
 
-      <div class="clr-col-lg-6 clr-col-md-6 clr-col-12">
-         <div class="card">
-            <div class="card-header">
-               <cds-icon size="30" shape="map" status="success"></cds-icon>
-               {{ dictionary.readyPageMappingTitle }}
-            </div>
-            <div class="card-block">
-               <div class="card-row">
-                  <div class="first-item">
-                     <h6>
-                        {{ dictionary.readyPageCloudTitle }}
-                     </h6>
-                     <div>
-                        {{ mappingData?.avi_mapped_cloud || emptyValue }}
-                     </div>
-                  </div>
-                  <div>
-                     <h6>
-                        {{ dictionary.readyPageVrfTitle }}
-                     </h6>
-                     <div>
-                        {{ mappingData?.avi_mapped_vrf || emptyValue }}
-                     </div>
-                  </div>
-               </div>
-               <div class="card-row">
-                  <div class="first-item">
-                     <h6>
-                        {{ dictionary.readyPageTenantTitle }}
-                     </h6>
-                     <div>
-                        {{ mappingData?.avi_mapped_tenant || emptyValue }}
-                     </div>
-                  </div>
-                  <div>
-                     <h6>
-                        {{ dictionary.readyPageSeGroupTitle }}
-                     </h6>
-                     <div>
-                        {{ mappingData?.avi_mapped_segroup || emptyValue }}
-                     </div>
-                  </div>
-               </div>
-            </div>
-            <!-- <div class="card-footer">
+	<div class="clr-col-lg-6 clr-col-md-6 clr-col-12">
+		<div class="card">
+			<div class="card-header">
+				<cds-icon size="30" shape="map" status="success"></cds-icon>
+				{{ dictionary.readyPageMappingTitle }}
+			</div>
+			<div class="card-block">
+				<div class="card-row">
+					<div class="first-item">
+						<h6>
+							{{ dictionary.readyPageCloudTitle }}
+						</h6>
+						<div>
+							{{ mappingData?.avi_mapped_cloud || emptyValue }}
+						</div>
+					</div>
+					<div>
+						<h6>
+							{{ dictionary.readyPageVrfTitle }}
+						</h6>
+						<div>
+							{{ mappingData?.avi_mapped_vrf || emptyValue }}
+						</div>
+					</div>
+				</div>
+				<div class="card-row">
+					<div class="first-item">
+						<h6>
+							{{ dictionary.readyPageTenantTitle }}
+						</h6>
+						<div>
+							{{ mappingData?.avi_mapped_tenant || emptyValue }}
+						</div>
+					</div>
+					<div>
+						<h6>
+							{{ dictionary.readyPageSeGroupTitle }}
+						</h6>
+						<div>
+							{{ mappingData?.avi_mapped_segroup || emptyValue }}
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="card-footer">
                <div class="footer">
                   <button class="btn btn-link" (click)="editMappingDetails()"> {{ dictionary.readyPageEditButtonText }} </button>
                </div>
             </div> -->
-         </div>
-      </div>
+		</div>
+	</div>
 
-      <!-- <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
+	<!-- <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">
          <div class="card">
             <div class="card-header">
                <cds-icon size="30" shape="shield" status="success"></cds-icon>
@@ -154,72 +122,70 @@
             </div>
          </div>
       </div> -->
-   </div>
+</div>
 
-   <div>
-      <h6 class="grid-title">
-         {{ dictionary.readyPageReviewedTitle }} ({{ vsStatusGridData.length }})
-      </h6>
+<div>
+	<h6 class="grid-title">
+		{{ dictionary.readyPageReviewedTitle }} ({{ vsStatusGridData.length }})
+	</h6>
 
-      <button type="button" class="btn btn-icon btn-primary" [disabled]="selected?.length" (click)="playbookModalOpened=true">
-         <cds-icon shape="book"></cds-icon>
-         {{ dictionary.readyPageGeneratePlaybookTitle }}
-      </button>
+	<button type="button" class="btn btn-icon btn-primary" [disabled]="selected?.length"
+		(click)="playbookModalOpened=true">
+		<cds-icon shape="book"></cds-icon>
+		{{ dictionary.readyPageGeneratePlaybookTitle }}
+	</button>
 
-      <clr-datagrid [(clrDgSelected)]="selected">
-         <clr-dg-column clrDgField="F5_ID"> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
-         <clr-dg-column clrDgField="status"> {{ dictionary.readyPageStatusTitle }} </clr-dg-column>
-         <clr-dg-row *clrDgItems="let each of vsStatusGridData" [clrDgItem]="each">
-            <clr-dg-cell>{{each.F5_ID}}</clr-dg-cell>
-            <clr-dg-cell>{{each.status}}</clr-dg-cell>
-         </clr-dg-row>
-         <clr-dg-footer>
-            <clr-dg-pagination
-               #vsStatusGridPagination [clrDgPageSize]="5"
-               [clrDgTotalItems]="vsStatusGridData.length"
-            >
-               <clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20, 50, 100]">{{ dictionary.objectsPerPageLabel }}</clr-dg-page-size>
-               {{ vsStatusGridData.length }} {{ dictionary.objectsLabel }}
-            </clr-dg-pagination>
-         </clr-dg-footer>
-   </clr-datagrid>
-   </div>
+	<clr-datagrid [(clrDgSelected)]="selected">
+		<clr-dg-column clrDgField="F5_ID"> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
+		<clr-dg-column clrDgField="status"> {{ dictionary.readyPageStatusTitle }} </clr-dg-column>
+		<clr-dg-row *clrDgItems="let each of vsStatusGridData" [clrDgItem]="each">
+			<clr-dg-cell>{{each.F5_ID}}</clr-dg-cell>
+			<clr-dg-cell>{{each.status}}</clr-dg-cell>
+		</clr-dg-row>
+		<clr-dg-footer>
+			<clr-dg-pagination #vsStatusGridPagination [clrDgPageSize]="5" [clrDgTotalItems]="vsStatusGridData.length">
+				<clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20, 50, 100]">{{ dictionary.objectsPerPageLabel
+					}}</clr-dg-page-size>
+				{{ vsStatusGridData.length }} {{ dictionary.objectsLabel }}
+			</clr-dg-pagination>
+		</clr-dg-footer>
+	</clr-datagrid>
+</div>
 
-   <div>
-      <h6 class="grid-title">
-         {{ dictionary.readyPagePlaybooksTitle }} ({{ playbooksGridData.length }})
-      </h6>
+<div>
+	<h6 class="grid-title">
+		{{ dictionary.readyPagePlaybooksTitle }} ({{ playbooksGridData.length }})
+	</h6>
 
-      <clr-datagrid>
-         <clr-dg-column clrDgField="playbook_creation_time"> {{ dictionary.readyPageDateTitle }}
-            <clr-dg-string-filter [clrDgStringFilter]="customDateFilter"></clr-dg-string-filter>
-         </clr-dg-column>
-         <clr-dg-column clrDgField="playbook_name"> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
-         <clr-dg-column clrDgField="status"> {{ dictionary.readyPageStatusTitle }} </clr-dg-column>
-         <clr-dg-column> {{ dictionary.readyPageActionsTitle }} </clr-dg-column>
-         <clr-dg-row *clrDgItems="let each of playbooksGridData" [clrDgItem]="each">
-            <clr-dg-cell>{{each.playbook_creation_time |  date:'medium' }}</clr-dg-cell>
-            <clr-dg-cell>{{each.playbook_name}}</clr-dg-cell>
-            <clr-dg-cell>{{each.status}}</clr-dg-cell>
-            <clr-dg-cell>
-               <!-- <cds-icon (click)="markComplete(each)" shape="check"  class="cursor-pointer" status="info"></cds-icon> -->
-               <cds-icon (click)="downloadPlaybook(each.playbook_name)" class="ml-12 cursor-pointer" shape="download" status="info"></cds-icon>
-            </clr-dg-cell>
-         </clr-dg-row>
-         <clr-dg-footer>
-            <clr-dg-pagination
-                #playbooksGridPagination [clrDgPageSize]="5"
-                [clrDgTotalItems]="playbooksGridData.length"
-            >
-                <clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20, 50, 100]">{{ dictionary.objectsPerPageLabel }}</clr-dg-page-size>
-                {{ playbooksGridData.length }} {{ dictionary.objectsLabel }}
-            </clr-dg-pagination>
-        </clr-dg-footer>
-      </clr-datagrid>
+	<clr-datagrid>
+		<clr-dg-column clrDgField="playbook_creation_time"> {{ dictionary.readyPageDateTitle }}
+			<clr-dg-string-filter [clrDgStringFilter]="customDateFilter"></clr-dg-string-filter>
+		</clr-dg-column>
+		<clr-dg-column clrDgField="playbook_name"> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
+		<clr-dg-column clrDgField="status"> {{ dictionary.readyPageStatusTitle }} </clr-dg-column>
+		<clr-dg-column> {{ dictionary.readyPageActionsTitle }} </clr-dg-column>
+		<clr-dg-row *clrDgItems="let each of playbooksGridData" [clrDgItem]="each">
+			<clr-dg-cell>{{each.playbook_creation_time | date:'medium' }}</clr-dg-cell>
+			<clr-dg-cell>{{each.playbook_name}}</clr-dg-cell>
+			<clr-dg-cell>{{each.status}}</clr-dg-cell>
+			<clr-dg-cell>
+				<!-- <cds-icon (click)="markComplete(each)" shape="check"  class="cursor-pointer" status="info"></cds-icon> -->
+				<cds-icon (click)="downloadPlaybook(each.playbook_name)" class="ml-12 cursor-pointer" shape="download"
+					status="info"></cds-icon>
+			</clr-dg-cell>
+		</clr-dg-row>
+		<clr-dg-footer>
+			<clr-dg-pagination #playbooksGridPagination [clrDgPageSize]="5" [clrDgTotalItems]="playbooksGridData.length">
+				<clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20, 50, 100]">{{ dictionary.objectsPerPageLabel
+					}}</clr-dg-page-size>
+				{{ playbooksGridData.length }} {{ dictionary.objectsLabel }}
+			</clr-dg-pagination>
+		</clr-dg-footer>
+	</clr-datagrid>
 
-   </div>
+</div>
 
-   <!-- <clr-wizard #wizard
+<!-- <clr-wizard #wizard
       [(clrWizardOpen)]="open"
       (clrWizardOnCancel)="doCancel()"
       [clrWizardPreventDefaultNext]="true"
@@ -313,129 +279,121 @@
       </clr-wizard-page>
    </clr-wizard> -->
 
-   <!-- Modal for editing Mapping details -->
+<!-- Modal for editing Mapping details -->
 
-   <clr-modal [(clrModalOpen)]="openMappingEditModal" [clrModalClosable]="true">
-      <h3 class="modal-title"> {{ dictionary.readyPageEditMappingTitle }} </h3>
-      <div class="modal-body">
-         <form clrForm [formGroup]="mapDestinationForm" clrLayout="vertical">
-            <clr-select-container>
-               <label> {{ dictionary.readyPageTenantTitle }} </label>
-               <select clrSelect name="options" class="select-input" formControlName="tenant">
-                  <option *ngFor="let tenant of f5DestinationData?.tenant" [value]="tenant"> {{tenant}} </option>
-               </select>
-            </clr-select-container>
-            <clr-select-container>
-               <label> {{ dictionary.readyPageCloudTitle }} </label>
-               <select clrSelect name="options" class="select-input" formControlName="cloud">
-                  <option *ngFor="let cloud of f5DestinationData?.cloud" [value]="cloud"> {{cloud}} </option>
-               </select>
-            </clr-select-container>
-            <clr-select-container>
-               <label> {{ dictionary.readyPageVrfTitle }} </label>
-               <select clrSelect name="options" class="select-input" formControlName="vrf">
-                  <option *ngFor="let vrf of f5DestinationData?.vrf" [value]="vrf"> {{vrf}} </option>
-               </select>
-            </clr-select-container>
-            <clr-select-container>
-               <label> {{ dictionary.readyPageSeGroupTitle }} </label>
-               <select clrSelect name="options" class="select-input" formControlName="seGroup">
-                  <option *ngFor="let seGroup of f5DestinationData?.seGroup" [value]="seGroup"> {{seGroup}} </option>
-               </select>
-            </clr-select-container>
-        </form>
-      </div>
-      <div class="modal-footer">
-          <button type="button" [disabled]="!mapDestinationForm.valid" class="btn btn-primary" (click)="saveMappingDetails()">
-              {{ dictionary.readyPageSaveLabel }}
-          </button>
-      </div>
-  </clr-modal>
+<clr-modal [(clrModalOpen)]="openMappingEditModal" [clrModalClosable]="true">
+	<h3 class="modal-title"> {{ dictionary.readyPageEditMappingTitle }} </h3>
+	<div class="modal-body">
+		<form clrForm [formGroup]="mapDestinationForm" clrLayout="vertical">
+			<clr-select-container>
+				<label> {{ dictionary.readyPageTenantTitle }} </label>
+				<select clrSelect name="options" class="select-input" formControlName="tenant">
+					<option *ngFor="let tenant of f5DestinationData?.tenant" [value]="tenant"> {{tenant}} </option>
+				</select>
+			</clr-select-container>
+			<clr-select-container>
+				<label> {{ dictionary.readyPageCloudTitle }} </label>
+				<select clrSelect name="options" class="select-input" formControlName="cloud">
+					<option *ngFor="let cloud of f5DestinationData?.cloud" [value]="cloud"> {{cloud}} </option>
+				</select>
+			</clr-select-container>
+			<clr-select-container>
+				<label> {{ dictionary.readyPageVrfTitle }} </label>
+				<select clrSelect name="options" class="select-input" formControlName="vrf">
+					<option *ngFor="let vrf of f5DestinationData?.vrf" [value]="vrf"> {{vrf}} </option>
+				</select>
+			</clr-select-container>
+			<clr-select-container>
+				<label> {{ dictionary.readyPageSeGroupTitle }} </label>
+				<select clrSelect name="options" class="select-input" formControlName="seGroup">
+					<option *ngFor="let seGroup of f5DestinationData?.seGroup" [value]="seGroup"> {{seGroup}} </option>
+				</select>
+			</clr-select-container>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" [disabled]="!mapDestinationForm.valid" class="btn btn-primary" (click)="saveMappingDetails()">
+			{{ dictionary.readyPageSaveLabel }}
+		</button>
+	</div>
+</clr-modal>
 
-  <!-- Modal for editing Destination controller details -->
+<!-- Modal for editing Destination controller details -->
 
-  <clr-modal [(clrModalOpen)]="openDestinationEditModal" [clrModalClosable]="true">
-   <h3 class="modal-title"> {{ dictionary.readyPageEditDestinationCtrlTitle }} </h3>
-   <div class="modal-body">
-      <form clrForm [formGroup]="destinationCtrlForm" clrLayout="vertical">
-         <clr-input-container>
-            <label> {{dictionary.readyPageIpAddressTitle}} </label>
-            <input clrInput type="text" formControlName="ipAddr" required size="100" />
-         </clr-input-container>
-         <clr-input-container>
-               <label> {{dictionary.readyPageUserNameTitle}} </label>
-               <input clrInput type="text" formControlName="username" required size="100" />
-         </clr-input-container>
-         <clr-password-container>
-               <label> {{dictionary.readyPagePasswordTitle}} </label>
-               <input
-               clrPassword
-               name="password"
-               formControlName="password"
-               size="95"
-               required
-               />
-         </clr-password-container>
-      </form>
-   </div>
-   <div class="modal-footer">
-       <button type="button" [disabled]="!destinationCtrlForm.valid" class="btn btn-primary" (click)="saveDestinationControllerDetails()">
-           {{ dictionary.readyPageSaveLabel }}
-       </button>
-   </div>
+<clr-modal [(clrModalOpen)]="openDestinationEditModal" [clrModalClosable]="true">
+	<h3 class="modal-title"> {{ dictionary.readyPageEditDestinationCtrlTitle }} </h3>
+	<div class="modal-body">
+		<form clrForm [formGroup]="destinationCtrlForm" clrLayout="vertical">
+			<clr-input-container>
+				<label> {{dictionary.readyPageIpAddressTitle}} </label>
+				<input clrInput type="text" formControlName="ipAddr" required size="100" />
+			</clr-input-container>
+			<clr-input-container>
+				<label> {{dictionary.readyPageUserNameTitle}} </label>
+				<input clrInput type="text" formControlName="username" required size="100" />
+			</clr-input-container>
+			<clr-password-container>
+				<label> {{dictionary.readyPagePasswordTitle}} </label>
+				<input clrPassword name="password" formControlName="password" size="95" required />
+			</clr-password-container>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" [disabled]="!destinationCtrlForm.valid" class="btn btn-primary"
+			(click)="saveDestinationControllerDetails()">
+			{{ dictionary.readyPageSaveLabel }}
+		</button>
+	</div>
 </clr-modal>
 
 
-   <!-- Modal for generating playbooks -->
-   <clr-modal [(clrModalOpen)]="playbookModalOpened" [clrModalClosable]="true" *ngIf="playbookModalOpened">
-      <h3 class="modal-title"> {{ dictionary.readyPageGeneratePlaybookTitle }} </h3>
-      <div class="modal-body">
-         <form clrForm [formGroup]="playbookForm" clrLayout="vertical">
-            <clr-input-container>
-               <label> {{dictionary.readyPagePlaybookNameTitle}} </label>
-               <input clrInput type="text" formControlName="playbookName" required size="100" />
-            </clr-input-container>
-            <h6 class="grid-title">
-               {{ dictionary.readyPagePlaybookContentsTitle }}({{ vsStatusGridData.length }})
-            </h6>
-            <clr-datagrid>
-               <clr-dg-column  clrDgField="F5_ID"> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
-               <clr-dg-row *clrDgItems="let each of vsStatusGridData" [clrDgItem]="each">
-                  <clr-dg-cell>{{each.F5_ID}}</clr-dg-cell>
-               </clr-dg-row>
-               <clr-dg-footer>
-                  <clr-dg-pagination
-                      #generatePlaybookGridPagination [clrDgPageSize]="5"
-                      [clrDgTotalItems]="vsStatusGridData.length"
-                  >
-                      <clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20, 50, 100]">{{ dictionary.objectsPerPageLabel }}</clr-dg-page-size>
-                      {{ vsStatusGridData.length }} {{ dictionary.objectsLabel }}
-                  </clr-dg-pagination>
-              </clr-dg-footer>
-            </clr-datagrid>
-         </form>
-      </div>
-      <div class="modal-footer">
-          <button type="button" [disabled]="!playbookForm.valid" class="btn btn-primary" (click)="generatePlaybook()">
-              {{ dictionary.readyPageGenerateTitle }}
-          </button>
-      </div>
-  </clr-modal>
+<!-- Modal for generating playbooks -->
+<clr-modal [(clrModalOpen)]="playbookModalOpened" [clrModalClosable]="true" *ngIf="playbookModalOpened">
+	<h3 class="modal-title"> {{ dictionary.readyPageGeneratePlaybookTitle }} </h3>
+	<div class="modal-body">
+		<form clrForm [formGroup]="playbookForm" clrLayout="vertical">
+			<clr-input-container>
+				<label> {{dictionary.readyPagePlaybookNameTitle}} </label>
+				<input clrInput type="text" formControlName="playbookName" required size="100" />
+			</clr-input-container>
+			<h6 class="grid-title">
+				{{ dictionary.readyPagePlaybookContentsTitle }}({{ vsStatusGridData.length }})
+			</h6>
+			<clr-datagrid>
+				<clr-dg-column clrDgField="F5_ID"> {{ dictionary.readyPageNameTitle }} </clr-dg-column>
+				<clr-dg-row *clrDgItems="let each of vsStatusGridData" [clrDgItem]="each">
+					<clr-dg-cell>{{each.F5_ID}}</clr-dg-cell>
+				</clr-dg-row>
+				<clr-dg-footer>
+					<clr-dg-pagination #generatePlaybookGridPagination [clrDgPageSize]="5"
+						[clrDgTotalItems]="vsStatusGridData.length">
+						<clr-dg-page-size [clrPageSizeOptions]="[5, 10, 20, 50, 100]">{{ dictionary.objectsPerPageLabel
+							}}</clr-dg-page-size>
+						{{ vsStatusGridData.length }} {{ dictionary.objectsLabel }}
+					</clr-dg-pagination>
+				</clr-dg-footer>
+			</clr-datagrid>
+		</form>
+	</div>
+	<div class="modal-footer">
+		<button type="button" [disabled]="!playbookForm.valid" class="btn btn-primary" (click)="generatePlaybook()">
+			{{ dictionary.readyPageGenerateTitle }}
+		</button>
+	</div>
+</clr-modal>
 
 
-  <!-- Toaster message -->
-   <div class="alert alert-success btm-toaster" role="alert" *ngIf="showToaster">
-      <div class="alert-items">
-      <div class="alert-item static">
-         <div class="alert-icon-wrapper">
-            <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
-         </div>
-         <span class="alert-text"> {{ toasterMessage }} </span>
-      </div>
-      </div>
-      <button type="button" class="close" aria-label="Close" (click)="showToaster = false">
-         <cds-icon aria-hidden="true" shape="close"></cds-icon>
-      </button>
-   </div>
-
+<!-- Toaster message -->
+<div class="alert alert-success btm-toaster" role="alert" *ngIf="showToaster">
+	<div class="alert-items">
+		<div class="alert-item static">
+			<div class="alert-icon-wrapper">
+				<cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
+			</div>
+			<span class="alert-text"> {{ toasterMessage }} </span>
+		</div>
+	</div>
+	<button type="button" class="close" aria-label="Close" (click)="showToaster = false">
+		<cds-icon aria-hidden="true" shape="close"></cds-icon>
+	</button>
 </div>
