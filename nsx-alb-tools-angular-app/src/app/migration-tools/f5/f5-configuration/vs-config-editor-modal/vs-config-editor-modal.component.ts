@@ -11,6 +11,8 @@ import {
 } from '../f5-configuration.types';
 
 import { ConfigurationService } from 'src/app/shared/configuration.service';
+import { MigrationMetricsService } from 'src/app/shared/components/migration-metrics/migration-metrics.service';
+
 import { lastValueFrom } from 'rxjs';
 import * as l10n from './vs-config-editor-modal.l10n';
 
@@ -50,6 +52,7 @@ export class VsConfigEditorModalComponent {
 
   constructor(
     private readonly configurationService: ConfigurationService,
+    private readonly migrationMetricsService: MigrationMetricsService
   ) { }
 
   public async handleCloseChildConfigEditorModal(acceptedConfiguration: vsFlaggedObject): Promise<void> {
@@ -128,6 +131,7 @@ export class VsConfigEditorModalComponent {
         }
         const updateMigrationData$ = this.configurationService.acceptConfiguration(result);
         await lastValueFrom(updateMigrationData$);
+        this.migrationMetricsService.refreshSubject.next();
 
         this.onCloseVsConfigEditorModal.emit(isAcceptedConfiguration);
       } catch (errors) {
