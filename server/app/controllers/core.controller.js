@@ -114,9 +114,9 @@ exports.saveAviLabDetails = asyncHandler(async (req, res, next) => {
             upsert: true
         });
 
-        res.status(200).json({ message: 'Avi Lab details are saved successfully.' });
+        res.status(200).json({ message: 'Lab details are saved successfully.' });
     } catch (err) {
-        res.status(500).json({ message: 'Error in saving Avi Lab controller details, ' + err.message });
+        res.status(500).json({ message: 'Error in saving details, ' + err.message });
     }
 });
 
@@ -142,10 +142,10 @@ exports.getAviDestinationDetails = asyncHandler(async (req, res, next) => {
         if (destinationDetails) {
             res.status(200).json(destinationDetails);
         } else {
-            res.status(404).json({ error: "Avi Destination details not found." });
+            res.status(200).json({});
         }
     } catch (err) {
-        res.status(500).json({ message: 'Error in fetching the Avi Destination controller & Mappings details, ' + err.message });
+        res.status(500).json({ message: 'Error in getting Destination & Mappings details, ' + err.message });
     }
 });
 

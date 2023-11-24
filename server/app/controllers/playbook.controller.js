@@ -10,9 +10,9 @@ const { PlaybookDetailsModel } = require('../models/playbook.model');
 const F5_HOST_IP = '10.206.40.100';
 const DEFAULT_PLAYBOOK_NAME = 'avi_config';
 
-const savePlaybooksInDB = async (playbookName, fileCreationTime, f5_host_ip, res) => {
+const savePlaybooksInDB = async (playbookName, fileCreationTime, res) => {
     try{
-        const findQuery = { 'f5_host_ip': `${f5_host_ip}` };
+        const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
         const foundDoc = await PlaybookDetailsModel.findOne(findQuery).lean();
         
         const docPlaybooks = foundDoc ? foundDoc['playbooks'] : [];
@@ -33,7 +33,7 @@ const savePlaybooksInDB = async (playbookName, fileCreationTime, f5_host_ip, res
         res.status(200).json({ message: 'Playbooks are saved successfully.'});
     } catch (err) {
         console.log(err.message);
-        res.status(404).json({ message: 'Error in saving the generated Playbooks in DB. ' + err.message});
+        res.status(500).json({ message: 'Error in saving Playbooks' + err.message});
     }
 };
 
@@ -59,37 +59,42 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
 
                 pythonProcess.stderr.on('data', (data) => {
                     console.error(`stderr: ${data}`);
+                    res.status(500).json({ message: 'Error in generating Playbooks, ' + data.toString()});
                 });
 
                 // On close event, we are sure that stream from child process is closed.
                 pythonProcess.on('close', async (code) => {
                     console.log(`child process close all stdio with code ${code}`);
 
-                    // Remove these lines and enable below commented lines
-                    const playbookFilePath = `${playbookBasePath}/avi_config.yml`; 
-                    const deletePlaybookFilePath = `${playbookBasePath}/avi_config_delete.yml`;
-                    // const playbookFilePath = `${playbookBasePath}/${playbookName}.yml`;
-                    // const deletePlaybookFilePath = `${playbookBasePath}/${playbookName}_delete.yml`;
+                    if (code !== 1) {
+                        // Remove these lines and enable below commented lines
+                        const playbookFilePath = `${playbookBasePath}/avi_config.yml`; 
+                        const deletePlaybookFilePath = `${playbookBasePath}/avi_config_delete.yml`;
+                        // const playbookFilePath = `${playbookBasePath}/${playbookName}.yml`;
+                        // const deletePlaybookFilePath = `${playbookBasePath}/${playbookName}_delete.yml`;
 
-                    if (fs.pathExistsSync(playbookFilePath) && fs.pathExistsSync(deletePlaybookFilePath)) {
-                        console.log('Playbooks are created successfully by script.');
+                        if (fs.pathExistsSync(playbookFilePath) && fs.pathExistsSync(deletePlaybookFilePath)) {
+                            console.log('Playbooks are created successfully by script.');
 
-                        const fileCreationTime = fs.statSync(playbookFilePath).birthtime;
+                            const fileCreationTime = fs.statSync(playbookFilePath).birthtime;
 
-                        savePlaybooksInDB(playbookName, fileCreationTime, f5_host_ip, res);
+                            savePlaybooksInDB(playbookName, fileCreationTime, res);
+                        } else {
+                            res.status(500).json({ message: 'Error in generating Playbooks.'});
+                        }
                     } else {
-                        res.status(404).json({ error: 'Error in generating Playbooks.'});
+                        res.status(500).json({ message: 'Error in generating Playbooks.'});
                     }
                 });
             } else {
-                res.status(404).json({ error: 'File does not exists at desired location.'});
+                res.status(500).json({ message: 'Error in generating Playbooks.'});
             };
 
         } catch (err) {
-            res.status(500).json({ error: 'Error in reading the updated Avi Output JSON, ' + err.message});
+            res.status(500).json({ message: 'Error in reading the updated Configurations, ' + err.message});
         }
     } else {
-        res.status(400).json({ error: 'Missing required Playbook name.' });
+        res.status(400).json({ message: 'Missing required Playbook name.' });
     }
 });
 
@@ -121,6 +126,6 @@ exports.getPlaybooks = asyncHandler(async (req, res, next) => {
 
         res.status(200).json({ 'result': docPlaybooks });
     } catch (err) {
-        res.status(404).json({ message: 'Error in getting Playbooks from DB. ' + err.message});
+        res.status(500).json({ message: 'Error in getting Playbooks. ' + err.message});
     }
 });

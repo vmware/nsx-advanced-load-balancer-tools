@@ -1,8 +1,16 @@
-<div>
-   <p>
+<div class="f5-report">
+   <clr-alert *ngIf="hasError" [clrAlertType]="'danger'" (clrAlertClosedChange)="onErrorAlertClose()" class="alert-section">
+      <clr-alert-item>
+         <span class="alert-text">
+            {{ dictionary.genericErrorMessage }}
+         </span>
+      </clr-alert-item>
+   </clr-alert>
+   
+   <div class="button-container">
       <button class="btn btn-primary" (click)="handleOpenStartMigrationWizard()"> {{ dictionary.reportPageContinueMigrationText }} </button>
       <button class="btn btn-link" (click)="downloadReport()"> {{ dictionary.reportPageDownloadReportButtonText }} </button>   
-   </p>
+   </div>
 
    <div class="clr-row">
       <div class="clr-col-lg-4 clr-col-md-6 clr-col-12">

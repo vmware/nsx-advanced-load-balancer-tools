@@ -18,7 +18,7 @@
         <p>
             {{ dictionary.startWizardCollectPageSubTitle }}
         </p>
-        <div class="alert alert-danger" role="alert" *ngIf="f5LoginError">
+        <div class="alert alert-danger" role="alert" *ngIf="f5LoginError && !loadingFlag">
             <div class="alert-items">
                 <div class="alert-item static">
                     <div class="alert-icon-wrapper">
