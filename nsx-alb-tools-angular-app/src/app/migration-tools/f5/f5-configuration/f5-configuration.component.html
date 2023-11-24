@@ -9,59 +9,42 @@
     </clr-alert>
   </div>
 
-  <div class="clr-row">
-    <div class="clr-col-lg-12 clr-col-12">
-       <div class="card top-row">
-          <div class="card-block">
-            <h5 class="card-title"> {{ dictionary.readyPageConfigMigrationTitle }} </h5>
-            <div class="card-text card-progress-text">
-              <clr-progress-bar class="progress-bar" clrSuccess clrValue="{{ (migrationOverviewData?.result?.reviewedVirtuals * 100 / migrationOverviewData?.result?.incompleteVirtuals) | number:'1.0-0' }}"></clr-progress-bar>
-              <div class="no-wrap ml-12"> {{ (migrationOverviewData?.result?.reviewedVirtuals * 100 / migrationOverviewData?.result?.incompleteVirtuals) | number:'1.0-0' }} % completed</div>
-            </div>
-            <div>
-              <span class="badge badge-blue"></span> {{ dictionary.readyPageReviewedTitle }} {{ migrationOverviewData?.result?.reviewedVirtuals }}
-              <span class="badge ml-12"></span> {{ dictionary.readyPageIncompleteTitle }}  {{ migrationOverviewData?.result?.incompleteVirtuals }}
-            </div>
-          </div>
-       </div>
+  <div class="f5-configuration__cards">
+    <div class="clr-row">
+      <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
+        <next-conversion-card
+          [selectedMigrationData]="incompleteVSMigrationsData[selectedMigrationIndex]"
+          [isFetchInProgress]="isLoadingMigrationsData"
+          (onSkip)="handleSkip()"
+          (onStart)="handleStart()"
+        ></next-conversion-card>
+      </div>
+      <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
+        <lab-controller-card
+          [isFetchInProgress]="isLoadingMigrationsData"
+          (onFetch)="handleFetch()"
+        ></lab-controller-card>
+      </div>
     </div>
   </div>
 
-    <div class="f5-configuration__cards">
-        <div class="clr-row">
-            <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
-              <next-conversion-card
-                [selectedMigrationData]="incompleteVSMigrationsData[selectedMigrationIndex]"
-                [isFetchInProgress]="isLoadingMigrationsData"
-                (onSkip)="handleSkip()"
-                (onStart)="handleStart()"
-              ></next-conversion-card>
-            </div>
-            <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">
-              <lab-controller-card
-                [isFetchInProgress]="isLoadingMigrationsData"
-                (onFetch)="handleFetch()"
-              ></lab-controller-card>
-            </div>
-          </div>
-    </div>
-    <div class="f5-configuration__grid">
-        <incomplete-migrations-grid
-            [incompleteMigrationsData]="incompleteVSMigrationsData"
-            [isLoading]="isLoadingMigrationsData"
-            (onAcceptVsConfig)="removeVsMigrationData($event)"
-        ></incomplete-migrations-grid>
-    </div>
+  <div class="f5-configuration__grid">
+    <incomplete-migrations-grid
+      [incompleteMigrationsData]="incompleteVSMigrationsData"
+      [isLoading]="isLoadingMigrationsData"
+      (onAcceptVsConfig)="removeVsMigrationData($event)"
+    ></incomplete-migrations-grid>
+  </div>
 
-    <div class="f5-configuration__alert-section" *ngIf="configurationService.showCompletedMigrationsCountAlert">
-      <clr-alert [clrAlertType]="'success'" (clrAlertClosedChange)="onSuccessAlertClose()">
-          <clr-alert-item>
-              <span class="alert-text">
-                <span class="f5-configuration__alert-header">{{ dictionary.convertedLabel }} {{ completedVSMigrationsCount }} {{ dictionary.completedMigrationsAlertHeader }}</span>
-                <span class="f5-configuration__alert-body">{{ dictionary.completedMigrationsAlertMessage }}</span>
-              </span>
-          </clr-alert-item>
-      </clr-alert>
+  <div class="f5-configuration__alert-section" *ngIf="configurationService.showCompletedMigrationsCountAlert">
+    <clr-alert [clrAlertType]="'success'" (clrAlertClosedChange)="onSuccessAlertClose()">
+      <clr-alert-item>
+        <span class="alert-text">
+          <span class="f5-configuration__alert-header">{{ dictionary.convertedLabel }} {{ completedVSMigrationsCount }} {{ dictionary.completedMigrationsAlertHeader }}</span>
+          <span class="f5-configuration__alert-body">{{ dictionary.completedMigrationsAlertMessage }}</span>
+        </span>
+      </clr-alert-item>
+    </clr-alert>
   </div>
 
   <vs-config-editor-modal

@@ -6,14 +6,16 @@ import {
   Output,
 } from '@angular/core';
 
-import * as l10n from './migration-metrics.l10n';
+import { forkJoin } from 'rxjs';
+
 import { EMPTY_VALUE } from 'src/app/shared/constants';
 import { MigrationMetric } from './migration-metrics.types';
 import { ConfigurationService } from '../../configuration.service';
 import { IRuleDataService } from '../../irule-data-service/irule-data.service';
-import { forkJoin } from 'rxjs';
+import { MigrationMetricsService } from './migration-metrics.service';
 
 
+import * as l10n from './migration-metrics.l10n';
 const { ENGLISH: dictionary } = l10n;
 
 @Component({
@@ -30,25 +32,30 @@ export class MigrationMetricsComponent implements OnInit {
 
   public emptyValue = EMPTY_VALUE;
   public dictionary = dictionary;
+  private refreshSubsription;
 
   constructor(
     private readonly configurationService: ConfigurationService,
     private readonly iRuleDataService: IRuleDataService,
+    private readonly migrationMetricsService: MigrationMetricsService,
   ) { }
 
   /** @override */
   public ngOnInit() {
+    this.refreshSubsription =  this.migrationMetricsService.refreshSubject.subscribe((refresh) => {
+      this.fetchOverview();
+    })
     this.fetchOverview();
   }
 
   public fetchOverview() {
+    this.metricsData = [];
     const combinedResponse = forkJoin([
       this.configurationService.getMigrationOverviewData(),
       this.iRuleDataService.getIRuleMigrationOverview()
     ]);
 
     combinedResponse.subscribe((data) => {
-      console.log(data);
       const configOverviewResponse = data[0];
       const iRuleOverviewResponse = data[1];
 
@@ -74,5 +81,9 @@ export class MigrationMetricsComponent implements OnInit {
         this.metricsData.push(iRuleOverview);
       }
     })
+  }
+
+  public ngOnDestroy(): void {
+    this.refreshSubsription.unsubscribe();
   }
 }

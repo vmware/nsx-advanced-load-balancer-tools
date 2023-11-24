@@ -13,6 +13,7 @@
     <clr-tab>
         <button clrTabLink routerLink="./configuration">{{ dictionary.migrationPageConfigurationTitle }}</button>
         <clr-tab-content *clrIfActive="isActive('/configuration')">
+            <migration-metrics></migration-metrics>
             <router-outlet></router-outlet>
         </clr-tab-content>
     </clr-tab>
@@ -20,6 +21,7 @@
     <clr-tab>
         <button clrTabLink routerLink="./irule">{{ dictionary.migrationPageiRuleTitle }}</button>
         <clr-tab-content *clrIfActive="isActive('/irule')">
+            <migration-metrics></migration-metrics>
             <router-outlet></router-outlet>
         </clr-tab-content>
     </clr-tab>
@@ -27,6 +29,7 @@
     <clr-tab>
         <button clrTabLink routerLink="./ready">{{ dictionary.migrationPageReadyTitle }}</button>
         <clr-tab-content *clrIfActive="isActive('/ready')">
+            <migration-metrics></migration-metrics>
             <router-outlet></router-outlet>
         </clr-tab-content>
     </clr-tab>
