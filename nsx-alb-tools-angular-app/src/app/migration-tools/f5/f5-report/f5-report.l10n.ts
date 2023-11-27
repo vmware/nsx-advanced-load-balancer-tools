@@ -25,5 +25,5 @@ export const ENGLISH = {
     reportPageBytesText: 'Bytes',
     reportPageMaxConnectionsText: 'Max Connections',
     totalText: 'Total',
-    genericErrorMessage: 'Error while fetching the data. Try again by refreshing the page.',
+    genericErrorMessage: 'Error while fetching the data.',
 };

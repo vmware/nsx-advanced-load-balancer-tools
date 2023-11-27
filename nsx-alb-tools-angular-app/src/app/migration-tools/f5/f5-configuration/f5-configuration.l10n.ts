@@ -10,5 +10,5 @@ export const ENGLISH = {
     convertedLabel: 'Converted',
     completedMigrationsAlertMessage: 'A short description of the event. Information not to exceed 156 characters.',
     completedMigrationsAlertHeader: 'Objects Successfully',
-    genericErrorMessage: 'Error while fetching the data. Try again by refreshing the page.',
+    genericErrorMessage: 'Error while fetching the data.',
 };
