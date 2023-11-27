@@ -8,4 +8,5 @@ export const ENGLISH = {
     editorAlertMessage: 'was partial converted, please review and complete.',
     cancelLabel: 'Cancel',
     acceptLabel: 'Accept',
+    errorMessage: 'Accepted configuration was not saved.',
 };
