@@ -18,8 +18,8 @@ export class IRuleDataService {
     private http: HttpService,
   ) { }
 
-  public getIncompleteIRules(): Observable<IRuleMigration[]> {
-    return this.http.get('irule/getIncompleteIRules');
+  public getSkippedIRules(): Observable<IRuleMigration[]> {
+    return this.http.get('irule/getSkippedIRules');
   }
 
   public getIRuleMigrationOverview(): Observable<IRuleMigrationOverview> {
