@@ -307,7 +307,7 @@ const updateAviObjectInAviOutputModel = async (req, res) => {
             const updateQuery = `${profileType}.${indexToUpdate}`;
             await AviOutputModel.findOneAndUpdate(findQuery, { $set: { [updateQuery]: aviObjectToUpdate } });
         } else {
-            res.status(404).json({ error: "Profile you are trying to update does not exists" });
+            res.status(500).json({ error: "Profile you are trying to update does not exists." });
         }
     } catch (error) {
         console.error(error)
@@ -340,9 +340,9 @@ const updateStatus = async (req, res) => {
                 `status_sheet.${parentF5Type}.${parentIndexToUpdate}.Vs_Mappings.${childIndexToUpdate}.Status`;
             const profileTypeUpdateQuery = `status_sheet.${childF5Type}.${childF5SubType}.${subProfileIndexToUpdate}.Status`;
             
-            // Add new key 'isManuallyReviewed' to the conversion collection, to track the manual reviewed status.
-            // Only Virtual to have this key.
-            const entityReviewedUpdateQuery = `status_sheet.virtual.${parentIndexToUpdate}.isManuallyReviewed`;
+            // Add new key 'isReviewed' to the conversion collection, to track the manual reviewed status.
+            // Only Virtual to have this key, not the VS_Mappings. 
+            const entityReviewedUpdateQuery = `status_sheet.virtual.${parentIndexToUpdate}.isReviewed`;
             if (parentF5Type === 'virtual') {
                 const update = await ConversionStatusModel.findOneAndUpdate(findQuery, { $set:{
                     [VsMappingUpdateQuery]: mappingStatus,
@@ -356,7 +356,7 @@ const updateStatus = async (req, res) => {
                 }});
             }
         } else {
-            res.status(404).json({ error: "Conversion Status Profile you are trying to update does not exists" });
+            res.status(500).json({ error: "Profile you are trying to update does not exists." });
         }
     } catch (error) {
         console.error(error)
@@ -370,6 +370,9 @@ const updateStatus = async (req, res) => {
 const replaceEntityObject = async (req, res) => {
     try {
         const { F5_type: entityF5Type, F5_SubType: entityF5SubType = '', F5_ID: entityF5Id } = req.body;
+        const updateVSPayload = req.body
+        // Add new key 'isReviewed' to the conversion collection, to track the manual reviewed status.
+        updateVSPayload['isReviewed'] = true;
 
         const profileTypeString = entityF5SubType.trim() ? `status_sheet.${entityF5Type}.${entityF5SubType}.F5_ID` : `status_sheet.${entityF5Type}.F5_ID`;
         const findQuery = { [profileTypeString]: `${entityF5Id}` };
@@ -382,9 +385,9 @@ const replaceEntityObject = async (req, res) => {
                 `status_sheet.${entityF5Type}.${entityF5SubType}.${entityIndexToUpdate}` :
                 `status_sheet.${entityF5Type}.${entityIndexToUpdate}`;
 
-            const update = await ConversionStatusModel.findOneAndUpdate(findQuery, { $set: { [entityUpdateQuery]: req.body } });
+            const update = await ConversionStatusModel.findOneAndUpdate(findQuery, { $set: { [entityUpdateQuery]: updateVSPayload } });
         } else {
-            res.status(404).json({ error: "Conversion Status Profile you are trying to update does not exists" });
+            res.status(200).json({ message: "Profile you are trying to update does not exists." });
         }
     } catch (error) {
         console.error(error)
@@ -518,7 +521,7 @@ exports.getReadyVirtuals = asyncHandler(async (req, res, next) => {
         if (Array.isArray(ready)) {
             res.status(200).json({ result: { ready, readyCount: ready.length } });
         } else {
-            res.status(404).json({ error: "Data you trying to find does not exists on Conversion Status Profile." });
+            res.status(200).json({ result: { ready: [], readyCount: 0 } });
         }
     } catch (error) {
         console.error(error)
@@ -563,7 +566,9 @@ exports.getMigrationOverview = asyncHandler(async (req, res, next) => {
                 }
             });
         } else {
-            res.status(404).json({ error: "Data you trying to find does not exists on Conversion Status Profile." });
+            res.status(200).json({
+                result: {}
+            });
         }
     } catch (error) {
         console.error(error)
