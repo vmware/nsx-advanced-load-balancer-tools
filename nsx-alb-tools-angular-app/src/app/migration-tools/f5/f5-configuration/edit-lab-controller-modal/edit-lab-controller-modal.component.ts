@@ -31,7 +31,7 @@ export class EditLabControllerModalComponent implements OnInit {
 
   public isOpen = true;
 
-  public errorMessage: string = '';
+  public hasError = false;
 
   public dictionary = dictionary;
 
@@ -81,7 +81,7 @@ export class EditLabControllerModalComponent implements OnInit {
 
       this.onClose.emit(saveConfiguration);
     } catch (error) {
-      this.errorMessage = 'Error while saving data';
+      this.hasError = true;
     }
   }
 }

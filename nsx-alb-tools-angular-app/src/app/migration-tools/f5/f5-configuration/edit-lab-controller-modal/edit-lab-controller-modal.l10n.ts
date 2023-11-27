@@ -14,5 +14,5 @@ export const ENGLISH = {
     ipAddressPlaceholder: 'Enter IP Address',
     passwordLabel: 'Password',
     passwordPlaceholder: 'Enter Password',
-    generalErrorMessage: 'Try closing this alert',
+    generalErrorMessage: 'Error while saving data.',
 };

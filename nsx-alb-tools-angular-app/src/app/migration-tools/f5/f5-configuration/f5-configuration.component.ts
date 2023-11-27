@@ -23,7 +23,7 @@ const { ENGLISH: dictionary } = l10n;
   styleUrls: ['./f5-configuration.component.less'],
 })
 export class F5ConfigurationComponent implements OnInit, OnDestroy {
-  public incompleteVSMigrationsData: incompleteVsMigration[] = [];
+  public incompleteMigrationsData: incompleteVsMigration[] = [];
 
   public selectedMigrationIndex = 0;
 
@@ -39,8 +39,6 @@ export class F5ConfigurationComponent implements OnInit, OnDestroy {
 
   public readonly verticalLayout = ClrFormLayout.VERTICAL;
 
-  public migrationOverviewData;
-
   public dictionary = dictionary;
 
   constructor(public readonly configurationService: ConfigurationService) { }
@@ -48,24 +46,43 @@ export class F5ConfigurationComponent implements OnInit, OnDestroy {
 
   /** @override */
   public async ngOnInit(): Promise<void> {
-      await this.getAllIncompleteVSMigrationsData();
-      await this.getMigrationOverviewData();
+    try {
+      this.isLoadingMigrationsData = true;
+
+      await this.getIncompleteMigrationsData();
+    } catch (error) {
+      this.hasError = true;
+    } finally {
+      this.isLoadingMigrationsData = false;
+    }
   }
 
   public handleCloseVsConfigEditor(isConfigurationAccepted: boolean): void {
     if (isConfigurationAccepted) {
-      this.removeVsMigrationData(this.selectedMigrationIndex);
+      this.handleVSAccept(this.selectedMigrationIndex);
+    } else {
+      this.isOpenVsConfigEditorModal = false;
     }
-
-    this.isOpenVsConfigEditorModal = false;
   }
 
-  public async removeVsMigrationData(selectedMigrationIndex: number): Promise<void> {
-    if (selectedMigrationIndex !== -1) {
-      this.incompleteVSMigrationsData.splice(selectedMigrationIndex, 1);
+  public async handleVSAccept(index: number): Promise<void> {
+    try {
+      await this.removeVsMigrationData(index);
 
-      await this.getMigrationOverviewData();
+      this.isOpenVsConfigEditorModal = false;
+    } catch (error) {
+      this.hasError = true;
     }
+  }
+
+  public async removeVsMigrationData(index: number): Promise<void> {
+    if (index !== -1) {
+      this.incompleteMigrationsData.splice(index, 1);
+    }
+  }
+
+  public handleLabControllerError(): void {
+    this.hasError = true;
   }
 
   public handleSkip(): void {
@@ -83,8 +100,7 @@ export class F5ConfigurationComponent implements OnInit, OnDestroy {
       const fetchFromController$ = this.configurationService.fetchFromController();
 
       await lastValueFrom(fetchFromController$);
-      await this.getAllIncompleteVSMigrationsData();
-      await this.getMigrationOverviewData();
+      await this.getIncompleteMigrationsData();
 
       this.configurationService.showCompletedMigrationsCountAlert = true;
     } catch (error) {
@@ -107,24 +123,11 @@ export class F5ConfigurationComponent implements OnInit, OnDestroy {
     this.configurationService.showCompletedMigrationsCountAlert = false;
   }
 
-  private async getMigrationOverviewData(): Promise<void> {
-    const migrationOverviewData$ = this.configurationService.getMigrationOverviewData();
-    this.migrationOverviewData = await lastValueFrom(migrationOverviewData$);
-  }
+  private async getIncompleteMigrationsData(): Promise<void> {
+    const data$ = this.configurationService.getIncompleteMigrationsData();
+    const data: incompleteVsMigrationsData = await lastValueFrom(data$);
 
-  private async getAllIncompleteVSMigrationsData(): Promise<void> {
-    try {
-      this.isLoadingMigrationsData = true;
-
-      const data$ = this.configurationService.getAllIncompleteVSMigrationsData();
-      const data: incompleteVsMigrationsData = await lastValueFrom(data$);
-
-      this.incompleteVSMigrationsData = data.incompleteVSMigrationsData || [];
-      this.completedVSMigrationsCount = data.completedVSMigrationsCount || 0;
-    } catch (error) {
-      this.hasError = true;
-    } finally {
-      this.isLoadingMigrationsData = false;
-    }
+    this.incompleteMigrationsData = data.incompleteVSMigrationsData || [];
+    this.completedVSMigrationsCount = data.completedVSMigrationsCount || 0;
   }
 }
