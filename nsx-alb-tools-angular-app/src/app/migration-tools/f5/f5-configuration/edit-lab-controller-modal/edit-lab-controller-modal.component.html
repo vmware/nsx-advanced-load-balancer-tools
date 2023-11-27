@@ -3,9 +3,9 @@
         <h3 class="modal-title">{{ dictionary.header }}</h3>
 
         <div class="modal-body">
-            <clr-alert [clrAlertType]="'danger'" *ngIf="errorMessage">
+            <clr-alert [clrAlertType]="'danger'" *ngIf="hasError">
                 <clr-alert-item>
-                  <span class="alert-text">{{ errorMessage }}</span>
+                  <span class="alert-text">{{ dictionary.generalErrorMessage }}</span>
                 </clr-alert-item>
               </clr-alert>
 
@@ -38,7 +38,7 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-outline" (click)="closeModal(false)">{{ dictionary.cancelLabel }}</button>
 
-            <button type="button" class="btn btn-primary" (click)="closeModal(true)" [disabled]="!labControllerForm.valid || errorMessage">{{ dictionary.saveLabel }}</button>
+            <button type="button" class="btn btn-primary" (click)="closeModal(true)" [disabled]="!labControllerForm.valid || hasError">{{ dictionary.saveLabel }}</button>
         </div>
     </clr-modal>
 </div>

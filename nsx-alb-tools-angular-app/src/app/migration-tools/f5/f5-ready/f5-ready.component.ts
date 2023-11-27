@@ -10,7 +10,7 @@ import { ClrWizard } from "@clr/angular";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { 
+import {
   DateFilter,
   TDateFilter,
 } from './utils/date-filter.utils';
@@ -96,7 +96,7 @@ export class F5ReadyComponent implements OnInit {
         vrf: this.f5DestinationData.vrf[0],
         seGroup: this.f5DestinationData.seGroup[0],
       });
-      
+
       this.http.get('core/getAviDestinationDetails').subscribe(
         (response) => {
           const {
@@ -123,7 +123,7 @@ export class F5ReadyComponent implements OnInit {
             avi_mapped_cloud,
             avi_mapped_segroup,
           }
-        }, 
+        },
         (err) => {
           console.log(err.error.message);
           this.hasError = true;
@@ -253,8 +253,9 @@ export class F5ReadyComponent implements OnInit {
     this.http.get(
       `playbook/downloadPlaybook?fileName=${fileName}`,
       { responseType: "blob" },
-    ).subscribe((data: Blob) => {
-      FileSaver.saveAs(data, fileName);
+    ).subscribe({
+      next: (data: Blob) => FileSaver.saveAs(data, fileName),
+      error: (error) => this.hasError = true,
     });
   }
 

@@ -32,16 +32,16 @@ const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res)
 
     let dataToSend;
     const pythonProcess = spawn('f5_converter.py', [
-        '--f5_host_ip', f5_host_ip, 
-        '--f5_ssh_user', f5Details.f5_ssh_user, 
+        '--f5_host_ip', f5_host_ip,
+        '--f5_ssh_user', f5Details.f5_ssh_user,
         '--f5_ssh_password', f5Details.f5_ssh_password,
         '-c', labDetails.avi_lab_ip,
         '-u', labDetails.avi_lab_user,
-        '-p', labDetails.avi_lab_password,  
-        '--vrf', destinationDetails.avi_mapped_vrf, 
-        '--tenant', destinationDetails.avi_mapped_tenant, 
-        '--cloud_name', destinationDetails.avi_mapped_cloud, 
-        '--controller_version', destinationDetails.avi_destination_version, 
+        '-p', labDetails.avi_lab_password,
+        '--vrf', destinationDetails.avi_mapped_vrf,
+        '--tenant', destinationDetails.avi_mapped_tenant,
+        '--cloud_name', destinationDetails.avi_mapped_cloud,
+        '--controller_version', destinationDetails.avi_destination_version,
         '-o', MIGRATION_FOLDER_NAME
     ], {
         shell: true,
@@ -150,7 +150,7 @@ exports.generateConfiguration = asyncHandler(async (req, res, next) => {
     try {
         // Save the F5 Controller details.
         const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
-        
+
         await F5DetailsModel.findOneAndUpdate(findQuery, { data: f5Details }, { upsert: true });
 
         // Save the Avi Lab details.
@@ -177,22 +177,20 @@ exports.getConfiguration = asyncHandler(async (req, res, next) => {
             }
         ]);
         const [aviOutputResult] = await AviOutputModel.find({}, { _id: 0 }).lean();
+        let vsIncompleteMigrationData = [];
+        let completedVSMigrationsCount = 0;
 
         if (conversionStatusResult?.data?.virtual && aviOutputResult) {
-            let vsIncompleteMigrationData = [];
-            let completedVSMigrationsCount = 0;
             const { data } = conversionStatusResult;
 
             vsIncompleteMigrationData = getIncompleteMigrationData(data, aviOutputResult) || [];
             completedVSMigrationsCount = data.virtual.length - vsIncompleteMigrationData.length;
-
-            return res.status(200).json({
-                incompleteVSMigrationsData: vsIncompleteMigrationData,
-                completedVSMigrationsCount: completedVSMigrationsCount,
-            });
-        } else {
-            return res.status(404).json({ error: "Virtual data is not present" });
         }
+
+        return res.status(200).json({
+            incompleteVSMigrationsData: vsIncompleteMigrationData,
+            completedVSMigrationsCount: completedVSMigrationsCount,
+        });
     }
     catch (err) {
         res.status(500).json({ message: 'Error while fetching the configuration details, ' + err.message });
@@ -200,33 +198,28 @@ exports.getConfiguration = asyncHandler(async (req, res, next) => {
 });
 
 function getIncompleteMigrationData(data, aviOutputResult) {
-    try {
-        const vsIncompleteMigrationData = data.virtual.filter(virtual => {
-            // Filter out partial status Vs_Mappings objects.
-            virtual.flaggedObjects = virtual.Vs_Mappings.filter(mapping => mapping.Status !== SUCCESSFUL_STATUS);
+    const vsIncompleteMigrationData = data.virtual.filter(virtual => {
+        // Filter out partial status Vs_Mappings objects.
+        virtual.flaggedObjects = virtual.Vs_Mappings.filter(mapping => mapping.Status !== SUCCESSFUL_STATUS);
 
-            virtual.flaggedObjects.forEach(object => {
-                const objectF5TypeConfig = data[object.F5_type];
-                const objectF5SubTypeConfig = object.F5_SubType ? objectF5TypeConfig[object.F5_SubType] : objectF5TypeConfig;
+        virtual.flaggedObjects.forEach(object => {
+            const objectF5TypeConfig = data[object.F5_type];
+            const objectF5SubTypeConfig = object.F5_SubType ? objectF5TypeConfig[object.F5_SubType] : objectF5TypeConfig;
 
-                object.F5_Object = getF5Config(objectF5SubTypeConfig, object.F5_ID) || '';
+            object.F5_Object = getF5Config(objectF5SubTypeConfig, object.F5_ID) || '';
 
-                object.avi_objects.forEach(object => {
-                    const aviTypeConfig = aviOutputResult[object.avi_type] || [];
+            object.avi_objects.forEach(object => {
+                const aviTypeConfig = aviOutputResult[object.avi_type] || [];
 
-                    object.Avi_Object = getAviConfig(aviTypeConfig, object.avi_name);
-                });
+                object.Avi_Object = getAviConfig(aviTypeConfig, object.avi_name);
             });
-
-            // Filter only incomplete migration data by checking status of Vs and Vs_Mappings objects.
-            return virtual.flaggedObjects.length || virtual.Status !== SUCCESSFUL_STATUS;
         });
 
-        return vsIncompleteMigrationData;
-    }
-    catch (err) {
-        return res.status(500).json({ message: 'Error while formatting and filtering virtual data, ' + err.message });
-    }
+        // Filter only incomplete migration data by checking status of Vs and Vs_Mappings objects.
+        return virtual.flaggedObjects.length || virtual.Status !== SUCCESSFUL_STATUS;
+    });
+
+    return vsIncompleteMigrationData;
 }
 
 function getF5Config(config, id) {
@@ -251,7 +244,7 @@ exports.fetchConfiguration = asyncHandler(async (req, res, next) => {
             runMigrationAndSaveJson(f5Details, labDetails, destinationDetails, res);
         }
         else {
-            return res.status(500).json({ message: 'Required data for script is not present' });
+            return res.status(500).json({ message: 'Required data for script not found.' });
         }
     } catch (err) {
         return res.status(500).json({ message: 'Error in fetching the F5/Lab/destination details, ' + err.message });
@@ -339,9 +332,9 @@ const updateStatus = async (req, res) => {
                 `status_sheet.${parentF5Type}.${parentF5SubType}.${parentIndexToUpdate}.Vs_Mappings.Status` :
                 `status_sheet.${parentF5Type}.${parentIndexToUpdate}.Vs_Mappings.${childIndexToUpdate}.Status`;
             const profileTypeUpdateQuery = `status_sheet.${childF5Type}.${childF5SubType}.${subProfileIndexToUpdate}.Status`;
-            
+
             // Add new key 'isReviewed' to the conversion collection, to track the manual reviewed status.
-            // Only Virtual to have this key, not the VS_Mappings. 
+            // Only Virtual to have this key, not the VS_Mappings.
             const entityReviewedUpdateQuery = `status_sheet.virtual.${parentIndexToUpdate}.isReviewed`;
             if (parentF5Type === 'virtual') {
                 const update = await ConversionStatusModel.findOneAndUpdate(findQuery, { $set:{

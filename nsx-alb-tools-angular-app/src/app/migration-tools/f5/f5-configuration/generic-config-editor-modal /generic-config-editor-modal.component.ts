@@ -21,7 +21,7 @@ export class GenericConfigEditorModalComponent implements OnInit {
   public config: vsFlaggedObject;
 
   @Input()
-  public error: string;
+  public hasError: boolean = false;
 
   @Output()
   public onCloseGeneralConfigEditorModal = new EventEmitter<vsFlaggedObject>();

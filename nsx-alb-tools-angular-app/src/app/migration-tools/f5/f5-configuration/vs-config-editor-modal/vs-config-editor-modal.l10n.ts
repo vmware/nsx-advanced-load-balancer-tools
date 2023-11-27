@@ -9,6 +9,5 @@ export const ENGLISH = {
     reviewNowLabel: 'Review Now',
     cancelLabel: 'Cancel',
     acceptLabel: 'Accept',
-    childConfigEditorErrorMessage: 'Accepted flagged object configuration was not saved.',
     vsConfigEditorErrorMessage: 'Accepted VS configuration was not saved.',
 };

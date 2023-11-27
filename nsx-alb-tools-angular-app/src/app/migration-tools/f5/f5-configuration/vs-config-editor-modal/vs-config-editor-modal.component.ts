@@ -36,9 +36,9 @@ export class VsConfigEditorModalComponent {
   @Output()
   public onCloseVsConfigEditorModal = new EventEmitter<boolean>();
 
-  public childConfigEditorError = '';
+  public hasChildConfigEditorError = false;
 
-  public vsConfigEditorError = '';
+  public hasVSConfigEditorError = false;
 
   public isOpen = true;
 
@@ -56,7 +56,7 @@ export class VsConfigEditorModalComponent {
   ) { }
 
   public async handleCloseChildConfigEditorModal(acceptedConfiguration: vsFlaggedObject): Promise<void> {
-    this.childConfigEditorError = '';
+    this.hasChildConfigEditorError = false;
 
     if (acceptedConfiguration) {
       const { F5_type: vsType, F5_SubType: vsSubType, F5_ID: vsId } = this.vsConfig;
@@ -90,7 +90,7 @@ export class VsConfigEditorModalComponent {
 
         this.isOpenChildConfigEditorModal = false;
       } catch (errors) {
-        this.childConfigEditorError =  dictionary.childConfigEditorErrorMessage;
+        this.hasChildConfigEditorError = true;
       }
     }
     else {
@@ -110,7 +110,7 @@ export class VsConfigEditorModalComponent {
 
   public async closeModal(acceptedConfiguration): Promise<void> {
     const isAcceptedConfiguration = Boolean(acceptedConfiguration);
-    this.vsConfigEditorError = '';
+    this.hasVSConfigEditorError = false;
 
     if (isAcceptedConfiguration) {
       try {
@@ -135,7 +135,7 @@ export class VsConfigEditorModalComponent {
 
         this.onCloseVsConfigEditorModal.emit(isAcceptedConfiguration);
       } catch (errors) {
-        this.vsConfigEditorError = dictionary.vsConfigEditorErrorMessage;
+        this.hasVSConfigEditorError = true;
       }
     }
     else {
