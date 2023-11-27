@@ -4,7 +4,7 @@
  */
 
 export const ENGLISH = {
-  genericErrorMessage: 'Error while fetching the data. Try again by refreshing the page.',
+  genericErrorMessage: 'Error while fetching the data.',
   genericModalErrorMessage: 'Something went wrong. Please try again after some time.',
   readyPageDestinationControllerTitle: 'Destination Controller',
   readyPageEditDestinationCtrlTitle: 'Edit Destination Controller Details',
