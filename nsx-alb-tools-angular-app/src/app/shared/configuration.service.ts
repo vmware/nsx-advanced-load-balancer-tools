@@ -8,15 +8,13 @@ import {
   labController,
 } from 'src/app/migration-tools/f5/f5-configuration/f5-configuration.types';
 
-@Injectable({providedIn: 'root'})
+@Injectable({ providedIn: 'root' })
 export class ConfigurationService {
   public showCompletedMigrationsCountAlert = false;
 
-  constructor(
-    private http: HttpService,
-  ) { }
+  constructor(private http: HttpService) { }
 
-  public getAllIncompleteVSMigrationsData(): Observable<incompleteVsMigrationsData> {
+  public getIncompleteMigrationsData(): Observable<incompleteVsMigrationsData> {
     return this.http.get('configuration/getConfiguration');
   }
 

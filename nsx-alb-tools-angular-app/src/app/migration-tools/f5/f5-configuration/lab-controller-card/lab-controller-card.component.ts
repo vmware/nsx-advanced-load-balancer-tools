@@ -15,6 +15,11 @@ import { EMPTY_VALUE } from 'src/app/shared/constants';
 
 const { ENGLISH: dictionary } = l10n;
 
+const DEFAULT_LAB_CONTROLLER_DETAILS: labController = {
+  avi_lab_user: '',
+  avi_lab_password: '',
+  avi_lab_ip: ''
+}
 @Component({
   selector: 'lab-controller-card',
   templateUrl: './lab-controller-card.component.html',
@@ -30,11 +35,10 @@ export class LabControllerCardComponent implements OnInit {
   @Output()
   public onFetch = new EventEmitter<void>();
 
-  public labControllerDetails: labController = {
-    avi_lab_user: '',
-    avi_lab_password: '',
-    avi_lab_ip: ''
-  };
+  @Output()
+  public onError = new EventEmitter<void>();
+
+  public labControllerDetails: labController = DEFAULT_LAB_CONTROLLER_DETAILS;
 
   public openEditModal = false;
 
@@ -50,25 +54,42 @@ export class LabControllerCardComponent implements OnInit {
 
   /** @override */
   public async ngOnInit(): Promise<void> {
-    await this.fetchLabControllerDetails();
-    this.validateLabControllerDetails();
+    try {
+      await this.getLabControllerDetails();
+      this.validateLabControllerDetails();
+    } catch (err) {
+      this.onError.emit();
+    }
   }
 
   public async handleCloseEditModal(getDetails: boolean): Promise<void> {
-    if (getDetails) {
-      await this.fetchLabControllerDetails();
-      this.validateLabControllerDetails();
+    try {
+      if (getDetails) {
+        await this.getLabControllerDetails();
+        this.validateLabControllerDetails();
+      }
+
+      this.openEditModal = false;
+    } catch (err) {
+      this.onError.emit();
     }
-
-    this.openEditModal = false;
   }
 
-  public async fetchLabControllerDetails(): Promise<void> {
-    const labControllerDetails$ = this.configurationService.getLabControllerDetails();
+  public async getLabControllerDetails(): Promise<void> {
+    try {
+      this.labControllerDetails = DEFAULT_LAB_CONTROLLER_DETAILS;
+      const labControllerDetails$ = this.configurationService.getLabControllerDetails();
+      const labControllerDetails = await lastValueFrom(labControllerDetails$);
 
-    this.labControllerDetails = await lastValueFrom(labControllerDetails$);
+      if (Object.keys(labControllerDetails).length) {
+        this.labControllerDetails = labControllerDetails;
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        throw new Error(err.message);
+      }
+    }
   }
-
 
   public validateLabControllerDetails(): void {
     const { avi_lab_user, avi_lab_password, avi_lab_ip } = this.labControllerDetails;

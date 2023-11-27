@@ -224,9 +224,9 @@ export class F5ReportComponent implements OnInit {
     this.http.get(
       `discovery/downloadReport?fileName=${fileName}`,
       { responseType: "blob" },
-    ).subscribe((data: Blob) => {
-      FileSaver.saveAs(data, fileName);
-    });
+    ).subscribe({
+        next: (data: Blob) => FileSaver.saveAs(data, fileName),
+        error: (error) => this.hasError = true,
+      });
   }
-
 }
