@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs-extra');
 const { AviOutputModel } = require('../models/migration.model');
 const { PlaybookDetailsModel } = require('../models/playbook.model');
+const coreController = require('./core.controller');
 
 
 // Constants used in the APIs.
@@ -14,7 +15,7 @@ const savePlaybooksInDB = async (playbookName, fileCreationTime, res) => {
     try{
         const findQuery = { 'f5_host_ip': `${F5_HOST_IP}` };
         const foundDoc = await PlaybookDetailsModel.findOne(findQuery).lean();
-        
+
         const docPlaybooks = foundDoc ? foundDoc['playbooks'] : [];
 
         docPlaybooks.push({
@@ -41,9 +42,9 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
     const { playbookName = DEFAULT_PLAYBOOK_NAME, f5_host_ip = F5_HOST_IP } = req.body;
 
     if (playbookName) {
-        // Read the updated JSON data from DB and write same into a new file.  
+        // Read the updated JSON data from DB and write same into a new file.
         const playbookBasePath = `./migration/${f5_host_ip}/playbook`;
-        const newAviOutputFilePath = `${playbookBasePath}/${playbookName}.json`; 
+        const newAviOutputFilePath = `${playbookBasePath}/${playbookName}.json`;
 
         try {
             const aviOutputJson = await AviOutputModel.find({});
@@ -52,7 +53,7 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
 
             if (fs.pathExistsSync(newAviOutputFilePath)) {
                 const pythonProcess = spawn('avi_config_to_ansible.py', [
-                    '-c', newAviOutputFilePath, 
+                    '-c', newAviOutputFilePath,
                     '-o', playbookBasePath,
                     // '-n', playbookName,
                 ]);
@@ -100,18 +101,25 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
 
 exports.downloadPlaybook = asyncHandler(async (req, res, next) => {
     try {
-        const playbookRelativePath = `../../migration/${F5_HOST_IP}/playbook`;
-        const filePath = path.join(__dirname, playbookRelativePath, req.query.fileName)
+        const f5Details = await coreController.fetchF5Details();
 
-        res.download(filePath, (err) => {
-            if (err) {
-                if (!res.headersSent) {
-                    return res.status(500).json({ message: 'Error while playbook downloading. ' + err.message });
+        if (f5Details) {
+            const { f5_host_ip = F5_HOST_IP } = f5Details;
+            const playbookRelativePath = `../../migration/${f5_host_ip}/playbook`;
+            const filePath = path.join(__dirname, playbookRelativePath, req.query.fileName)
+
+            res.download(filePath, (err) => {
+                if (err) {
+                    if (!res.headersSent) {
+                        return res.status(404).json({ message: 'Error while downloading playbook. ' + err.message });
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            res.status(500).json({ message: 'Error F5 details not found. '});
+        }
     } catch (err) {
-        res.status(404).json({ message: 'Error while creating playbook file path. ' + err.message });
+        res.status(500).json({ message: 'Error while fetching F5 details. ' + err.message });
     }
 });
 

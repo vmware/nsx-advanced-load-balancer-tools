@@ -124,11 +124,7 @@ exports.getAviLabDetails = asyncHandler(async (req, res, next) => {
     try {
         const labDetails = await this.fetchAviLabDetails();
 
-        if (labDetails) {
-            res.status(200).json(labDetails);
-        } else {
-            res.status(404).json({ error: "Lab controller details not found." });
-        }
+        res.status(200).json(labDetails || {});
     } catch (err) {
         res.status(500).json({ message: 'Error in fetching the Avi Lab controller details, ' + err.message });
     }
@@ -153,11 +149,7 @@ exports.getF5Details = asyncHandler(async (req, res, next) => {
     try {
         const f5Details = await this.fetchF5Details();
 
-        if (f5Details) {
-            res.status(200).json(f5Details);
-        } else {
-            res.status(404).json({ error: "F5 details not found." });
-        }
+        res.status(200).json(f5Details || {});
     } catch (err) {
         res.status(500).json({ message: 'Error in fetching the F5 details, ' + err.message });
     }

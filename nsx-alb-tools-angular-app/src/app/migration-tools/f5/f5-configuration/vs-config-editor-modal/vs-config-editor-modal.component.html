@@ -4,10 +4,10 @@
 
         <div class="modal-body">
             <div class="alert-section">
-                <clr-alert *ngIf="vsConfigEditorError" [clrAlertType]="'danger'">
+                <clr-alert *ngIf="hasVSConfigEditorError" [clrAlertType]="'danger'">
                     <clr-alert-item>
                         <span class="alert-text">
-                            {{ vsConfigEditorError }}
+                            {{  dictionary.vsConfigEditorErrorMessage }}
                         </span>
                     </clr-alert-item>
                 </clr-alert>
@@ -34,7 +34,7 @@
 
 <generic-config-editor-modal
     *ngIf="isOpenChildConfigEditorModal"
-    [error]="childConfigEditorError"
+    [hasError]="hasChildConfigEditorError"
     [config]="vsConfig.flaggedObjects[childConfigEditorConfigIndex]"
     (onCloseGeneralConfigEditorModal)="handleCloseChildConfigEditorModal($event)"
 ></generic-config-editor-modal>

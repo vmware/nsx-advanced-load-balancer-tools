@@ -2,7 +2,6 @@
   &__row {
     display: flex;
     justify-content: space-between;
-    height: 100%;
     align-items: center;
   }
 
@@ -10,19 +9,23 @@
     margin-top: 0px;
   }
 
+  &__name {
+    width: 250px;
+  }
+
   input {
     text-overflow: ellipsis;
-}
+  }
 
   .clarity-overrides();
 }
 
 .clarity-overrides() {
   .card-block {
-      height: 145px;
+    height: 145px;
   }
 
   .clr-form {
-      height: 100%
+    height: 100%
   }
 }

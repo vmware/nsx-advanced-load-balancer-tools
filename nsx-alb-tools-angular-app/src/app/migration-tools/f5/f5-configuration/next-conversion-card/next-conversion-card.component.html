@@ -10,7 +10,7 @@
                 <clr-tooltip>
                     <clr-input-container class="next-conversion-card__no-margin-top">
                         <label>{{ dictionary.nameLabel }}</label>
-                        <input placeholder="{{ emptyValue }}" clrInput clrTooltipTrigger [value]="selectedMigrationData?.F5_ID" name="name"
+                        <input placeholder="{{ emptyValue }}" clrInput class="next-conversion-card__name" clrTooltipTrigger [value]="selectedMigrationData?.F5_ID" name="name"
                             readonly />
                     </clr-input-container>
                     <clr-tooltip-content *ngIf="selectedMigrationData?.F5_ID" clrPosition="top-right">
