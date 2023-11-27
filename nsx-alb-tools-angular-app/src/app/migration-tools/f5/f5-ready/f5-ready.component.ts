@@ -55,6 +55,7 @@ export class F5ReadyComponent implements OnInit {
   public customDateFilter: TDateFilter;
 
   public hasError = false;
+  public hasModalError = false;
 
   constructor(
       private http: HttpService,
@@ -223,7 +224,17 @@ export class F5ReadyComponent implements OnInit {
   //   });
   // }
 
+  public openPlaybookModal() {
+    this.playbookModalOpened = true;
+    this.hasModalError = false;
+  }
+
+  public onModalErrorAlertClose() {
+    this.hasModalError = false;
+  }
+
   generatePlaybook(): void {
+    this.hasModalError = false;
     this.http.post('playbook/generatePlaybook', this.playbookForm.value).subscribe((data)=> {
         this.playbookModalOpened = false;
         this.showToaster = true;
@@ -231,9 +242,10 @@ export class F5ReadyComponent implements OnInit {
 
         // Update the list of Playbooks.
         this.fetchPlaybooks();
-      }, (error) => {
-          console.log('error');
-          this.playbookModalOpened = false;
+      }, (err) => {
+          console.log(err.error.message);
+          this.playbookModalOpened = true;
+          this.hasModalError = true;
       });
   }
 

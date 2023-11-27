@@ -123,7 +123,6 @@ exports.getPlaybooks = asyncHandler(async (req, res, next) => {
         const docPlaybooks = foundDoc ? foundDoc['playbooks'] : [];
 
         console.log(docPlaybooks);
-
         res.status(200).json({ 'result': docPlaybooks });
     } catch (err) {
         res.status(500).json({ message: 'Error in getting Playbooks. ' + err.message});

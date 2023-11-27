@@ -74,8 +74,6 @@ exports.generateReport = asyncHandler(async (req, res, next) => {
             } else {
                 res.status(500).json({ message: 'Error in generating the report.'});
             }
-        } else {
-            res.status(500).json({ message: 'Error in generating the report.'});
         }
     });
 });
