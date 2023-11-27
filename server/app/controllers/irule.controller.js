@@ -2,6 +2,8 @@ const { spawn } = require('child_process');
 const path = require("path")
 const fs = require("fs")
 const asyncHandler = require('express-async-handler');
+const SUCCESSFUL_STATUS = 'SUCCESSFUL';
+const SKIPPED_STATUS = 'SKIPPED';
 
 const {
     ConversionStatusModel,
@@ -9,9 +11,9 @@ const {
 } = require('../models/migration.model');
 
 // Get the IRules list from DB.
-exports.getIncompleteIRules = asyncHandler(async (req, res, next) => {
+exports.getSkippedIRules = asyncHandler(async (req, res, next) => {
     try {
-        const iRules = await aggregateIncompleteIRules();
+        const iRules = await aggregateSkippedIRules();
         if (Array.isArray(iRules) && iRules.length) {
             const result = iRules.map(i => i.Irule_discovery)
             res.status(200).json(result);
@@ -42,7 +44,7 @@ const aggregateSuccessfulIRules = async (req, res) => {
             },
             {
                 $match: {
-                    "Irule_discovery.Status": "SUCCESSFUL",
+                    "Irule_discovery.Status": SUCCESSFUL_STATUS,
                 },
             },
         ]
@@ -57,11 +59,11 @@ const aggregateSuccessfulIRules = async (req, res) => {
 };
 
 /**
- * Aggregation to get PARTIAL IRules.
+ * Aggregation to get SKIPPED IRules.
  */
-const aggregateIncompleteIRules = async (req, res) => {
+const aggregateSkippedIRules = async (req, res) => {
     try {
-        const incompleteIRulesAggregation = [
+        const skippedIRulesAggregation = [
             {
                 $project: {
                     Irule_discovery: 1,
@@ -74,13 +76,13 @@ const aggregateIncompleteIRules = async (req, res) => {
             },
             {
                 $match: {
-                    "Irule_discovery.Status": "PARTIAL",
+                    "Irule_discovery.Status": SKIPPED_STATUS,
                 },
             },
         ]
 
-        const incompleteIRules = await ConversionStatusModel.aggregate(incompleteIRulesAggregation) || [];
-        return incompleteIRules;
+        const skippedIRules = await ConversionStatusModel.aggregate(skippedIRulesAggregation) || [];
+        return skippedIRules;
     } catch (error) {
         console.error(error)
         res.status(500).json({ error: error.message });
@@ -91,31 +93,31 @@ exports.getIRulesOverview = asyncHandler(async (req, res, next) => {
     try {
         // TODO: Update query once we have a key to distinguish between multiple converstion objects.
 
-        let incompleteIRules;
+        let skippedIRules;
         let successfulIRules;
         let migrationCompletedPercentage = 0;
         let successfulIRulesCount = 0;
-        let incompleteIRuleCount = 0;
+        let skippedIRuleCount = 0;
 
         successfulIRules = await aggregateSuccessfulIRules(req, res);
-        incompleteIRules = await aggregateIncompleteIRules(req, res)
+        skippedIRules = await aggregateSkippedIRules(req, res)
 
 
-        if (successfulIRules && incompleteIRules) {
+        if (successfulIRules && skippedIRules) {
             if (Array.isArray(successfulIRules)) {
                 successfulIRulesCount = successfulIRules.length
             }
-            if (Array.isArray(incompleteIRules)) {
-                incompleteIRuleCount = incompleteIRules.length;
+            if (Array.isArray(skippedIRules)) {
+                skippedIRuleCount = skippedIRules.length;
             }
-            if (successfulIRulesCount && (incompleteIRuleCount >= 0)) {
-                migrationCompletedPercentage = successfulIRulesCount / (successfulIRulesCount + incompleteIRuleCount) * 100;
+            if (successfulIRulesCount && (skippedIRuleCount >= 0)) {
+                migrationCompletedPercentage = successfulIRulesCount / (successfulIRulesCount + skippedIRuleCount) * 100;
                 migrationCompletedPercentage = +migrationCompletedPercentage.toFixed(2);
             }
 
             res.status(200).json({
                 reviewedIRules: successfulIRulesCount,
-                incompleteIRules: incompleteIRuleCount,
+                skippedIRules: skippedIRuleCount,
                 migrationCompletedPercentage
             });
         } else {

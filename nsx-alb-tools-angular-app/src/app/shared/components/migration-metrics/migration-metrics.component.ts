@@ -73,8 +73,9 @@ export class MigrationMetricsComponent implements OnInit {
       if (iRuleOverviewResponse?.reviewedIRules >= 0) {
         const iRuleOverview: MigrationMetric  = {
           title: dictionary.iRuleMigrationTitle,
+          incompleteLabel: dictionary.skippedLabel,
           reviewed: iRuleOverviewResponse.reviewedIRules,
-          incomplete: iRuleOverviewResponse.incompleteIRules,
+          incomplete: iRuleOverviewResponse.skippedIRules,
           percentCompleted: iRuleOverviewResponse.migrationCompletedPercentage,
           index: 2,
         }
