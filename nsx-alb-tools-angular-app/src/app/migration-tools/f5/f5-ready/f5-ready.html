@@ -1,6 +1,6 @@
 
 <div class="f5-ready">
-   <clr-alert *ngIf="!hasError" [clrAlertType]="'danger'" (clrAlertClosedChange)="onErrorAlertClose()" class="alert-section">
+   <clr-alert *ngIf="hasError" [clrAlertType]="'danger'" (clrAlertClosedChange)="onErrorAlertClose()" class="alert-section">
       <clr-alert-item>
          <span class="alert-text">
             {{ dictionary.genericErrorMessage }}
@@ -139,7 +139,7 @@
       </h6>
 
       <button type="button" class="btn btn-icon btn-primary" [disabled]="selected?.length"
-         (click)="playbookModalOpened=true">
+         (click)="openPlaybookModal()">
          <cds-icon shape="book"></cds-icon>
          {{ dictionary.readyPageGeneratePlaybookTitle }}
       </button>
@@ -360,6 +360,11 @@
    <clr-modal [(clrModalOpen)]="playbookModalOpened" [clrModalClosable]="true" *ngIf="playbookModalOpened">
       <h3 class="modal-title"> {{ dictionary.readyPageGeneratePlaybookTitle }} </h3>
       <div class="modal-body">
+         <clr-alert *ngIf="hasModalError" [clrAlertType]="'danger'" (clrAlertClosedChange)="onModalErrorAlertClose()" class="alert-section">
+            <clr-alert-item>
+               <span class="alert-text">{{ dictionary.genericModalErrorMessage }}</span>
+            </clr-alert-item>
+         </clr-alert>
          <form clrForm [formGroup]="playbookForm" clrLayout="vertical">
             <clr-input-container>
                <label> {{dictionary.readyPagePlaybookNameTitle}} </label>
