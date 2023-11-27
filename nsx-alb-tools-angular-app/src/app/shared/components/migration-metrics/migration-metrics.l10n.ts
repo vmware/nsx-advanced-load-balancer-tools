@@ -8,5 +8,6 @@ export const ENGLISH = {
   iRuleMigrationTitle: 'IRule Migration',
   reviewedLabel: 'Reviewed',
   incompleteLabel: 'Incomplete',
+  skippedLabel: 'Skipped',
   completedLabel: 'Completed',
 };

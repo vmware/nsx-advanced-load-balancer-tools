@@ -13,6 +13,6 @@ export interface labController {
 
 export interface IRuleMigrationOverview {
   reviewedIRules: number;
-  incompleteIRules: number;
+  skippedIRules: number;
   migrationCompletedPercentage: number;
 }

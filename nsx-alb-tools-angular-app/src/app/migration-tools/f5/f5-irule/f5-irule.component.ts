@@ -49,9 +49,16 @@ export class F5IRuleComponent implements OnInit {
 
   public async getIRuleOverviewData(): Promise<void> {
     this.isLoading = true;
-    const iRuleOverviewData$ = this.iRuleDataService.getIncompleteIRules();
-    this.iRuleOverviewData = await lastValueFrom(iRuleOverviewData$);
-    this.isLoading = false;
+    this.iRuleDataService.getSkippedIRules().subscribe({
+      next: (data) => {
+        this.iRuleOverviewData = data;
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error(error);
+        this.isLoading = false;
+      }
+    })
   }
 
   public async fetchLabControllerDetails(): Promise<void> {

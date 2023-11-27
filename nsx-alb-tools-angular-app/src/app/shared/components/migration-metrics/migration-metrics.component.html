@@ -18,7 +18,7 @@
             <span cds-text="medium">{{ dictionary.reviewedLabel }}</span> {{ metric?.reviewed}}
     
             <cds-icon class="migration-metrics__incomplete-icon" shape="circle" solid='true' size='sm' status="neutral"></cds-icon>
-            <span cds-text="medium">{{ dictionary.incompleteLabel }}</span> {{ metric?.incomplete}}
+            <span cds-text="medium">{{ metric?.incompleteLabel || dictionary.incompleteLabel }}</span> {{ metric?.incomplete}}
           </div>
         </div>
     </div>
