@@ -1,4 +1,16 @@
 <div class="f5-irule">
+  <clr-alert
+    *ngIf="hasError"
+    [clrAlertType]="'danger'"
+    class="f5-irule__alert-section"
+    (clrAlertClosedChange)="onErrorAlertClose()"
+  >
+    <clr-alert-item>
+       <span class="alert-text">
+          {{ dictionary.genericErrorMessage }}
+       </span>
+    </clr-alert-item>
+ </clr-alert>
   <div class="f5-irule__cards">
     <div class="clr-row">
       <!-- <div class="clr-col-lg-6 clr-col-sm-6 clr-col-12">

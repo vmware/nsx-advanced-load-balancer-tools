@@ -12,4 +12,5 @@ export const ENGLISH = {
   statusColumnHeader: 'Status',
   objectsPerPageLabel: 'Objects per page',
   objectsLabel: 'objects',
+  genericErrorMessage: 'Error while fetching the data.',
 };
