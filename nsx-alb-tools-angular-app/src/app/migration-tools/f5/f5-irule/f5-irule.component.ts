@@ -57,6 +57,7 @@ export class F5IRuleComponent implements OnInit {
       error: (error) => {
         console.error(error);
         this.isLoading = false;
+        this.hasError = true;
       }
     })
   }
@@ -75,6 +76,10 @@ export class F5IRuleComponent implements OnInit {
     } finally {
       this.isLoadingLabControllerData = false;
     }
+  }
+
+  public onErrorAlertClose(): void {
+    this.hasError = false;
   }
 
   public trackByIndex(index: number): number {
