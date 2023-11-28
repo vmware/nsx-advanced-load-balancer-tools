@@ -111,8 +111,7 @@ RUN cd $HOME && \
     git clone https://github.com/avinetworks/devops && \
     git clone https://github.com/vmware/nsx-advanced-load-balancer-tools avitools && \
     mkdir -p /avi/scripts && \
-    cp -r avitools/scripts/* /avi/scripts && \
-    rm -rf $HOME/avitools
+    cp -r avitools/scripts/* /avi/scripts && rm -rf $HOME/avitools
 
 # Install go 
 RUN curl -L https://go.dev/dl/go${golang_version}.linux-amd64.tar.gz -o go${golang_version}.linux-amd64.tar.gz && \
