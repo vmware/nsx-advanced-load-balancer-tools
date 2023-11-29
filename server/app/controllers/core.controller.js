@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
-const destinationScriptResponse = require("../../data/mock/f5-destination-script-response.json");
+const { spawn } = require("child_process");
+const fs = require("fs");
 
 const { F5DetailsModel } = require('../models/core/f5.model');
 const { AviLabDetailsModel } = require('../models/core/lab.model');
@@ -9,6 +10,92 @@ const {
 } = require("../models/core/destination.model")
 
 const F5_HOST_IP = '10.206.40.100';
+const DESTINATION_MAPPING_SCRIPT_PATH = '../scripts/get_all_destination_names.py';
+const DESTINATION_MAPPING_FILE = 'controller_info.json';
+
+const parseDestinationMappingsData = (req, res, destinationScriptResponse) => {
+    const { tenants, clouds } = destinationScriptResponse;
+
+    if(!Array.isArray(tenants) || !Array.isArray(clouds)) {
+        return res.status(500).json({ error: 'Something went wrong while parsing destination mapping data.'});
+    }
+
+    const destinationMappings = {
+        'tenants': []
+    };
+
+    for (const tenant of tenants) {
+        const formattedTenantObj = {
+            tenant: '',
+            clouds: []
+        };
+
+        if (tenant) {
+            formattedTenantObj.tenant = tenant;
+            for (const cloud of clouds) {
+                const { vrf, seg, cloud_name } = cloud;
+                if (cloud_name && (Array.isArray(vrf) || Array.isArray(seg))) {
+                    const currentTenantVrf = vrf.filter(item => item.tenant === tenant);
+                    const currentTenantSeg = seg.filter(item => item.tenant === tenant);
+
+                    if (currentTenantVrf.length) {
+                        const cloudToUpdate = formattedTenantObj.clouds.find(cloud => cloud.cloud_name === cloud_name);
+                        if (cloudToUpdate) {
+                            cloudToUpdate.vrf = currentTenantVrf.map(item => {
+                                return { 'name': item.name }
+                            });
+                        } else {
+                            formattedTenantObj.clouds.push({
+                                'cloud_name': cloud_name,
+                                vrf: currentTenantVrf.map(item => {
+                                    return { 'name': item.name }
+                                })
+                            })
+                        }
+                    }
+
+                    if (currentTenantSeg.length) {
+                        const cloudToUpdate = formattedTenantObj.clouds.find(cloud => cloud.cloud_name === cloud_name);
+                        if (cloudToUpdate) {
+                            cloudToUpdate.seg = currentTenantSeg.map(item => {
+                                return { 'name': item.name }
+                            });
+                        } else {
+                            formattedTenantObj.clouds.push({
+                                'cloud_name': cloud_name,
+                                seg: currentTenantSeg.map(item => {
+                                    return { 'name': item.name }
+                                })
+                            })
+                        }
+                    }
+                }
+            }
+        }
+        destinationMappings.tenants.push(formattedTenantObj);
+    }
+
+    return destinationMappings;
+}
+
+const putDestinationMappingToDB = async(req, res, destinationFileData) => {
+    const { avi_destination_ip } = req.body;
+    let parsedDestinationMappings = {
+        'tenants': []
+    };
+
+    if (destinationFileData) {
+        parsedDestinationMappings = parseDestinationMappingsData(req, res, destinationFileData);
+        // Insert parsedDestinationMappings to the DB.
+        await AviDestinationMappingModel.insertMany({
+            avi_destination_ip,
+            tenants: parsedDestinationMappings.tenants
+        });
+        res.status(200).json(parsedDestinationMappings);
+    } else {
+        res.status(500).json({ error: `Error while parsing destination mapping response ${jsonParseError}` });
+    }
+}
 
 exports.getAviDestinationMappings = asyncHandler(async (req, res, next) => {
     try {
@@ -22,73 +109,50 @@ exports.getAviDestinationMappings = asyncHandler(async (req, res, next) => {
         if (
             !avi_destination_ip ||
             !avi_destination_user ||
-            !avi_destination_password ||
-            !avi_destination_version
+            !avi_destination_password
         ) {
             res.status(400).json({ error: 'Missing required fields.' });
         } else {
-            // TODO: Run python script here.
-            const { tenants, clouds } = destinationScriptResponse;
 
-            const destinationMappings = {
-                'tenants': []
-            };
-
-            for (const tenant of tenants) {
-                const formattedTenantObj = {
-                    tenant: '',
-                    clouds: []
-                };
-                if (tenant) {
-                    formattedTenantObj.tenant = tenant;
-                    for (const cloud of clouds) {
-                        const { vrf, seg, cloud_name } = cloud;
-                        if (cloud_name && (Array.isArray(vrf) || Array.isArray(seg))) {
-                            const currentTenantVrf = vrf.filter(item => item.tenant === tenant);
-                            const currentTenantSeg = seg.filter(item => item.tenant === tenant);
-
-                            if (currentTenantVrf.length) {
-                                const cloudToUpdate = formattedTenantObj.clouds.find(cloud => cloud.cloud_name === cloud_name);
-                                if (cloudToUpdate) {
-                                    cloudToUpdate.vrf = currentTenantVrf.map(item => {
-                                        return { 'name': item.name }
-                                    });
-                                } else {
-                                    formattedTenantObj.clouds.push({
-                                        'cloud_name': cloud_name,
-                                        vrf: currentTenantVrf.map(item => {
-                                            return { 'name': item.name }
-                                        })
-                                    })
-                                }
-                            }
-
-                            if (currentTenantSeg.length) {
-                                const cloudToUpdate = formattedTenantObj.clouds.find(cloud => cloud.cloud_name === cloud_name);
-                                if (cloudToUpdate) {
-                                    cloudToUpdate.seg = currentTenantSeg.map(item => {
-                                        return { 'name': item.name }
-                                    });
-                                } else {
-                                    formattedTenantObj.clouds.push({
-                                        'cloud_name': cloud_name,
-                                        seg: currentTenantSeg.map(item => {
-                                            return { 'name': item.name }
-                                        })
-                                    })
-                                }
-                            }
-                        }
-                    }
-                }
-                destinationMappings.tenants.push(formattedTenantObj);
-            }
-
-            await AviDestinationMappingModel.insertMany({
-                avi_destination_ip,
-                tenants: destinationMappings.tenants
+            const pythonProcess = spawn(DESTINATION_MAPPING_SCRIPT_PATH, [
+                '-c', avi_destination_ip,
+                '-u', avi_destination_user,
+                '-p', avi_destination_password,
+            ], {
+                shell: true,
             });
-            res.status(200).json(destinationMappings);
+
+            let dataToSend;
+            let errorToSend;
+
+            // Collect data from script.
+            pythonProcess.stdout.on('data', function (data) {
+                console.log('Pipe data from python script ...');
+                dataToSend = data.toString();
+            });
+
+            pythonProcess.stderr.on('error', (error) => {
+                errorToSend = error.toString()
+                console.error(`Error while executing get_all_destination_names script, ${error}`);
+            });
+
+            pythonProcess.on('close', (code) => {
+                console.log(`child process close all stdio with code ${code}`);
+
+                if (code === 0 && fs.existsSync(DESTINATION_MAPPING_FILE)) {
+                    fs.readFile(DESTINATION_MAPPING_FILE, async (err, data) => {
+                        if (err) {
+                            console.error(`Error while reading ${DESTINATION_MAPPING_FILE}`, err);
+                            errorToSend = err;
+                        } else {
+                            const destinationFileData = JSON.parse(data);
+                            await putDestinationMappingToDB(req, res, destinationFileData); 
+                        }
+                    })
+                } else {
+                    res.status(500).json({ error: 'Error while fetching destination script' });
+                }
+            });
         }
     } catch (err) {
         console.error(err);

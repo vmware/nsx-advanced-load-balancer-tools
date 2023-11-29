@@ -7,4 +7,5 @@ npm-debug.log
 yarn-error.log
 package-lock.json
 
-
+# dynamic files generated from the scripts
+controller_info.json
