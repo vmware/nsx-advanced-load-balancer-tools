@@ -3,13 +3,14 @@ services:
   db:
     image: mongo:latest
     container_name: mongoDb
+    restart: always
     ports:
       - "27017:27017"
     networks:
       - migrationToolsNetwork
 
   migrationTools:
-    image: avinetworks/avitools:22.1.4
+    image: avinetworks/avitools:30.2.1
     container_name: migrationTools
     privileged: true
     restart: always

@@ -52,6 +52,7 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
             fs.outputFileSync(newAviOutputFilePath, JSON.stringify(aviOutputJson, null, 4));
 
             if (fs.pathExistsSync(newAviOutputFilePath)) {
+                let errorMessage;
                 const pythonProcess = spawn('avi_config_to_ansible.py', [
                     '-c', newAviOutputFilePath,
                     '-o', playbookBasePath,
@@ -59,17 +60,18 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
                 ]);
 
                 pythonProcess.stderr.on('data', (data) => {
-                    console.error(`stderr: ${data}`);
-                    res.status(500).json({ message: 'Error in generating Playbooks, ' + data.toString()});
+                    errorMessage = data.toString();
+
+                    console.error('Error while executing avi_config_to_ansible.py script. ', data.toString());
                 });
 
                 // On close event, we are sure that stream from child process is closed.
                 pythonProcess.on('close', async (code) => {
                     console.log(`child process close all stdio with code ${code}`);
 
-                    if (code !== 1) {
+                    if (code === 0) {
                         // Remove these lines and enable below commented lines
-                        const playbookFilePath = `${playbookBasePath}/avi_config.yml`; 
+                        const playbookFilePath = `${playbookBasePath}/avi_config.yml`;
                         const deletePlaybookFilePath = `${playbookBasePath}/avi_config_delete.yml`;
                         // const playbookFilePath = `${playbookBasePath}/${playbookName}.yml`;
                         // const deletePlaybookFilePath = `${playbookBasePath}/${playbookName}_delete.yml`;
@@ -88,7 +90,7 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
                     }
                 });
             } else {
-                res.status(500).json({ message: 'Error in generating Playbooks.'});
+                res.status(500).json({ message: errorMessage || 'Error in generating Playbooks.'});
             };
 
         } catch (err) {

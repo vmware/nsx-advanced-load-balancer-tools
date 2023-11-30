@@ -31,23 +31,28 @@ type Options = {
 
 @Injectable()
 export class HttpService {
-    constructor(private readonly http: HttpClient) {}
+    private apiUrl: string;
 
-    devBaseUrl = environment.apiUrl;
+    constructor(private readonly http: HttpClient) {
+        const port = environment.apiPort || 3000;
+        const hostname = window.location.hostname || 'localhost';
+
+        this.apiUrl = `http://${hostname}:${port}/api`;
+    }
 
     public get(url: any, options?: Options): Observable<any> {
-        return this.http.get(this.devBaseUrl + '/' + url, options );
+        return this.http.get(this.apiUrl + '/' + url, options );
     }
 
     public post(url: any, data: any, options?: Options): Observable<any> {
-        return this.http.post(this.devBaseUrl + '/' + url, data, options);
+        return this.http.post(this.apiUrl + '/' + url, data, options);
     }
 
     public put(url: any, data: any, options?: Options): Observable<any> {
-        return this.http.put(this.devBaseUrl + '/' + url, data, options);
+        return this.http.put(this.apiUrl + '/' + url, data, options);
     }
 
     public delete(url: any, options?: Options): Observable<any> {
-        return this.http.delete(this.devBaseUrl + '/' + url, options);
+        return this.http.delete(this.apiUrl + '/' + url, options);
     }
 }
