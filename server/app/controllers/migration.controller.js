@@ -512,11 +512,14 @@ exports.getReadyVirtuals = asyncHandler(async (req, res, next) => {
         // Get Aggregation of the virtual and nested Vs_Mappings having status as SUCCESSFUL.
         const successfulVirtualsResponse =  await aggregateSuccessfulMigration(req, res);
         const ready = successfulVirtualsResponse?.ready;
+        
+        // Get the incomplete virtuals and Vs_Mappings. 
+        const incompleteVirtuals  = await aggregateIncompleteMigration(req, res) || [];
 
         if (Array.isArray(ready)) {
-            res.status(200).json({ result: { ready, readyCount: ready.length } });
+            res.status(200).json({ result: { ready, readyCount: ready.length, incompleteCount: incompleteVirtuals.length } });
         } else {
-            res.status(200).json({ result: { ready: [], readyCount: 0 } });
+            res.status(200).json({ result: { ready: [], readyCount: 0, incompleteCount: 0 } });
         }
     } catch (error) {
         console.error(error)

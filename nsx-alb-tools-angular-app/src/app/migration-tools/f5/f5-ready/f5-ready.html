@@ -138,7 +138,18 @@
          {{ dictionary.readyPageReviewedTitle }} ({{ vsStatusGridData.length }})
       </h6>
 
-      <button type="button" class="btn btn-icon btn-primary" [disabled]="selected?.length"
+      <clr-alert *ngIf="hasPlaybookWarning" [clrAlertType]="'warning'" class="alert-section playbook-warning" [clrAlertClosable]="false">
+         <clr-alert-item>
+            <span class="alert-text">
+               {{ dictionary.playbookWarningMessage }}
+            </span>
+            <span class="alert-actions">
+               <a [routerLink]="['/f5-migration/configuration']" class="alert-action">{{ dictionary.navigateToConfigMigration }}</a>
+            </span>
+         </clr-alert-item>
+      </clr-alert>
+
+      <button type="button" class="btn btn-icon btn-primary" [disabled]="hasPlaybookWarning || selected?.length"
          (click)="openPlaybookModal()">
          <cds-icon shape="book"></cds-icon>
          {{ dictionary.readyPageGeneratePlaybookTitle }}

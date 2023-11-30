@@ -56,6 +56,7 @@ export class F5ReadyComponent implements OnInit {
 
   public hasError = false;
   public hasModalError = false;
+  public hasPlaybookWarning = false;
 
   constructor(
       private http: HttpService,
@@ -134,6 +135,7 @@ export class F5ReadyComponent implements OnInit {
     this.http.get('configuration/getReadyVirtuals').subscribe(
       (data) => {
         const readyVirtuals = data.result.ready;
+        this.hasPlaybookWarning = Boolean(data.result.incompleteCount);
 
         this.vsStatusGridData = readyVirtuals.map((virtualItem) => {
           return {

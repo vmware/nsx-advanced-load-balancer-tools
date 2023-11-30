@@ -19,11 +19,11 @@ const savePlaybooksInDB = async (playbookName, fileCreationTime, res) => {
         const docPlaybooks = foundDoc ? foundDoc['playbooks'] : [];
 
         docPlaybooks.push({
-            'playbook_name': 'avi_config.yml', // `${playbookName}.yml`, // Need to remove this commented code
+            'playbook_name': `${playbookName}.yml`,
             'playbook_creation_time': fileCreationTime,
         });
         docPlaybooks.push({
-            'playbook_name': 'avi_config_delete.yml', // `${playbookName}_delete.yml`, // Need to remove this commented code
+            'playbook_name': `${playbookName}_delete.yml`,
             'playbook_creation_time': fileCreationTime,
         });
 
@@ -56,7 +56,7 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
                 const pythonProcess = spawn('avi_config_to_ansible.py', [
                     '-c', newAviOutputFilePath,
                     '-o', playbookBasePath,
-                    // '-n', playbookName,
+                    '-n', playbookName,
                 ]);
 
                 pythonProcess.stderr.on('data', (data) => {
@@ -71,10 +71,8 @@ exports.generatePlaybook = asyncHandler(async (req, res, next) => {
 
                     if (code === 0) {
                         // Remove these lines and enable below commented lines
-                        const playbookFilePath = `${playbookBasePath}/avi_config.yml`;
-                        const deletePlaybookFilePath = `${playbookBasePath}/avi_config_delete.yml`;
-                        // const playbookFilePath = `${playbookBasePath}/${playbookName}.yml`;
-                        // const deletePlaybookFilePath = `${playbookBasePath}/${playbookName}_delete.yml`;
+                        const playbookFilePath = `${playbookBasePath}/${playbookName}.yml`;
+                        const deletePlaybookFilePath = `${playbookBasePath}/${playbookName}_delete.yml`;
 
                         if (fs.pathExistsSync(playbookFilePath) && fs.pathExistsSync(deletePlaybookFilePath)) {
                             console.log('Playbooks are created successfully by script.');
