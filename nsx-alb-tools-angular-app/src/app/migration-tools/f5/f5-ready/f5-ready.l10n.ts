@@ -22,6 +22,8 @@ export const ENGLISH = {
   readyPageSeGroupTitle: 'Service Engine Group',
   readyPageReviewedTitle: 'Reviewed',
   readyPageGeneratePlaybookTitle: 'Generate Playbook',
+  playbookWarningMessage: 'Configuration Migration incomplete, please review and convert remaining configurations before proceeding.',
+  navigateToConfigMigration: 'Go to Config Migration',
   readyPageGenerateTitle: 'Generate',
   readyPageNameTitle: 'Name',
   readyPageStatusTitle: 'Status',

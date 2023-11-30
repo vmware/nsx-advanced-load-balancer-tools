@@ -19,11 +19,11 @@ const savePlaybooksInDB = async (playbookName, fileCreationTime, res) => {
         const docPlaybooks = foundDoc ? foundDoc['playbooks'] : [];
 
         docPlaybooks.push({
-            'playbook_name': `${playbookName}.yml`, // Need to remove this commented code
+            'playbook_name': `${playbookName}.yml`,
             'playbook_creation_time': fileCreationTime,
         });
         docPlaybooks.push({
-            'playbook_name': `${playbookName}_delete.yml`, // Need to remove this commented code
+            'playbook_name': `${playbookName}_delete.yml`,
             'playbook_creation_time': fileCreationTime,
         });
 
