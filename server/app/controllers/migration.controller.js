@@ -29,8 +29,9 @@ const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res)
     const { f5_host_ip } = f5Details;
     const conversionStatusFilePath = `./${MIGRATION_FOLDER_NAME}/${f5_host_ip}/output/bigip-conversionstatus.json`;
     const aviOutputFilePath = `./${MIGRATION_FOLDER_NAME}/${f5_host_ip}/output/bigip-output.json`;
-
     let dataToSend;
+    let errorMessage;
+
     const pythonProcess = spawn('f5_converter.py', [
         '--f5_host_ip', f5_host_ip,
         '--f5_ssh_user', f5Details.f5_ssh_user,
@@ -54,8 +55,9 @@ const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res)
     });
 
     pythonProcess.stderr.on('data', (data) => {
-        console.log('1' + data.toString());
-        res.status(500).json({ message: data.toString() });
+        errorMessage = data.toString();
+
+        console.error('Error while executing f5_converter.py script. ', data.toString());
     });
 
     // On close event, we are sure that stream from child process is closed.
@@ -63,7 +65,7 @@ const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res)
         console.log(dataToSend);
         console.log(`child process close all stdio with code ${code}`);
 
-        if (code !== 1) {
+        if (code === 0) {
             // Save the generated JSONs into DB.
             if (fs.existsSync(conversionStatusFilePath) && fs.existsSync(aviOutputFilePath)) {
                 const readFromFile = (filePath) => {
@@ -98,7 +100,7 @@ const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res)
                 });
             }
         } else {
-            res.status(500).json({ message: 'Error in generating the configurations.' });
+            res.status(500).json({ message: errorMessage || 'Error in generating the configurations.' });
         }
     });
 };
