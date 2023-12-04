@@ -43,7 +43,9 @@ const runMigrationAndSaveJson = (f5Details, labDetails, destinationDetails, res)
         '--tenant', destinationDetails.avi_mapped_tenant,
         '--cloud_name', destinationDetails.avi_mapped_cloud,
         '--controller_version', destinationDetails.avi_destination_version,
-        '-o', MIGRATION_FOLDER_NAME
+        '-o', MIGRATION_FOLDER_NAME,
+        '--use_avi_config', 
+        '--autogen_irules'
     ], {
         shell: true,
     });
