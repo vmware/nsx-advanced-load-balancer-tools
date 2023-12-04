@@ -10,7 +10,7 @@ const {
 } = require("../models/core/destination.model")
 
 const F5_HOST_IP = '10.206.40.100';
-const DESTINATION_MAPPING_SCRIPT_PATH = '../scripts/get_all_destination_names.py';
+const DESTINATION_MAPPING_SCRIPT = 'get_all_destination_names.py';
 const DESTINATION_MAPPING_FILE = 'controller_info.json';
 
 const parseDestinationMappingsData = (req, res, destinationScriptResponse) => {
@@ -114,7 +114,7 @@ exports.getAviDestinationMappings = asyncHandler(async (req, res, next) => {
             res.status(400).json({ error: 'Missing required fields.' });
         } else {
 
-            const pythonProcess = spawn(DESTINATION_MAPPING_SCRIPT_PATH, [
+            const pythonProcess = spawn(DESTINATION_MAPPING_SCRIPT, [
                 '-c', avi_destination_ip,
                 '-u', avi_destination_user,
                 '-p', avi_destination_password,
