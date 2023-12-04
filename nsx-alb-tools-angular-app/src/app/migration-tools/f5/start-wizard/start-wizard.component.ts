@@ -4,31 +4,32 @@ import { HttpClient } from '@angular/common/http';
 import { ClrFormLayout } from '@clr/angular';
 import * as l10n from './start-wizrd.l10n';
 import { HttpService } from 'src/app/shared/http/http.service';
-import {ActivatedRoute, Router} from "@angular/router"
+import { ActivatedRoute, Router } from "@angular/router"
 import { ClrWizard } from "@clr/angular";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 
 const { ENGLISH: dictionary, ...l10nKeys } = l10n;
 
 @Component({
-  selector: 'start-wizard',
-  templateUrl: './start-wizard.html',
-  styleUrls: ['./start-wizard.less'],
+    selector: 'start-wizard',
+    templateUrl: './start-wizard.html',
+    styleUrls: ['./start-wizard.less'],
 })
-export class StartWizardComponent implements OnInit {
+export class StartWizardComponent {
     @Input()
     open = false;
 
     @Output()
-    onCancel = new EventEmitter<boolean>();
+    onClose = new EventEmitter<boolean>();
 
     @ViewChild("wizard") wizard: ClrWizard;
 
-    f5LoginError: string;
+    public errMessage: string = '';
 
-    loadingFlag: boolean;
+    public isGeneratingReport: boolean = false;
 
     dictionary = dictionary;
+
     form: FormGroup;
 
     constructor(
@@ -38,30 +39,31 @@ export class StartWizardComponent implements OnInit {
     ) {
         this.form = new FormGroup({
             f5_host_ip: new FormControl('', [Validators.required,
-                Validators.pattern('^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')]),
+            Validators.pattern('^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$')]),
             f5_ssh_user: new FormControl('', Validators.required),
             f5_ssh_password: new FormControl('', Validators.required),
         });
     }
 
-    ngOnInit(): void {}
+    public onGenerateReport(): void {
+        this.isGeneratingReport = true;
+        this.errMessage = '';
 
-    pageCustomNext(): void {
-        this.loadingFlag = true;
-        this.http.post('discovery/generateReport', this.form.value).subscribe((data)=> {
-            this.loadingFlag = false;
-            this.wizard.forceNext();
-            setTimeout(()=> {
+        this.http.post(
+            'discovery/generateReport',
+            this.form.value,
+        ).subscribe({
+            next: () => {
+                this.isGeneratingReport = false;
+
+                this.wizard.finish();
+                this.onClose.emit();
                 this.router.navigate(['f5-migration'])
-            }, 1000)
-        }, (error) => {
-            this.loadingFlag = false;
-            this.f5LoginError = error.error.message;
+            },
+            error: (error) => {
+                this.isGeneratingReport = false;
+                this.errMessage = error.error.message;
+            },
         });
     }
-
-    doCancel() {
-        this.onCancel.emit(false);
-    }
-
 }

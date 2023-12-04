@@ -30,7 +30,7 @@ export class LandingPageComponent implements OnInit {
       this.open = true;
     }
 
-    onCancel(event: any): void {
+    onClose(): void {
       this.open = false;
     }
 

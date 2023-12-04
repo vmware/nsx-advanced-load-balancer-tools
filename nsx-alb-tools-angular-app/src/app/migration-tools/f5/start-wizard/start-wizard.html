@@ -1,15 +1,9 @@
-<clr-wizard #wizard [(clrWizardOpen)]="open" (clrWizardOnCancel)="doCancel()" [clrWizardPreventDefaultNext]="true">
+<clr-wizard #wizard class="start-wizard" [(clrWizardOpen)]="open" [clrWizardDisableStepnav]="true" [clrWizardClosable]="false">
     <clr-wizard-title> {{dictionary.startWizardF5Migration}} </clr-wizard-title>
 
     <clr-wizard-button [type]="'next'"> {{dictionary.startWizardFinishLabel}} </clr-wizard-button>
 
-    <clr-wizard-page
-        (clrWizardPageNext)="pageCustomNext()"
-        [clrWizardPagePreventDefaultNext]="true"
-        [clrWizardPageNextDisabled]="!form.valid"
-    >
-        <clr-spinner *ngIf="loadingFlag">
-        </clr-spinner>
+    <clr-wizard-page [clrWizardPageNextDisabled]="!form.valid">
         <ng-template clrPageTitle> {{dictionary.startWizardCollectConfigurations}} </ng-template>
         <ng-template clrPageNavTitle> {{dictionary.startWizardCollectConfigurations}} </ng-template>
         <p>
@@ -18,18 +12,7 @@
         <p>
             {{ dictionary.startWizardCollectPageSubTitle }}
         </p>
-        <div class="alert alert-danger" role="alert" *ngIf="f5LoginError && !loadingFlag">
-            <div class="alert-items">
-                <div class="alert-item static">
-                    <div class="alert-icon-wrapper">
-                        <cds-icon class="alert-icon" shape="exclamation-circle"></cds-icon>
-                    </div>
-                    <span class="alert-text">
-                        {{ f5LoginError }}
-                    </span>
-                </div>
-            </div>
-        </div>
+
         <form clrForm [formGroup]="form" clrLayout="vertical">
             <clr-input-container>
               <label> {{dictionary.startWizardIpAddressLabel}} </label>
@@ -52,12 +35,29 @@
         </form>
     </clr-wizard-page>
 
-    <clr-wizard-page>
+    <clr-wizard-page (clrWizardPageOnLoad)="onGenerateReport()">
         <ng-template clrPageTitle> {{dictionary.startWizardAnalyzing}} </ng-template>
         <ng-template clrPageNavTitle> {{dictionary.startWizardAnalyzing}} </ng-template>
-        <div class="center">
-            <img width="350" height="220"  src="assets/images/analyzing.png"/>
+
+        <div class="finalizing-section">
+            <clr-alert [clrAlertType]="'danger'" *ngIf="errMessage && !isGeneratingReport">
+                <clr-alert-item>
+                  <span class="alert-text">{{ errMessage }}</span>
+                </clr-alert-item>
+            </clr-alert>
+
+            <div *ngIf="!errMessage && isGeneratingReport">
+                <div class="finalizing-picture">
+                    <img width="350" height="220"  src="assets/images/analyzing.png"/>
+                </div>
+                <div class="progress loop progress-bar">
+                    <progress></progress>
+                </div>
+            </div>
         </div>
-        <div class="progress loop progress-bar"><progress></progress></div>
+
+        <ng-template clrPageButtons>
+            <clr-wizard-button [type]="'previous'" *ngIf="errMessage && !isGeneratingReport">Back</clr-wizard-button>
+        </ng-template>
     </clr-wizard-page>
 </clr-wizard>
