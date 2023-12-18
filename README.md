@@ -27,15 +27,6 @@ $ ./run.sh -c avitools-list or ./run.sh or ./run.sh -v 20.1.3 -c avitools-list
 ## To show the commands supported by avitools 20.1.3 version of container
 ```
 $ ./run.sh -v 20.1.3 -c avitools-list
-```
-## How to run commands using run.sh
-```
-ex. sh run.sh -v <AVI_VERSION> -d <DIR> -c <COMMAND>
-$ ./run.sh -c "f5_converter.py -h"
-$ ./run.sh -c "f5_converter.py -f <filename>"
-$ ./run.sh -v 20.1.3 -d /home/aviuser -c "f5_converter.py -h"
-$ ./run.sh -v 20.1.3 -d /home/aviuser -c "f5_converter.py -f <filename>"
-```
 
 ## To run ansible playbook
 ```
@@ -49,7 +40,6 @@ $ docker exec -it avitools bash
 ## Docker - "-n" use host networking, supported in both modes (background and foreground/cmd mode).
 ```
 $ ./run.sh -v 20.1.3 -n -c bash -d /home/aviuser/workspace -b
-$ ./run.sh -v 20.1.3 -n -d /home/aviuser -c "f5_converter.py -h"
 ```
 
 ## Optional

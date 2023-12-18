@@ -44,15 +44,9 @@ RUN if git clone --branch ${branch}  https://github.com/vmware/alb-sdk /alb-sdk;
         echo "Branch is not available with the specified name on alb-sdk repository." && exit 1; \
     fi
 
-# Update pycrypto in migrationtools for python3
-WORKDIR /alb-sdk/python/avi/migrationtools
-RUN sed -i "s/pycrypto/pycryptodome/g" setup.py
-
-# This will install tar bundle for avisdk and migrationtools.
+# This will install tar bundle for avisdk
 WORKDIR /alb-sdk/python/
 RUN bash create_sdk_pip_packages.sh sdk
-# Install migrationtools bundle
-RUN bash create_sdk_pip_packages.sh migrationtools
 
 # Install dependencies
 WORKDIR /
@@ -93,12 +87,7 @@ RUN tdnf install -y \
     vcrpy \
     wheel \
     parameterized \
-    /alb-sdk/python/dist/avisdk-*.tar.gz \
-    /alb-sdk/python/dist/avimigrationtools-*.tar.gz
-
-# This script will install nsx dependencies.
-WORKDIR /alb-sdk/python/avi/migrationtools/nsxt_converter/
-RUN python3 install_nsx_dependencies.py
+    /alb-sdk/python/dist/avisdk-*.tar.gz
 
 # Install terraform
 WORKDIR /
@@ -155,20 +144,6 @@ RUN cd ~/ansible-collection-alb && \
     ansible-galaxy collection install vmware-alb-*.tar.gz && \
     pip3 install -r ~/.ansible/collections/ansible_collections/vmware/alb/requirements.txt
 
-# Verify all converters files.
-RUN touch list && \
-    echo '#!/bin/bash' > avitools-list && \
-    echo "echo "f5_converter.py"" >> avitools-list && \
-    echo "echo "netscaler_converter.py"" >> avitools-list && \
-    echo "echo "gss_convertor.py"" >> avitools-list && \
-    echo "echo "f5_discovery.py"" >> avitools-list && \
-    echo "echo "avi_config_to_ansible.py"" >> avitools-list && \
-    echo "echo "ace_converter.py"" >> avitools-list && \
-    echo "echo "virtualservice_examples_api.py"" >> avitools-list && \
-    echo "echo "config_patch.py"" >> avitools-list && \
-    echo "echo "vs_filter.py"" >> avitools-list && \
-    echo "echo "nsxt_converter.py"" >> avitools-list && \
-    echo "echo "v2avi_converter.py"" >> avitools-list
 
 # Verify all script in avitools-list
 RUN for script in $(ls /avi/scripts); do echo "echo $script" >> avitools-list; done;
