@@ -1,3 +1,10 @@
+# Below readme is no more useful now. Since we have migrated the codebase to other place with new steps for setup the application.
+# Please navigate to new repo and check the readme - https://github.com/avinetworks/avi-migrationtools
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 # Overview
 ## avinetworks/avitools docker image
 The container is designated to host all the required migration and verification tools needed in the field. Please refer for the Dockerfile for the list of included tools.
